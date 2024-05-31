@@ -1,0 +1,53 @@
+@import url('../../../Styles/Main.css');
+
+
+.radio-container {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+
+.radio-container label {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+
+.radio-container .radio-input {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: relative;
+    outline: none;
+    cursor: pointer;
+    background-color: #eeeeee;
+}
+
+
+.radio-container .radio-input:checked::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-1);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.radio-container .radio-input:hover {
+    border-color: var(--color-1);
+}
+
+.lable-radio {
+    color: var(--color-1);
+    font-size: calc(.9rem + .1vw);
+}
+
+/* 
+.radio-container .radio-input:focus {
+    box-shadow: 0 0 0 3px var(--color-1);
+} */

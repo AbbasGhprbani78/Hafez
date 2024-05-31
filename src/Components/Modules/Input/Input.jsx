@@ -4,7 +4,7 @@ import './Input.css';
 
 const Input = forwardRef(({ name, label, icon, placeholder, type, styleInput, ...rest }, ref) => (
     <div className={`input-container ${styleInput}`}>
-        <label htmlFor={name} className='label-input mb-1'>{label}</label>
+        <label htmlFor={name} className='label-input mb-2'>{label}</label>
         <div className="input-content-wrapper">
             <input
                 id={name}
@@ -14,6 +14,7 @@ const Input = forwardRef(({ name, label, icon, placeholder, type, styleInput, ..
                 className='input-form'
                 ref={ref}
                 {...rest}
+                autoComplete='off'
             />
             <FontAwesomeIcon icon={icon} className='icon-input' />
         </div>

@@ -11,3 +11,70 @@
 .form-content-activity {
     width: 50%;
 }
+
+.form-wrapper-activity {}
+
+.css-ahj2mt-MuiTypography-root {
+    font-family: inherit !important;
+    font-size: inherit !important;
+}
+
+.css-nzhyv8-MuiButtonBase-root-MuiTab-root.Mui-selected {
+    color: var(--color-5) !important;
+}
+
+.marginRight {
+    margin-right: 3rem !important;
+}
+
+.form-content-all-form {
+    max-height: 58vh;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.form-content-all-form::-webkit-scrollbar {
+    display: none;
+}
+
+.form-content-top {
+    width: 50%;
+}
+
+.form-content-bottom {
+    width: 75%;
+}
+
+.css-19kzrtu {
+    padding: 0 !important;
+}
+
+@media (max-width:992px) {
+    .activity-back {
+        height: 30vh !important;
+    }
+
+    .form-content-top {
+        width: 75%;
+    }
+
+    .form-content-bottom {
+        width: 100%;
+    }
+}
+
+@media (max-width:600px) {
+    .form-content-top {
+        width: 100%;
+    }
+
+    .activityheight {
+        max-height: 58vh !important;
+        overflow-y: scroll;
+    }
+
+    #simple-tabpanel-1,
+    #simple-tabpanel-0 {
+        margin-top: 1rem !important;
+    }
+}
