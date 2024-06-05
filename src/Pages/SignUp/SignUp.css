@@ -77,6 +77,11 @@
     display: none;
 }
 
+.form-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 
 .signin-basic-info-wrapper {
     display: flex;
@@ -107,6 +112,7 @@
 
 .error {
     font-size: clamp(.8rem, .9vw, 1rem);
+    color: var(--color-17);
 }
 
 
@@ -157,9 +163,6 @@
     }
 
 }
-
-
-
 
 @media (max-width: 600px) {
     .form-container {

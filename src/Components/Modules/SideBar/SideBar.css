@@ -2,12 +2,12 @@
 
 .sidebar-container {
     background-color: var(--color-3);
-    position: fixed;
+    position: sticky;
     right: 0;
     top: 0;
     bottom: 0;
     width: 60px;
-    height: 100vh;
+    min-height: 100vh;
     transition: all .5s ease;
 }
 
@@ -26,6 +26,7 @@
 .sidebarlist {
     padding: 0;
     margin: 0;
+    position: fixed;
 }
 
 .sidebar-item {

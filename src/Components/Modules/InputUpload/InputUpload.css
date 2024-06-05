@@ -52,5 +52,10 @@
     justify-content: center;
     color: var(--color-7);
     font-size: clamp(.8rem, .9vw, 1rem);
-    width: 90%;
+}
+
+@media (max-width:600px) {
+    .drag-drop-text {
+        width: 90%;
+    }
 }

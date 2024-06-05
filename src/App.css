@@ -1,0 +1,17 @@
+body::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.content-conatiner {
+    display: flex;
+}
+
+.space-content {
+    padding: 0 calc(20px + 1vw);
+    width: 100%;
+}

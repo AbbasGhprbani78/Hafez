@@ -1,7 +1,14 @@
 import React from 'react'
 import './InputCheckBox.css'
-export default function InputCheckBox() {
+export default function InputCheckBox({ text, marginRight, onChange, isPermition, value }) {
     return (
-        <div className='checkbox-wrapper'></div>
+        <div className={`checkbox-container mx-2 ${marginRight}`}>
+            <input
+                type="checkbox"
+                className='check-input'
+                value={value}
+            />
+            <label htmlFor="" className='lable-check'>مکانیک</label>
+        </div>
     )
 }

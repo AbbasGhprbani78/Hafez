@@ -1,9 +1,9 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Input.css';
 
-const Input = forwardRef(({ name, label, icon, placeholder, type, styleInput, ...rest }, ref) => (
-    <div className={`input-container ${styleInput}`}>
+const Input = (({ name, label, icon, placeholder, type, styleInput, value, onChange, styled }) => (
+    <div className={`input-container ${styleInput} ${styled}`}>
         <label htmlFor={name} className='label-input mb-2'>{label}</label>
         <div className="input-content-wrapper">
             <input
@@ -11,13 +11,14 @@ const Input = forwardRef(({ name, label, icon, placeholder, type, styleInput, ..
                 name={name}
                 type={type}
                 placeholder={placeholder}
+                value={value}
+                onChange={onChange}
                 className='input-form'
-                ref={ref}
-                {...rest}
                 autoComplete='off'
             />
             <FontAwesomeIcon icon={icon} className='icon-input' />
         </div>
+
     </div>
 ));
 

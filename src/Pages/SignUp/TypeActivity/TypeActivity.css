@@ -37,6 +37,11 @@
     display: none;
 }
 
+.form-content-all-form {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 .form-content-top {
     width: 50%;
 }
@@ -47,6 +52,25 @@
 
 .css-19kzrtu {
     padding: 0 !important;
+}
+
+.add-signature-title {
+    font-size: clamp(.8rem, .9vw, 1rem);
+    color: var(--color-1);
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.add-signature-title>span {
+    margin-right: 10px;
+}
+
+
+#simple-tabpanel-1,
+#simple-tabpanel-0 {
+    margin-top: 1rem !important;
 }
 
 @media (max-width:992px) {
@@ -73,8 +97,5 @@
         overflow-y: scroll;
     }
 
-    #simple-tabpanel-1,
-    #simple-tabpanel-0 {
-        margin-top: 1rem !important;
-    }
+
 }

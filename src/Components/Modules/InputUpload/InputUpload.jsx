@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './InputUpload.css';
 
-export default function InputUpload({ label }) {
+export default function InputUpload({ label, name, onFileChange }) {
     const [imageUpload, setImageUpload] = useState("");
 
     const handleDragOver = (e) => {
@@ -14,6 +14,13 @@ export default function InputUpload({ label }) {
         e.stopPropagation();
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             setImageUpload(e.dataTransfer.files[0]);
+        }
+    };
+
+    const handleChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setImageUpload(e.target.files[0]);
+            onFileChange(e.target.files[0], name);
         }
     };
 
@@ -30,9 +37,9 @@ export default function InputUpload({ label }) {
                 <div className="uploadInput-content">
                     <input
                         type="file"
-                        id="uploadInput"
+                        id={`${name}`}
                         className='uploadInput'
-                        onChange={e => setImageUpload(e.target.files[0])}
+                        onChange={handleChange}
                     />
                     {
                         imageUpload ?
@@ -44,7 +51,7 @@ export default function InputUpload({ label }) {
                             <div className="drag-drop-text">drag and drop<br />or</div>
                     }
 
-                    <label htmlFor="uploadInput" className='label-uploadInput mt-2'>Upload</label>
+                    <label htmlFor={`${name}`} className='label-uploadInput mt-2'>Upload</label>
                 </div>
             </div>
         </div>
