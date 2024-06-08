@@ -1,0 +1,191 @@
+@import url('../../../../Styles//Main.css');
+
+
+
+.form1-container {
+    width: 93%;
+    margin: 1.5rem auto 0 auto;
+}
+
+.tab1-pform1 {
+    background-color: #fff;
+    border-radius: var(--border-radius-1);
+    box-shadow: var(--box-shadow-2);
+}
+
+/* start part one form */
+
+.p-form1-part-one {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+}
+
+.input-item-wrapper3 {
+    width: 29%;
+}
+
+.h-p-form1 {
+    height: 163px;
+    resize: none;
+}
+
+/* end  part one form*/
+
+
+
+/* start part two form */
+
+.p-form1-part-two,
+.p-form1-part-tree {
+    border-top: 1px solid var(--color-8);
+}
+
+.p-form1-part-two {
+    padding-bottom: 10px;
+}
+
+.title-p-form1-part-two,
+.title-p-form1-part-tree {
+    padding: 25px 0;
+    color: var(--color-1);
+}
+
+.moraje-container {
+    width: 77%;
+    margin: 0 auto 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.drop-moraje-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.moraje-wrappper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.moraje-title {
+    margin-right: 3rem;
+    width: max-content;
+}
+
+.drop-title,
+.moraje-title {
+    color: var(--color-1);
+    font-size: clamp(.8rem, .9vw, 1rem);
+}
+
+.p-form1-part-two-radio-wrapper {}
+
+/* end part two form */
+
+
+
+/* start style part three */
+.p-form1-checkbox-container {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    font-size: clamp(.8rem, .9vw, 1rem);
+}
+
+/* ens style part three */
+.css-ahj2mt-MuiTypography-root {
+    font-size: inherit !important;
+    font-family: inherit !important;
+}
+
+
+.pform-btns-action {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 15px;
+}
+
+.btn-action-fp1 {
+    all: unset;
+    border-radius: 100px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    width: 105px;
+    justify-content: center;
+}
+
+.edit1 {
+    color: var(--color-1);
+    border: 1px solid var(--color-1);
+    background-color: #fff;
+}
+
+.done1 {
+    background-color: var(--color-3);
+    color: #fff;
+}
+
+/*start style co   */
+.p-form1-part-one-co {
+    display: flex;
+    justify-content: space-between;
+}
+
+.p-form1-part-two-co {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.radios-co-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.p-form1-part-two-co-right {
+    border-bottom: 1px solid var(--color-8);
+    padding-bottom: 25px;
+}
+
+.p-co-texteara {
+    height: 150px;
+    resize: none;
+}
+
+.p-form1-part-three-co {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.inputs-p-container {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.width-50 {
+    width: 45%;
+}
+
+.p-form1-reference-co {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.css-nzhyv8-MuiButtonBase-root-MuiTab-root.Mui-selected {
+    color: var(--color-1) !important;
+}
+
+.css-1aquho2-MuiTabs-indicator {
+    background-color: var(--color-1) !important;
+}
+
+/* end style co */

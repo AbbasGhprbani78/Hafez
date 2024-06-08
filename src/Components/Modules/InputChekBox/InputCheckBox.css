@@ -9,8 +9,11 @@
 .checkbox-container label {
     margin-right: 10px;
     cursor: pointer;
+    color: var(--color-1);
 }
 
-.check-input {}
+.check-input {
+    accent-color: var(--color-1)
+}
 
 .lable-check {}

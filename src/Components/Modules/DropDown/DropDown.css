@@ -1,6 +1,8 @@
 @import url('../../../Styles/Main.css');
 
-.dropdown-container {}
+.dropdown-container {
+    width: 100%;
+}
 
 .dropdown-wrapper {
     position: relative;

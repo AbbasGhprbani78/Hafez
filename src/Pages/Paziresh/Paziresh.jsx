@@ -2,7 +2,7 @@ import React from 'react'
 import SideBar from '../../Components/Modules/SideBar/SideBar'
 import Header from '../../Components/Modules/Header/Header'
 import ProgressBar from '../../Components/Modules/ProgressBar/ProgressBar'
-import Pform1 from '../../Components/Modules/paziresh/Pform1/Pform1'
+import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 export default function Paziresh() {
     return (
         <>

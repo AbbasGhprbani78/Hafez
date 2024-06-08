@@ -30,3 +30,5 @@
 .icon-input {
     color: var(--color-1);
 }
+
+/* font-size: clamp(.8rem, .9vw, 1rem); */

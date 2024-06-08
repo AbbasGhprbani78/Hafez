@@ -44,7 +44,7 @@
 
 .lable-radio {
     color: var(--color-1);
-    font-size: calc(.9rem + .1vw);
+    font-size: clamp(.8rem, .9vw, 1rem);
 }
 
 /* 

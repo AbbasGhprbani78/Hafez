@@ -8,7 +8,7 @@ export default function InputCheckBox({ text, marginRight, onChange, isPermition
                 className='check-input'
                 value={value}
             />
-            <label htmlFor="" className='lable-check'>مکانیک</label>
+            <label htmlFor="" className='lable-check'>{value}</label>
         </div>
     )
 }

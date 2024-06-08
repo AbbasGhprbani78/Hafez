@@ -1,10 +1,13 @@
 import React from 'react'
 import './DropDown.css'
-export default function DropDown() {
+export default function DropDown({ haslable }) {
     return (
         <>
             <div className="dropdown-container">
-                <label className='label-input mb-2'>نوع خودرو</label>
+                {
+                    haslable &&
+                    <label className='label-input mb-2'>نوع خودرو</label>
+                }
                 <div className="dropdown-wrapper">
                     <select className='dropdown'>
                         <option className='dropdown-item'></option>
