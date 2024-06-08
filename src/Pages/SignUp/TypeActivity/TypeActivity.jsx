@@ -12,6 +12,10 @@ import InputRadio from '../../../Components/Modules/InputRadio/InputRadio'
 import Input2 from '../../../Components/Modules/input2/Input2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Formik } from 'formik'
+import axios from 'axios'
+import { IP } from '../../../App'
+import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
     fontFamily: 'inherit',
@@ -50,7 +54,7 @@ export default function TypeActivity() {
     const [value, setValue] = useState(0);
     const [uploads, setUploads] = useState({});
     const [isPermition, setIsPermition] = useState("No")
-
+    const navigate = useNavigate()
 
 
     const handleChange = (event, newValue) => {
@@ -93,18 +97,72 @@ export default function TypeActivity() {
                             </Tabs>
                             <TabPanel value={value} index={0}>
                                 <Formik
+
                                     validate={(values) => {
                                         const errors = {}
+                                        if (values.first_name === "") {
+                                            errors.first_name = "وارد کردن نام اجباری میباشد";
+                                        } else if (values.first_name.length < 4) {
+                                            errors.first_name = "نام حداقل باید 4 کاراکتر باشد";
+                                        }
+                                        if (values.last_name === "") {
+                                            errors.last_name = "وارد کردن نام خانوادگی اجباری میباشد";
+                                        } else if (values.last_name.length < 4) {
+                                            errors.last_name = "نام خانوادگی حداقل باید 4 کاراکتر باشد";
+                                        }
+
+                                        if (values.national_code === "") {
+                                            errors.national_code = "وارد کردن کدملی اجباری میباشد";
+                                        } else if (!/^\d{10}$/.test(values.national_code)) {
+                                            errors.national_code = "کدملی وارد شده معتبر نیست";
+                                        }
+
+                                        if (values.applicant_phone_number === "") {
+                                            errors.applicant_phone_number = "وارد کردن شماره اجباری میباشد";
+                                        } else if (!/^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}?\)?[-.\s]?)?(\d{1,4}[-.\s]?){1,3}\d{1,4}$/.test(values.applicant_phone_number)) {
+                                            errors.applicant_phone_number = "شماره وارد شده معتبر نیست";
+                                        }
+                                        if (values.address === "") {
+                                            errors.address = "وارد کردن آدرس اجباری میباشد";
+                                        }
+                                        if (values.postal_code === "") {
+                                            errors.postal_code = "وارد کردن پستی اجباری میباشد";
+                                        } else if (!/^\d{10}$/.test(values.postal_code)) {
+                                            errors.postal_code = "کدپستی وارد شده معتبر نیست";
+                                        }
+                                        if (values.work_place_number === "") {
+                                            errors.work_place_number = "وارد کردن شماره اجباری میباشد";
+                                        } else if (!/^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}?\)?[-.\s]?)?(\d{1,4}[-.\s]?){1,3}\d{1,4}$/.test(values.work_place_number)) {
+                                            errors.work_place_number = "شماره وارد شده معتبر نیست";
+                                        }
+                                        if (values.business_license_image === "") {
+                                            errors.business_license_image = "تصویر جواز کسب را قرار دهید";
+                                        }
+                                        if (values.national_card_image === "") {
+                                            errors.national_card_image = "تصویر کارت ملی را قرار دهید";
+                                        }
                                         return errors
                                     }}
                                     initialValues={{
-
+                                        personal: "Personal",
+                                        first_name: "",
+                                        last_name: "",
+                                        national_code: "",
+                                        applicant_phone_number: "",
+                                        address: "",
+                                        postal_code: "",
+                                        work_place_number: "",
+                                        business_license_image: "",
+                                        national_card_image: ""
                                     }}
+
                                     onSubmit={async (values, { setSubmitting }) => {
+                                        console.log(values)
                                         try {
-                                            const response = await axios.post(`${IP}//`, values)
-                                            if (response.status === 200) {
+                                            const response = await axios.post(`${IP}/user/continuation-signup/`, values)
+                                            if (response.status === 201) {
                                                 setSubmitting(false)
+                                                navigate("/")
                                             }
                                         } catch (error) {
                                             toast.error(error.response.data.message, {
@@ -113,9 +171,10 @@ export default function TypeActivity() {
                                             setSubmitting(false);
                                         }
                                     }}
+
                                 >
-                                    {({ values, handleChange, handleSubmit, errors, touched, isSubmitting }) => (
-                                        <form>
+                                    {({ values, handleChange, handleSubmit, setFieldValue, errors, touched, isSubmitting }) => (
+                                        <form onSubmit={handleSubmit}>
                                             <div className="form-content activityheight">
                                                 <div className="form-signin" >
                                                     <div className="signin-basic-info-wrapper margin-buttom">
@@ -126,8 +185,10 @@ export default function TypeActivity() {
                                                                 placeholder="نام"
                                                                 type="text"
                                                                 name={"first_name"}
+                                                                onChange={handleChange}
+                                                                value={values.first_name}
                                                             />
-
+                                                            {errors.first_name && touched.first_name && <span className='error'>{errors.first_name}</span>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <Input
@@ -136,8 +197,10 @@ export default function TypeActivity() {
                                                                 placeholder="نام خانوادگی صاحب فعالیت"
                                                                 type="text"
                                                                 name={"last_name"}
+                                                                value={values.last_name}
+                                                                onChange={handleChange}
                                                             />
-
+                                                            {errors.last_name && touched.last_name && <span className='error'>{errors.last_name}</span>}
                                                         </div>
                                                     </div>
                                                     <div className="signin-basic-info-wrapper margin-buttom">
@@ -147,9 +210,11 @@ export default function TypeActivity() {
                                                                 icon={faAddressCard}
                                                                 placeholder=" کد ملی صاحب فعالیت"
                                                                 type="text"
-                                                                name={"ntionalIDNumber"}
+                                                                name={"national_code"}
+                                                                onChange={handleChange}
+                                                                value={values.national_code}
                                                             />
-
+                                                            {errors.national_code && touched.national_code && <span className='error'>{errors.national_code}</span>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <Input
@@ -157,9 +222,11 @@ export default function TypeActivity() {
                                                                 icon={faPhone}
                                                                 placeholder="شماره تماس متقاضی"
                                                                 type="text"
-                                                                name={"applicantNumber"}
+                                                                name={"applicant_phone_number"}
+                                                                onChange={handleChange}
+                                                                value={values.applicant_phone_number}
                                                             />
-
+                                                            {errors.applicant_phone_number && touched.applicant_phone_number && <span className='error'>{errors.applicant_phone_number}</span>}
                                                         </div>
                                                     </div>
                                                     <div className="signin-element-form-wrapper margin-buttom">
@@ -169,8 +236,10 @@ export default function TypeActivity() {
                                                             placeholder="آدرس محل فعالیت"
                                                             type="text"
                                                             name={"address"}
+                                                            onChange={handleChange}
+                                                            value={values.address}
                                                         />
-
+                                                        {errors.address && touched.address && <span className='error'>{errors.address}</span>}
                                                     </div>
                                                     <div className="signin-basic-info-wrapper margin-buttom">
                                                         <div className='input-item-wrapper'>
@@ -180,38 +249,46 @@ export default function TypeActivity() {
                                                                 placeholder="کدپستی محل فعالیت"
                                                                 type="text"
                                                                 name={"postal_code"}
+                                                                onChange={handleChange}
+                                                                value={values.postal_code}
                                                             />
+                                                            {errors.postal_code && touched.postal_code && <span className='error'>{errors.postal_code}</span>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <Input
-                                                                name="phone_number"
+                                                                name="work_place_number"
                                                                 label="شماره تماس"
                                                                 icon={faPhone}
                                                                 placeholder="شماره تماس محل فعالیت"
                                                                 type="text"
+                                                                onChange={handleChange}
+                                                                value={values.work_place_number}
                                                             />
+                                                            {errors.work_place_number && touched.work_place_number && <span className='error'>{errors.work_place_number}</span>}
                                                         </div>
                                                     </div>
                                                     <div className="signin-basic-info-wrapper margin-buttom">
                                                         <div className='input-item-wrapper'>
                                                             <InputUpload
                                                                 label={"تصویر جواز کسب"}
-                                                                name="businessLicense"
-                                                                onFileChange={handleFileChange}
+                                                                name="business_license_image"
+                                                                onChange={(file) => setFieldValue('business_license_image', file)}
                                                             />
+                                                            {errors.business_license_image && touched.business_license_image && <span className='error'>{errors.business_license_image}</span>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <InputUpload
                                                                 label={"تصویر کارت"}
-                                                                name="cardImage"
-                                                                onFileChange={handleFileChange}
+                                                                name="national_card_image"
+                                                                onChange={(file) => setFieldValue('national_card_image', file)}
                                                             />
+                                                            {errors.national_card_image && touched.national_card_image && <span className='error'>{errors.national_card_image}</span>}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="signin-btn-wrapper">
-                                                <Button1 />
+                                                <Button1 type="submit" isSubmitting={isSubmitting} />
                                             </div>
                                         </form>
                                     )}
@@ -220,7 +297,7 @@ export default function TypeActivity() {
                             <TabPanel value={value} index={1}>
                                 <Formik>
                                     {({ values, handleChange, handleSubmit, errors, touched, isSubmitting }) => (
-                                        <form >
+                                        <form onSubmit={handleSubmit}>
                                             <div className="form-content-all-form">
                                                 <div className="form-signin" >
                                                     <div className="form-content-top">
@@ -347,7 +424,7 @@ export default function TypeActivity() {
                                                                 <InputUpload
                                                                     label={"تصویر اساسنامه شرکت"}
                                                                     name="Company Articles of Association"
-                                                                    onFileChange={handleFileChange}
+
                                                                 />
                                                             </div>
                                                             <div className='input-item-wrapper2'>
@@ -380,6 +457,7 @@ export default function TypeActivity() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     )
 }

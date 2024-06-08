@@ -27,7 +27,7 @@ export default function SideBar() {
                     <p className="sidebar-item-text">خانه</p>
                 </NavLink>
 
-                <NavLink to={"/p"} className="sidebar-item navlink">
+                <NavLink to={"/paziresh"} className="sidebar-item navlink">
                     <div className="icon-sidebar-wrapper">
                         <FontAwesomeIcon icon={faNewspaper} />
                     </div>

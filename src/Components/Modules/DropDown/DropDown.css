@@ -33,4 +33,6 @@
     pointer-events: none;
 }
 
-.dropdown-item {}
+.dropdown-item {
+    color: var(--color-1);
+}

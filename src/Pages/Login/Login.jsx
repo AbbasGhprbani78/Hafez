@@ -3,7 +3,20 @@ import './Login.css'
 export default function Login() {
     return (
         <>
-            login
+            <input
+                type="text"
+                value={""}
+            />
+
+            <input
+                type="text"
+                value={""}
+            />
+
         </>
     )
 }
+
+
+
+//apihafez.ariisco.com

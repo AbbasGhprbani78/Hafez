@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './InputUpload.css';
 
-export default function InputUpload({ label, name, onFileChange }) {
+export default function InputUpload({ label, name, onChange }) {
     const [imageUpload, setImageUpload] = useState("");
 
     const handleDragOver = (e) => {
@@ -13,16 +13,20 @@ export default function InputUpload({ label, name, onFileChange }) {
         e.preventDefault();
         e.stopPropagation();
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            setImageUpload(e.dataTransfer.files[0]);
+            const file = e.dataTransfer.files[0];
+            setImageUpload(file);
+            onChange(file, name);
         }
     };
 
     const handleChange = (e) => {
         if (e.target.files && e.target.files[0]) {
-            setImageUpload(e.target.files[0]);
-            onFileChange(e.target.files[0], name);
+            const file = e.target.files[0];
+            setImageUpload(file);
+            onChange(file, name);
         }
     };
+
 
     return (
         <div className='uploadInput-container'>
