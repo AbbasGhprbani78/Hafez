@@ -9,21 +9,32 @@ export default function InputUpload({ label, name, onChange }) {
         e.stopPropagation();
     };
 
+
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setImageUpload(e.target.files[0]);
             const file = e.dataTransfer.files[0];
-            setImageUpload(file);
-            onChange(file, name);
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = reader.result.split(',')[1];
+                onChange(base64String, name);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
     const handleChange = (e) => {
         if (e.target.files && e.target.files[0]) {
+            setImageUpload(e.target.files[0]);
             const file = e.target.files[0];
-            setImageUpload(file);
-            onChange(file, name);
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = reader.result.split(',')[1];
+                onChange(base64String, name);
+            };
+            reader.readAsDataURL(file);
         }
     };
 

@@ -10,7 +10,6 @@ import { Box, Tabs, Tab, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InputRadio from '../../../Components/Modules/InputRadio/InputRadio'
 import Input2 from '../../../Components/Modules/input2/Input2'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Formik } from 'formik'
 import axios from 'axios'
 import { IP } from '../../../App'
@@ -54,6 +53,7 @@ export default function TypeActivity() {
     const [value, setValue] = useState(0);
     const [uploads, setUploads] = useState({});
     const [isPermition, setIsPermition] = useState("No")
+    const [addInputssignature, setAddInputssignature] = useState(false)
     const navigate = useNavigate()
 
 
@@ -62,22 +62,9 @@ export default function TypeActivity() {
     };
 
     const handlerAddinputssignature = () => {
-        console.log("click")
+        setAddInputssignature(prevState => !prevState)
     }
 
-    const handleFileChange = (file, name) => {
-        setUploads((prevUploads) => ({
-            ...prevUploads,
-            [name]: file
-        }));
-        setPersonalFormData({
-            ...personlFormData,
-            uploads: {
-                ...personlFormData.uploads,
-                [name]: file
-            }
-        });
-    };
 
 
     return (
@@ -97,7 +84,6 @@ export default function TypeActivity() {
                             </Tabs>
                             <TabPanel value={value} index={0}>
                                 <Formik
-
                                     validate={(values) => {
                                         const errors = {}
                                         if (values.first_name === "") {
@@ -157,21 +143,32 @@ export default function TypeActivity() {
                                     }}
 
                                     onSubmit={async (values, { setSubmitting }) => {
-                                        console.log(values)
+                                        const access = localStorage.getItem("access")
+                                        const headers = {
+                                            Authorization: `Bearer ${access}`
+                                        };
                                         try {
-                                            const response = await axios.post(`${IP}/user/continuation-signup/`, values)
+                                            const response = await axios.post(`${IP}/user/continuation-signup/`, values, {
+                                                headers
+                                            })
                                             if (response.status === 201) {
                                                 setSubmitting(false)
+                                                console.log(response.data)
                                                 navigate("/")
                                             }
                                         } catch (error) {
+                                            console.log(error)
+                                            if (error.response.status === 401) {
+                                                localStorage.removeItem('access')
+                                                localStorage.removeItem('refresh')
+                                                window.location.href = "/login"
+                                            }
                                             toast.error(error.response.data.message, {
                                                 position: "top-left"
                                             })
                                             setSubmitting(false);
                                         }
                                     }}
-
                                 >
                                     {({ values, handleChange, handleSubmit, setFieldValue, errors, touched, isSubmitting }) => (
                                         <form onSubmit={handleSubmit}>
@@ -355,15 +352,54 @@ export default function TypeActivity() {
                                                                             />
                                                                         </div>
                                                                     </div>
+                                                                    {
+                                                                        addInputssignature ?
+                                                                            <div>
+                                                                                <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                    <Input2
+                                                                                        icon={faUser}
+                                                                                        placeholder="نام ونام خانوادگی"
+                                                                                    />
+                                                                                </div>
+                                                                                <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                    <Input2
+                                                                                        icon={faUser}
+                                                                                        placeholder="سمت در شرکت"
+                                                                                    />
+                                                                                </div>
+                                                                                <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                    <Input2
+                                                                                        icon={faAddressCard}
+                                                                                        placeholder="کد ملی"
+                                                                                    />
+                                                                                </div>
+                                                                                <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                    <Input2
+                                                                                        icon={faPhone}
+                                                                                        placeholder="شماره موبایل"
+                                                                                    />
+                                                                                </div>
+                                                                            </div> :
+                                                                            null
+                                                                    }
 
                                                                     <p className="add-signature-title" onClick={handlerAddinputssignature}>
-                                                                        <FontAwesomeIcon icon={faPlus} />
-                                                                        <span >
-                                                                            افزودن صاحب امضا جدید
-                                                                        </span>
+                                                                        {
+                                                                            addInputssignature ?
+                                                                                <>
+                                                                                    <span>
+                                                                                        حذف صاحب امضا جدید
+                                                                                    </span>
+                                                                                </> :
+                                                                                <>
+                                                                                    <span>
+                                                                                        افزودن صاحب امضا جدید
+                                                                                    </span>
+                                                                                </>
+                                                                        }
+
                                                                     </p>
                                                                 </>
-
                                                                 :
                                                                 <div >
                                                                     <div className='signin-element-form-wrapper margin-buttom'>
@@ -424,21 +460,20 @@ export default function TypeActivity() {
                                                                 <InputUpload
                                                                     label={"تصویر اساسنامه شرکت"}
                                                                     name="Company Articles of Association"
-
                                                                 />
                                                             </div>
                                                             <div className='input-item-wrapper2'>
                                                                 <InputUpload
                                                                     label={"تصویر آخرین آگهی تغییرات"}
                                                                     name="The latest advertisement of changes"
-                                                                    onFileChange={handleFileChange}
+                                                                    onFileChange={''}
                                                                 />
                                                             </div>
                                                             <div className='input-item-wrapper2'>
                                                                 <InputUpload
                                                                     label={"تصویر لوگو شرکت"}
                                                                     name="Company logo image"
-                                                                    onFileChange={handleFileChange}
+                                                                    onFileChange={''}
                                                                 />
                                                             </div>
                                                         </div>
@@ -458,6 +493,6 @@ export default function TypeActivity() {
                 </div>
             </div>
             <ToastContainer />
-        </div>
+        </div >
     )
 }

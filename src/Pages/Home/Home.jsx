@@ -2,7 +2,7 @@ import React from 'react';
 import './Home.css';
 import SideBar from '../../Components/Modules/SideBar/SideBar';
 import Header from '../../Components/Modules/Header/Header';
-import TypeActivity from '../SignUp/TypeActivity/TypeActivity';
+import TypeActivity from '../Login/TypeActivity/TypeActivity';
 export default function Home() {
     return (
         <>
@@ -20,7 +20,7 @@ export default function Home() {
                     </div>
                 </div>
             </div> */}
-            {/* <TypeActivity /> */}
+            <TypeActivity />
         </>
     );
 }

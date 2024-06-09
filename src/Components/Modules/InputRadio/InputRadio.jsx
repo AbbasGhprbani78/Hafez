@@ -14,7 +14,7 @@ export default function InputRadio({ text, marginRight, onChange, isPermition, v
                     onChange={() => onChange(value)}
                     checked={value === isPermition}
                 />
-                <label htmlFor="" className='lable-radio'>{value}</label>
+                <label htmlFor="" className='lable-radio'>{text}</label>
             </div>
         </>
     )
