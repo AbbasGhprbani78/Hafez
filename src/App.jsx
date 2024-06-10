@@ -10,6 +10,7 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
+
     const isUserLogin = async () => {
       const refresh = localStorage.getItem('refresh');
       if (refresh) {
@@ -24,7 +25,10 @@ function App() {
           if (response.status === 200) {
             window.localStorage.removeItem('access');
             window.localStorage.setItem('access', response.data.access);
-            navigate('/')
+            const level = localStorage.getItem("level")
+            if (level === "one") {
+              navigate("/login")
+            }
           }
 
         } catch (e) {
@@ -40,7 +44,6 @@ function App() {
     }
 
     isUserLogin()
-
   }, [])
 
   let router = useRoutes(routes);

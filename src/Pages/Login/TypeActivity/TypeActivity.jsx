@@ -170,6 +170,7 @@ export default function TypeActivity() {
                                         }
                                     }}
                                 >
+
                                     {({ values, handleChange, handleSubmit, setFieldValue, errors, touched, isSubmitting }) => (
                                         <form onSubmit={handleSubmit}>
                                             <div className="form-content activityheight">

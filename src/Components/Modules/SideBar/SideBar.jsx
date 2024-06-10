@@ -2,14 +2,21 @@ import React, { useState } from 'react'
 import './SideBar.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faAlignRight, faNewspaper, faScrewdriverWrench, faLayerGroup, faBoxArchive, faChartPie, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 export default function SideBar() {
 
+    const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDrawer = () => {
         setIsOpen(!isOpen);
     };
+
+    const logoutHandler = () => {
+        localStorage.removeItem('access')
+        localStorage.removeItem("refresh")
+        navigate("/login")
+    }
 
     return (
         <div className={`sidebar-container ${isOpen ? 'active-sidebar' : null} `}>
@@ -57,7 +64,7 @@ export default function SideBar() {
                     </div>
                     <p className="sidebar-item-text">انبار</p>
                 </NavLink>
-                <li className="sidebar-item navlink logout-sidebar">
+                <li className="sidebar-item navlink logout-sidebar" onClick={logoutHandler}>
                     <div className="icon-sidebar-wrapper">
                         <FontAwesomeIcon icon={faRightToBracket} />
                     </div>

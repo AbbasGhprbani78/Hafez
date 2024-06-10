@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Login.css'
 import { Col } from 'react-bootstrap'
 import { Formik } from 'formik'
@@ -10,11 +10,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 import { IP } from '../../App'
 import TypeActivity from './TypeActivity/TypeActivity'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
     const navigate = useNavigate()
-    const [isShowActivityForm, setIsShowActivityForm] = useState("")
+    const [isShowActivityForm, setIsShowActivityForm] = useState(localStorage.getItem("level"))
+
     return (
         <>{
             isShowActivityForm === "one" ?
@@ -50,6 +51,7 @@ export default function Login() {
                                     password: "",
 
                                 }}
+
                                 onSubmit={async (values, { setSubmitting }) => {
                                     try {
                                         const response = await axios.post(`${IP}/user/login/`, values)
@@ -57,6 +59,7 @@ export default function Login() {
                                             setSubmitting(false)
                                             localStorage.setItem("access", response.data.access)
                                             localStorage.setItem("refresh", response.data.refresh)
+                                            localStorage.setItem("level", response?.data?.level)
                                             if (response?.data?.level !== "one") {
                                                 navigate("/")
                                             } else {
@@ -103,9 +106,12 @@ export default function Login() {
                                         <div className="signin-btn-wrapper">
                                             <Button1 type="submit" isSubmitting={isSubmitting} />
                                         </div>
+                                        <p className='text-tosignup'>حساب کاربری ندارید؟ <Link to={'/signup'} className='link-to-signup'>ثبت نام </Link>کنید</p>
+
                                     </form>
                                 )}
                             </Formik>
+
                         </div>
                     </div>
                     <ToastContainer />
