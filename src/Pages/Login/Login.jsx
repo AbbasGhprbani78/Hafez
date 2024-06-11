@@ -49,7 +49,6 @@ export default function Login() {
                                 initialValues={{
                                     login_field: "",
                                     password: "",
-
                                 }}
 
                                 onSubmit={async (values, { setSubmitting }) => {

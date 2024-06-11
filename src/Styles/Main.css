@@ -49,6 +49,28 @@ p {
     display: none;
 }
 
+
+@font-face {
+    font-family: 'iranYekan';
+    src: url('/public/fonts/light/iranyekanweblight.ttf') format('ttf'),
+        url('/public/fonts/light/iranyekanweblight.woff2') format('woff2'),
+        url('/public/fonts/light/iranyekanweblight.woff') format('woff'),
+        url('/public/fonts/light/iranyekanweblight.eot') format('eot'),
+        url('/public/fonts/light/iranyekanweblight.otf') format('otf'),
+
+        url('/public/fonts/bold/iranyekanwebbold.ttf') format('ttf'),
+        url('/public/fonts/bold/iranyekanwebbold.woff2') format('woff2'),
+        url('/public/fonts/bold/iranyekanwebbold.woff') format('woff'),
+        url('/public/fonts/bold/iranyekanwebbold.eot') format('eot'),
+        url('/public/fonts/bold/iranyekanwebbold.otf') format('otf'),
+}
+
+html,
+body {
+
+    font-family: 'iranYekan', sans-serif !important;
+}
+
 @media (max-width: 600px) {}
 
 @media only screen and (min-width: 601px) and (max-width: 1024px) {}

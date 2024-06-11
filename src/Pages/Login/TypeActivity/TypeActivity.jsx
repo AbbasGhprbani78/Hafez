@@ -15,6 +15,7 @@ import axios from 'axios'
 import { IP } from '../../../App'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
     fontFamily: 'inherit',
@@ -51,9 +52,8 @@ function a11yProps(index) {
 export default function TypeActivity() {
 
     const [value, setValue] = useState(0);
-    const [uploads, setUploads] = useState({});
-    const [isPermition, setIsPermition] = useState("No")
-    const [addInputssignature, setAddInputssignature] = useState(false)
+    const [isPermition, setIsPermition] = useState(false)
+    const [signatureInputs, setSignatureInputs] = useState([{}]);
     const navigate = useNavigate()
 
 
@@ -62,10 +62,8 @@ export default function TypeActivity() {
     };
 
     const handlerAddinputssignature = () => {
-        setAddInputssignature(prevState => !prevState)
+        setSignatureInputs([...signatureInputs, {}]);
     }
-
-
 
     return (
         <div className="signup-page">
@@ -293,112 +291,189 @@ export default function TypeActivity() {
                                 </Formik>
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                <Formik>
-                                    {({ values, handleChange, handleSubmit, errors, touched, isSubmitting }) => (
+                                <Formik
+                                    initialValues={{
+                                        applicants_position_in_company: "",
+                                        signed_right: false,
+                                        owner_first_signature: "",
+                                        national_code: "",
+                                        company_national_id: "",
+                                        phone_number: "",
+                                        address: "",
+                                        postal_code: "",
+                                        company_statute_image: "",
+                                        last_ad_changes_image: "",
+                                        company_image: "",
+                                        ...signatureInputs.reduce((acc, _, index) => ({
+                                            ...acc,
+                                            [`name_${index}`]: '',
+                                            [`position_${index}`]: '',
+                                            [`national_code_${index}`]: '',
+                                            [`phone_${index}`]: '',
+                                        }), {})
+                                    }}
+                                    validate={(values) => {
+                                        const errors = {}
+                                        if (values.applicants_position_in_company === "") {
+                                            errors.applicants_position_in_company = "وارد کردن سمت درخواست کننده اجباری میباشد"
+                                        }
+                                        if (values.owner_first_signature === "") {
+                                            errors.owner_first_signature = "وارد کردن صاحب امضا اجباری میباشد"
+                                        }
+                                        if (values.national_code === "") {
+                                            errors.national_code = "وارد کردن کدملی اجباری میباشد";
+                                        } else if (!/^\d{10}$/.test(values.national_code)) {
+                                            errors.national_code = "کدملی وارد شده معتبر نیست";
+                                        }
+                                        if (values.company_national_id === "") {
+                                            errors.company_national_id = "وارد کردن شناسه ملی شرکت اجباری میباشد";
+                                        } else if (!/^\d{11}$/.test(values.company_national_id)) {
+                                            errors.company_national_id = "شناسه ملی شرکت وارد شده معتبر نیست";
+                                        }
+                                        if (values.phone_number === "") {
+                                            errors.phone_number = "وارد کردن شماره اجباری میباشد";
+                                        } else if (!/^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}?\)?[-.\s]?)?(\d{1,4}[-.\s]?){1,3}\d{1,4}$/.test(values.phone_number)) {
+                                            errors.phone_number = "شماره وارد شده معتبر نیست";
+                                        }
+                                        if (values.address === "") {
+                                            errors.address = "وارد کردن آدرس اجباری میباشد";
+                                        }
+                                        if (values.postal_code === "") {
+                                            errors.postal_code = "وارد کردن پستی اجباری میباشد";
+                                        } else if (!/^\d{10}$/.test(values.postal_code)) {
+                                            errors.postal_code = "کدپستی وارد شده معتبر نیست";
+                                        }
+                                        if (values.company_image === "") {
+                                            errors.company_image = "تصویر لوگو شرکت را قرار دهید";
+                                        }
+                                        if (values.last_ad_changes_image === "") {
+                                            errors.last_ad_changes_image = "تصویر اگهی را قرار دهید";
+                                        }
+                                        if (values.company_statute_image === "") {
+                                            errors.company_statute_image = "تصویر اساسنامه را قرار دهید";
+                                        }
+                                        return errors
+                                    }}
+
+                                    onSubmit={async (values, { setSubmitting }) => {
+                                        const access = localStorage.getItem("access")
+                                        const headers = {
+                                            Authorization: `Bearer ${access}`
+                                        };
+                                        try {
+                                            const response = await axios.post(`${IP}/user/continuation-signup/`, values, {
+                                                headers
+                                            })
+                                            if (response.status === 201) {
+                                                setSubmitting(false)
+                                                navigate("/")
+                                            }
+                                        } catch (error) {
+                                            console.log(error)
+                                            if (error.response.status === 401) {
+                                                localStorage.removeItem('access')
+                                                localStorage.removeItem('refresh')
+                                                window.location.href = "/login"
+                                            }
+                                            toast.error(error.response.data.message, {
+                                                position: "top-left"
+                                            })
+                                            setSubmitting(false);
+                                        }
+                                    }}
+
+                                >
+                                    {({ values, handleChange, handleSubmit, errors, touched, isSubmitting, setFieldValue }) => (
                                         <form onSubmit={handleSubmit}>
                                             <div className="form-content-all-form">
                                                 <div className="form-signin" >
                                                     <div className="form-content-top">
                                                         <div className="signin-element-form-wrapper margin-buttom">
                                                             <Input
+                                                                name="applicants_position_in_company"
                                                                 label="سمت درخواست کننده"
                                                                 icon={faUser}
                                                                 placeholder="سمت درخواست کننده در شرکت"
-                                                                type="text" />
+                                                                type="text"
+                                                                value={values.applicants_position_in_company}
+                                                                onChange={handleChange}
+                                                            />
+                                                            {errors.applicants_position_in_company && touched.applicants_position_in_company &&
+                                                                <span className='error'>{errors.applicants_position_in_company}</span>}
                                                         </div>
                                                         <div className="radio-wrapper label-input">
                                                             <p className='mb-3'>حق امضا</p>
                                                             <div className="d-flex">
                                                                 <InputRadio
                                                                     text="دارم"
-                                                                    onChange={setIsPermition}
-                                                                    isPermition={isPermition}
-                                                                    value={"Yes"}
+                                                                    name="signed_right"
+                                                                    value="true"
+                                                                    checked={values.signed_right === true}
+                                                                    onChange={() => {
+                                                                        setFieldValue("signed_right", true);
+                                                                        setIsPermition(true);
+                                                                    }}
                                                                 />
                                                                 <InputRadio
                                                                     text="ندارم"
-                                                                    marginRight='marginRight'
-                                                                    onChange={setIsPermition}
-                                                                    isPermition={isPermition}
-                                                                    value={"No"}
+                                                                    name="signed_right"
+                                                                    value="false"
+                                                                    checked={values.signed_right === false}
+                                                                    onChange={() => {
+                                                                        setFieldValue("signed_right", false);
+                                                                        setIsPermition(false);
+                                                                        setSignatureInputs([{}])
+                                                                    }}
                                                                 />
                                                             </div>
                                                         </div>
                                                         {
-                                                            isPermition === "No" ?
+                                                            isPermition ?
                                                                 <>
-                                                                    <div>
-                                                                        <div className='signin-element-form-wrapper margin-buttom'>
-                                                                            <Input2
-                                                                                icon={faUser}
-                                                                                placeholder="نام ونام خانوادگی"
-                                                                            />
+                                                                    {signatureInputs.map((_, index) => (
+                                                                        <div key={index}>
+                                                                            <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                <Input2
+                                                                                    icon={faUser}
+                                                                                    placeholder="نام ونام خانوادگی"
+                                                                                    name={`name_${index}`}
+                                                                                    value={values[`name_${index}`]}
+                                                                                />
+                                                                            </div>
+                                                                            <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                <Input2
+                                                                                    icon={faUser}
+                                                                                    placeholder="سمت در شرکت"
+                                                                                    name={`position_${index}`}
+                                                                                    value={values[`position_${index}`]}
+                                                                                />
+                                                                            </div>
+                                                                            <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                <Input2
+                                                                                    icon={faAddressCard}
+                                                                                    placeholder="کد ملی"
+                                                                                    name={`national_code_${index}`}
+                                                                                    value={values[`national_code_${index}`]}
+                                                                                />
+                                                                            </div>
+                                                                            <div className='signin-element-form-wrapper margin-buttom'>
+                                                                                <Input2
+                                                                                    icon={faPhone}
+                                                                                    placeholder="شماره موبایل"
+                                                                                    name={`phone_${index}`}
+                                                                                    value={values[`phone_${index}`]}
+                                                                                />
+                                                                            </div>
                                                                         </div>
-                                                                        <div className='signin-element-form-wrapper margin-buttom'>
-                                                                            <Input2
-                                                                                icon={faUser}
-                                                                                placeholder="سمت در شرکت"
-                                                                            />
-                                                                        </div>
-                                                                        <div className='signin-element-form-wrapper margin-buttom'>
-                                                                            <Input2
-                                                                                icon={faAddressCard}
-                                                                                placeholder="کد ملی"
-                                                                            />
-                                                                        </div>
-                                                                        <div className='signin-element-form-wrapper margin-buttom'>
-                                                                            <Input2
-                                                                                icon={faPhone}
-                                                                                placeholder="شماره موبایل"
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                    {
-                                                                        addInputssignature ?
-                                                                            <div>
-                                                                                <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                    <Input2
-                                                                                        icon={faUser}
-                                                                                        placeholder="نام ونام خانوادگی"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                    <Input2
-                                                                                        icon={faUser}
-                                                                                        placeholder="سمت در شرکت"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                    <Input2
-                                                                                        icon={faAddressCard}
-                                                                                        placeholder="کد ملی"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                    <Input2
-                                                                                        icon={faPhone}
-                                                                                        placeholder="شماره موبایل"
-                                                                                    />
-                                                                                </div>
-                                                                            </div> :
-                                                                            null
-                                                                    }
+                                                                    ))}
 
                                                                     <p className="add-signature-title" onClick={handlerAddinputssignature}>
-                                                                        {
-                                                                            addInputssignature ?
-                                                                                <>
-                                                                                    <span>
-                                                                                        حذف صاحب امضا جدید
-                                                                                    </span>
-                                                                                </> :
-                                                                                <>
-                                                                                    <span>
-                                                                                        افزودن صاحب امضا جدید
-                                                                                    </span>
-                                                                                </>
-                                                                        }
-
+                                                                        <>
+                                                                            <span className='d-flex align-items-center'>
+                                                                                <FontAwesomeIcon icon={faPlus} className='mx-2' />
+                                                                                افزودن صاحب امضا جدید
+                                                                            </span>
+                                                                        </>
                                                                     </p>
                                                                 </>
                                                                 :
@@ -407,18 +482,28 @@ export default function TypeActivity() {
                                                                         <Input2
                                                                             icon={faUser}
                                                                             placeholder="صاحب امضا اول"
+                                                                            name="owner_first_signature"
+                                                                            value={values.owner_first_signature}
+                                                                            onChange={handleChange}
                                                                         />
+                                                                        {errors.owner_first_signature && touched.owner_first_signature &&
+                                                                            <span className='error'>{errors.owner_first_signature}</span>}
                                                                     </div>
                                                                     <div className='signin-element-form-wrapper margin-buttom'>
                                                                         <Input2
                                                                             icon={faAddressCard}
                                                                             placeholder="کد ملی"
+                                                                            name="national_code"
+                                                                            value={values.national_code}
+                                                                            onChange={handleChange}
                                                                         />
+                                                                        {errors.national_code && touched.national_code &&
+                                                                            <span className='error'>{errors.national_code}</span>}
                                                                     </div>
                                                                 </div>
                                                         }
-
                                                     </div>
+
                                                     <div className="form-content-bottom">
                                                         <div className="signin-basic-info-wrapper margin-buttom">
                                                             <div className='input-item-wrapper'>
@@ -427,62 +512,89 @@ export default function TypeActivity() {
                                                                     icon={faAddressCard}
                                                                     placeholder="شناسه ملی شرکت"
                                                                     type="text"
+                                                                    name="company_national_id"
+                                                                    onChange={handleChange}
+                                                                    value={values.company_national_id}
                                                                 />
+                                                                {errors.company_national_id && touched.company_national_id &&
+                                                                    <span className='error'>{errors.company_national_id}</span>}
                                                             </div>
                                                             <div className='input-item-wrapper'>
                                                                 <Input
                                                                     label="شماره تماس"
+                                                                    name="phone_number"
                                                                     icon={faPhone}
                                                                     placeholder="شماره تماس شرکت"
                                                                     type="text"
+                                                                    value={values.phone_number}
+                                                                    onChange={handleChange}
                                                                 />
+                                                                {errors.phone_number && touched.phone_number &&
+                                                                    <span className='error'>{errors.phone_number}</span>}
                                                             </div>
                                                         </div>
                                                         <div className="signin-basic-info-wrapper margin-buttom">
                                                             <div className='input-item-wrapper'>
                                                                 <Input
                                                                     label={"ادرس"}
+                                                                    name="address"
                                                                     icon={faLocationDot}
                                                                     placeholder="ادرس شرکت"
                                                                     type="text"
+                                                                    onChange={handleChange}
+                                                                    value={values.address}
                                                                 />
+                                                                {errors.address && touched.address &&
+                                                                    <span className='error'>{errors.address}</span>}
                                                             </div>
                                                             <div className='input-item-wrapper'>
                                                                 <Input
+                                                                    name="postal_code"
                                                                     label="کدپستی"
                                                                     icon={faHashtag}
                                                                     placeholder="کدپستی شرکت"
                                                                     type="text"
+                                                                    onChange={handleChange}
+                                                                    value={values.postal_code}
                                                                 />
+                                                                {errors.postal_code && touched.postal_code &&
+                                                                    <span className='error'>{errors.postal_code}</span>}
                                                             </div>
                                                         </div>
                                                         <div className="signin-basic-info-wrapper margin-buttom">
                                                             <div className='input-item-wrapper2'>
                                                                 <InputUpload
                                                                     label={"تصویر اساسنامه شرکت"}
-                                                                    name="Company Articles of Association"
+                                                                    name="company_statute_image"
+                                                                    onChange={(file) => setFieldValue('company_statute_image', file)}
                                                                 />
+                                                                {errors.company_statute_image && touched.company_statute_image &&
+                                                                    <span className='error'>{errors.company_statute_image}</span>}
                                                             </div>
                                                             <div className='input-item-wrapper2'>
                                                                 <InputUpload
                                                                     label={"تصویر آخرین آگهی تغییرات"}
-                                                                    name="The latest advertisement of changes"
-                                                                    onFileChange={''}
+                                                                    name="last_ad_changes_image"
+                                                                    onChange={(file) => setFieldValue('last_ad_changes_image', file)}
                                                                 />
+                                                                {errors.last_ad_changes_image && touched.last_ad_changes_image &&
+                                                                    <span className='error'>{errors.last_ad_changes_image}</span>}
                                                             </div>
                                                             <div className='input-item-wrapper2'>
                                                                 <InputUpload
                                                                     label={"تصویر لوگو شرکت"}
-                                                                    name="Company logo image"
-                                                                    onFileChange={''}
+                                                                    name="company_image"
+                                                                    onChange={(file) => setFieldValue('company_image', file)}
                                                                 />
+                                                                {errors.company_image && touched.company_image &&
+                                                                    <span className='error'>{errors.company_image}</span>}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="signin-btn-wrapper">
-                                                <Button1 />
+                                                <Button1 type="submit" isSubmitting={isSubmitting} />
                                             </div>
                                         </form>
                                     )}
@@ -497,3 +609,12 @@ export default function TypeActivity() {
         </div >
     )
 }
+
+
+
+
+
+
+
+
+

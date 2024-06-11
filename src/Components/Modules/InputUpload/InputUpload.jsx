@@ -14,7 +14,7 @@ export default function InputUpload({ label, name, onChange }) {
         e.preventDefault();
         e.stopPropagation();
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            setImageUpload(e.target.files[0]);
+            setImageUpload(e.dataTransfer.files[0]);
             const file = e.dataTransfer.files[0];
             const reader = new FileReader();
             reader.onload = () => {
