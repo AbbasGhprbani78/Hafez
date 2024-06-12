@@ -182,6 +182,7 @@
 
 .css-nzhyv8-MuiButtonBase-root-MuiTab-root.Mui-selected {
     color: var(--color-1) !important;
+    font-weight: bold;
 }
 
 .css-1aquho2-MuiTabs-indicator {

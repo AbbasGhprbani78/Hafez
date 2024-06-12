@@ -21,6 +21,7 @@
 
 .css-nzhyv8-MuiButtonBase-root-MuiTab-root.Mui-selected {
     color: var(--color-5) !important;
+    font-weight: bold;
 }
 
 .marginRight {
@@ -73,6 +74,18 @@
 #simple-tabpanel-0 {
     margin-top: 1rem !important;
 }
+
+.signature-true-wrapper {
+    position: relative;
+}
+
+.info-owner-text {
+    font-size: clamp(.8rem, .9vw, 1rem);
+    color: var(--color-1);
+    font-weight: bold;
+}
+
+
 
 @media (max-width:992px) {
     .activity-back {
