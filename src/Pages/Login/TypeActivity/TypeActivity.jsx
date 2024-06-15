@@ -55,6 +55,32 @@ export default function TypeActivity() {
     const [value, setValue] = useState(0);
     const [isPermition, setIsPermition] = useState("")
 
+    const customErrorMessages = {
+        signed_right: "وضعیت حق امضا را مشخص کنید.",
+        applicants_position_in_company: "وارد کردن سمت درخواست اجباری میباشد",
+        signed_right: "وارد کردن وضعیت حق امضا اجباری میباشد",
+        company_national_id: "وارد کردن شناسه ملی شرکت اجباری میباشد",
+        phone_number: "وارد کردن شماره تماس شرکت اجباری میباشد",
+        address: "وارد کردن آدرس شرکت اجباری میباشد",
+        postal_code: "وارد کردن کدپستی شرکت اجباری میباشد",
+        company_statute_image: " تصویر اساسنامه شرکت را قرار دهید",
+        last_ad_changes_image: " تصویر آخرین آگهی تغییرات را قرار دهید",
+        company_image: " تصویر لوگو شرکت را قرار دهید",
+        owner_first_signature: " نام صاحب امضا را وارد کنید",
+        national_code: "وارد کردن کد ملی صاحب امضا اجباری میباشد",
+        full_name: "وارد کردن نام و نام خانوادگی اجباری میباشد",
+        position_incompany: "وارد کردن سمت در شرکت اجباری میباشد",
+        phone_number_signature: "وارد کردن شماره موبایل اجباری میباشد"
+    };
+
+    const regexPatterns = {
+        national_code: /^\d{10}$/,
+        phone_number: /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}?\)?[-.\s]?)?(\d{1,4}[-.\s]?){1,3}\d{1,4}$/,
+        company_national_id: /^\d{11}$/,
+        postal_code: /^\d{10}$/
+    };
+
+
     const [dataFormCompany, setDataFormCompany] = useState({
         applicants_position_in_company: "",
         signed_right: "",
@@ -83,12 +109,16 @@ export default function TypeActivity() {
         }
     ])
 
-    const dataFormCompanyChange = (e) => {
-        const { name, value } = e.target;
-        setDataFormCompany(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+    const [errors, setErrors] = useState({
+        dataFormCompany: {},
+        firstSignature: [],
+        addSignature: []
+    });
+
+
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
     };
 
 
@@ -98,6 +128,7 @@ export default function TypeActivity() {
             [name]: file
         }));
     };
+
 
     const handlerAddinputssignatureFalse = () => {
         setAddSignature([...addSignature, {
@@ -115,38 +146,102 @@ export default function TypeActivity() {
     }
 
 
-    const addSignatureChange = (e, index) => {
-        const { name, value } = e.target;
-        const newInputs = [...addSignature];
-        newInputs[index][name] = value;
-        setAddSignature(newInputs);
-    }
-
-
-    const handleFirstSignatureChange = (e, index) => {
-        const { name, value } = e.target;
-        const newInputs = [...firstSignature];
-        newInputs[index][name] = value;
-        setFirstSignature(newInputs);
-    }
-
-    const sendDataHandler = (e) => {
-        e.preventDefault();
-        let updatedDataFormCompany;
-        if (isPermition) {
-            updatedDataFormCompany = { ...dataFormCompany, firstSignature };
-            delete updatedDataFormCompany.addSignature;
-        } else {
-            updatedDataFormCompany = { ...dataFormCompany, addSignature };
-            delete updatedDataFormCompany.firstSignature;
+    const validateDataFormCompany = (data) => {
+        let isValid = true;
+        let newErrors = {};
+        for (const [key, value] of Object.entries(data)) {
+            if (key === 'signed_right' && value === "") { // Add check for signed_right specifically
+                newErrors[key] = customErrorMessages[key] || `لطفا فیلد ${key.replace('_', ' ')} را پر کنید.`;
+                isValid = false;
+            } else if (!value) {
+                newErrors[key] = customErrorMessages[key] || `لطفا فیلد ${key.replace('_', ' ')} را پر کنید.`;
+                isValid = false;
+            } else if (regexPatterns[key] && !regexPatterns[key].test(value)) {
+                newErrors[key] = `لطفا ${key.replace('_', ' ')} معتبر وارد کنید.`;
+                isValid = false;
+            }
         }
-        setDataFormCompany(updatedDataFormCompany);
-        console.log(dataFormCompany)
+        setErrors((prevErrors) => ({ ...prevErrors, dataFormCompany: newErrors }));
+        return isValid;
+    };
+
+    const validateFirstSignature = (signatures) => {
+        let isValid = true;
+        let newErrors = [];
+        signatures.forEach((signature, index) => {
+            let signatureErrors = {};
+            if (!signature.owner_first_signature) {
+                signatureErrors.owner_first_signature = customErrorMessages.owner_first_signature;
+                isValid = false;
+            }
+            if (!signature.national_code) {
+                signatureErrors.national_code = customErrorMessages.national_code;
+                isValid = false;
+            } else if (!regexPatterns.national_code.test(signature.national_code)) {
+                signatureErrors.national_code = "کد ملی معتبر وارد کنید.";
+                isValid = false;
+            }
+            newErrors[index] = signatureErrors;
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, firstSignature: newErrors }));
+        return isValid;
+    };
+
+    const validateAddSignature = (signatures) => {
+        let isValid = true;
+        let newErrors = [];
+        signatures.forEach((signature, index) => {
+            let signatureErrors = {};
+            if (!signature.full_name) {
+                signatureErrors.full_name = customErrorMessages.full_name;
+                isValid = false;
+            }
+            if (!signature.position_incompany) {
+                signatureErrors.position_incompany = customErrorMessages.position_incompany;
+                isValid = false;
+            }
+            if (!signature.national_code) {
+                signatureErrors.national_code = customErrorMessages.national_code;
+                isValid = false;
+            } else if (!regexPatterns.national_code.test(signature.national_code)) {
+                signatureErrors.national_code = "کد ملی معتبر وارد کنید.";
+                isValid = false;
+            }
+            if (!signature.phone_number) {
+                signatureErrors.phone_number = customErrorMessages.phone_number_signature;
+                isValid = false;
+            } else if (!regexPatterns.phone_number.test(signature.phone_number)) {
+                signatureErrors.phone_number = "شماره موبایل معتبر وارد کنید.";
+                isValid = false;
+            }
+            newErrors[index] = signatureErrors;
+        });
+        setErrors((prevErrors) => ({ ...prevErrors, addSignature: newErrors }));
+        return isValid;
     };
 
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+    const sendDataHandler = (e) => {
+        e.preventDefault();
+        let isValid = validateDataFormCompany(dataFormCompany);
+        if (dataFormCompany.signed_right === "true") {
+            isValid = validateFirstSignature(firstSignature) && isValid;
+        } else if (dataFormCompany.signed_right === "false") {
+            isValid = validateAddSignature(addSignature) && isValid;
+        }
+
+        if (isValid) {
+            let updatedDataFormCompany;
+            if (isPermition) {
+                updatedDataFormCompany = { ...dataFormCompany, firstSignature };
+                delete updatedDataFormCompany.addSignature;
+            } else {
+                updatedDataFormCompany = { ...dataFormCompany, addSignature };
+                delete updatedDataFormCompany.firstSignature;
+            }
+            setDataFormCompany(updatedDataFormCompany);
+            console.log(dataFormCompany);
+        }
     };
 
 
@@ -387,9 +482,18 @@ export default function TypeActivity() {
                                                         icon={faUser}
                                                         placeholder="سمت درخواست کننده در شرکت"
                                                         type="text"
-                                                        onChange={dataFormCompanyChange}
+                                                        onChange={(e) => {
+                                                            setDataFormCompany({ ...dataFormCompany, applicants_position_in_company: e.target.value });
+                                                            setErrors((prevErrors) => ({
+                                                                ...prevErrors,
+                                                                dataFormCompany: { ...prevErrors.dataFormCompany, applicants_position_in_company: '' }
+                                                            }));
+                                                        }}
                                                         value={dataFormCompany.applicants_position_in_company}
                                                     />
+                                                    {errors.dataFormCompany.applicants_position_in_company && (
+                                                        <span className="error">{errors.dataFormCompany.applicants_position_in_company}</span>
+                                                    )}
                                                 </div>
 
                                                 <div className="radio-wrapper label-input">
@@ -402,17 +506,15 @@ export default function TypeActivity() {
                                                             checked={dataFormCompany.signed_right === true}
                                                             onChange={() => {
                                                                 setDataFormCompany({ ...dataFormCompany, signed_right: true });
-                                                                setIsPermition("true")
-                                                                setAddSignature(
-                                                                    [
-                                                                        {
-                                                                            full_name: "",
-                                                                            position_incompany: "",
-                                                                            national_code: "",
-                                                                            phone_number: ""
-                                                                        }
-                                                                    ]
-                                                                )
+                                                                setIsPermition("true");
+                                                                setAddSignature([
+                                                                    {
+                                                                        full_name: "",
+                                                                        position_incompany: "",
+                                                                        national_code: "",
+                                                                        phone_number: ""
+                                                                    }
+                                                                ]);
                                                             }}
                                                         />
                                                         <InputRadio
@@ -422,50 +524,158 @@ export default function TypeActivity() {
                                                             checked={dataFormCompany.signed_right === false}
                                                             onChange={() => {
                                                                 setDataFormCompany({ ...dataFormCompany, signed_right: false });
-                                                                setIsPermition("false")
-                                                                setFirstSignature(
-                                                                    [
-                                                                        {
-                                                                            owner_first_signature: "",
-                                                                            national_code: ""
-                                                                        }
-                                                                    ]
-                                                                )
+                                                                setIsPermition("false");
+                                                                setFirstSignature([
+                                                                    {
+                                                                        owner_first_signature: "",
+                                                                        national_code: ""
+                                                                    }
+                                                                ]);
                                                             }}
                                                         />
                                                     </div>
+                                                    {errors.dataFormCompany.signed_right && (
+                                                        <span className="error">{errors.dataFormCompany.signed_right}</span>
+                                                    )}
                                                 </div>
-                                                {
-                                                    isPermition === "true" ?
+                                                {isPermition === "true" ? (
+                                                    <>
+                                                        {firstSignature.map((input, index) => (
+                                                            <div className='signature-true-wrapper' key={index}>
+                                                                <p className="mb-2 mt-4 info-owner-text">اطلاعات صاحب امضا جدید</p>
+                                                                <div className='signin-element-form-wrapper margin-buttom'>
+                                                                    <Input2
+                                                                        icon={faUser}
+                                                                        placeholder={`صاحب امضا ${index + 2}`} name="owner_first_signature"
+                                                                        onChange={(e) => {
+                                                                            const newFirstSignature = [...firstSignature];
+                                                                            newFirstSignature[index].owner_first_signature = e.target.value;
+                                                                            setFirstSignature(newFirstSignature);
+                                                                            const newErrors = [...errors.firstSignature];
+                                                                            if (newErrors[index]) newErrors[index].owner_first_signature = '';
+                                                                            setErrors((prevErrors) => ({ ...prevErrors, firstSignature: newErrors }));
+                                                                        }}
+                                                                        value={input.owner_first_signature}
+                                                                    />
+                                                                    {errors.firstSignature[index]?.owner_first_signature && (
+                                                                        <span className="error">{errors.firstSignature[index].owner_first_signature}</span>
+                                                                    )}
+                                                                </div>
+                                                                <div className='signin-element-form-wrapper margin-buttom'>
+                                                                    <Input2
+                                                                        icon={faAddressCard}
+                                                                        placeholder="کد ملی"
+                                                                        name="national_code"
+                                                                        onChange={(e) => {
+                                                                            const newFirstSignature = [...firstSignature];
+                                                                            newFirstSignature[index].national_code = e.target.value;
+                                                                            setFirstSignature(newFirstSignature);
+                                                                            const newErrors = [...errors.firstSignature];
+                                                                            if (newErrors[index]) newErrors[index].national_code = '';
+                                                                            setErrors((prevErrors) => ({ ...prevErrors, firstSignature: newErrors }));
+                                                                        }}
+                                                                        value={input.national_code}
+                                                                    />
+                                                                    {errors.firstSignature[index]?.national_code && (
+                                                                        <span className="error">{errors.firstSignature[index].national_code}</span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <p className="add-signature-title" onClick={handlerAddinputssignatureTrue}>
+                                                            <>
+                                                                <span className='d-flex align-items-center'>
+                                                                    <FontAwesomeIcon icon={faPlus} className='mx-2' />
+                                                                    افزودن صاحب امضا جدید
+                                                                </span>
+                                                            </>
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    isPermition === "false" && (
                                                         <>
-                                                            {
-                                                                firstSignature.map((input, index) => (
-                                                                    <div className='signature-true-wrapper' key={index}>
-                                                                        <p className="mb-2 mt-4 info-owner-text">اطلاعات صاحب امضا جدید</p>
-                                                                        <div className='signin-element-form-wrapper margin-buttom'>
-                                                                            <Input2
-                                                                                icon={faUser}
-                                                                                placeholder={`صاحب امضا ${index + 2}`} name="owner_first_signature"
-                                                                                onChange={handleFirstSignatureChange}
-                                                                                value={input.owner_first_signature}
-                                                                            />
-
-                                                                        </div>
-                                                                        <div className='signin-element-form-wrapper margin-buttom'>
-                                                                            <Input2
-                                                                                icon={faAddressCard}
-                                                                                placeholder="کد ملی"
-                                                                                name="national_code"
-                                                                                onChange={handleFirstSignatureChange}
-                                                                                value={input.national_code}
-                                                                            />
-                                                                        </div>
+                                                            {addSignature.map((input, index) => (
+                                                                <div className='signature-false-wrapper' key={index}>
+                                                                    <p className="mb-2 mt-4 info-owner-text">اطلاعات صاحب امضا جدید</p>
+                                                                    <div className='signin-element-form-wrapper margin-buttom'>
+                                                                        <Input2
+                                                                            icon={faUser}
+                                                                            placeholder="نام ونام خانوادگی"
+                                                                            name="full_name"
+                                                                            value={input.full_name}
+                                                                            onChange={(e) => {
+                                                                                const newAddSignature = [...addSignature];
+                                                                                newAddSignature[index].full_name = e.target.value;
+                                                                                setAddSignature(newAddSignature);
+                                                                                const newErrors = [...errors.addSignature];
+                                                                                if (newErrors[index]) newErrors[index].full_name = '';
+                                                                                setErrors((prevErrors) => ({ ...prevErrors, addSignature: newErrors }));
+                                                                            }}
+                                                                        />
+                                                                        {errors.addSignature[index]?.full_name && (
+                                                                            <span className="error">{errors.addSignature[index].full_name}</span>
+                                                                        )}
                                                                     </div>
-
-                                                                ))
-                                                            }
-
-                                                            <p className="add-signature-title" onClick={handlerAddinputssignatureTrue}>
+                                                                    <div className='signin-element-form-wrapper margin-buttom'>
+                                                                        <Input2
+                                                                            icon={faUser}
+                                                                            placeholder="سمت در شرکت"
+                                                                            name="position_incompany"
+                                                                            value={input.position_incompany}
+                                                                            onChange={(e) => {
+                                                                                const newAddSignature = [...addSignature];
+                                                                                newAddSignature[index].position_incompany = e.target.value;
+                                                                                setAddSignature(newAddSignature);
+                                                                                const newErrors = [...errors.addSignature];
+                                                                                if (newErrors[index]) newErrors[index].position_incompany = '';
+                                                                                setErrors((prevErrors) => ({ ...prevErrors, addSignature: newErrors }));
+                                                                            }}
+                                                                        />
+                                                                        {errors.addSignature[index]?.position_incompany && (
+                                                                            <span className="error">{errors.addSignature[index].position_incompany}</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className='signin-element-form-wrapper margin-buttom'>
+                                                                        <Input2
+                                                                            icon={faAddressCard}
+                                                                            placeholder="کد ملی"
+                                                                            name="national_code"
+                                                                            value={input.national_code}
+                                                                            onChange={(e) => {
+                                                                                const newAddSignature = [...addSignature];
+                                                                                newAddSignature[index].national_code = e.target.value;
+                                                                                setAddSignature(newAddSignature);
+                                                                                const newErrors = [...errors.addSignature];
+                                                                                if (newErrors[index]) newErrors[index].national_code = '';
+                                                                                setErrors((prevErrors) => ({ ...prevErrors, addSignature: newErrors }));
+                                                                            }}
+                                                                        />
+                                                                        {errors.addSignature[index]?.national_code && (
+                                                                            <span className="error">{errors.addSignature[index].national_code}</span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className='signin-element-form-wrapper margin-buttom'>
+                                                                        <Input2
+                                                                            icon={faPhone}
+                                                                            placeholder="شماره موبایل"
+                                                                            name="phone_number"
+                                                                            value={input.phone_number}
+                                                                            onChange={(e) => {
+                                                                                const newAddSignature = [...addSignature];
+                                                                                newAddSignature[index].phone_number = e.target.value;
+                                                                                setAddSignature(newAddSignature);
+                                                                                const newErrors = [...errors.addSignature];
+                                                                                if (newErrors[index]) newErrors[index].phone_number = '';
+                                                                                setErrors((prevErrors) => ({ ...prevErrors, addSignature: newErrors }));
+                                                                            }}
+                                                                        />
+                                                                        {errors.addSignature[index]?.phone_number && (
+                                                                            <span className="error">{errors.addSignature[index].phone_number}</span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                            <p className="add-signature-title" onClick={handlerAddinputssignatureFalse}>
                                                                 <>
                                                                     <span className='d-flex align-items-center'>
                                                                         <FontAwesomeIcon icon={faPlus} className='mx-2' />
@@ -473,65 +683,9 @@ export default function TypeActivity() {
                                                                     </span>
                                                                 </>
                                                             </p>
-                                                        </> :
-                                                        isPermition === "false" ?
-                                                            <>
-                                                                {
-                                                                    addSignature.map((input, index) => (
-                                                                        <div className='signature-false-wrapper' key={index}>
-                                                                            <p className="mb-2 mt-4 info-owner-text">اطلاعات صاحب امضا جدید</p>
-
-                                                                            <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                <Input2
-                                                                                    icon={faUser}
-                                                                                    placeholder="نام ونام خانوادگی"
-                                                                                    name="full_name"
-                                                                                    value={input.full_name}
-                                                                                    onChange={(e) => addSignatureChange(e, index)}
-                                                                                />
-                                                                            </div>
-                                                                            <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                <Input2
-                                                                                    icon={faUser}
-                                                                                    placeholder="سمت در شرکت"
-                                                                                    name="position_incompany"
-                                                                                    value={input.position_incompany}
-                                                                                    onChange={(e) => addSignatureChange(e, index)}
-                                                                                />
-                                                                            </div>
-                                                                            <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                <Input2
-                                                                                    icon={faAddressCard}
-                                                                                    placeholder="کد ملی"
-                                                                                    name="national_code"
-                                                                                    value={input.national_code}
-                                                                                    onChange={(e) => addSignatureChange(e, index)}
-                                                                                />
-                                                                            </div>
-                                                                            <div className='signin-element-form-wrapper margin-buttom'>
-                                                                                <Input2
-                                                                                    icon={faPhone}
-                                                                                    placeholder="شماره موبایل"
-                                                                                    name="phone_number"
-                                                                                    value={input.phone_number}
-                                                                                    onChange={(e) => addSignatureChange(e, index)}
-                                                                                />
-                                                                            </div>
-                                                                        </div>
-                                                                    ))
-                                                                }
-
-                                                                <p className="add-signature-title" onClick={handlerAddinputssignatureFalse} >
-                                                                    <>
-                                                                        <span className='d-flex align-items-center'>
-                                                                            <FontAwesomeIcon icon={faPlus} className='mx-2' />
-                                                                            افزودن صاحب امضا جدید
-                                                                        </span>
-                                                                    </>
-                                                                </p>
-                                                            </> : null
-                                                }
-
+                                                        </>
+                                                    )
+                                                )}
                                             </div>
                                             <div className="form-content-bottom">
                                                 <div className="signin-basic-info-wrapper margin-buttom">
@@ -542,9 +696,18 @@ export default function TypeActivity() {
                                                             placeholder="شناسه ملی شرکت"
                                                             type="text"
                                                             name="company_national_id"
-                                                            onChange={dataFormCompanyChange}
+                                                            onChange={(e) => {
+                                                                setDataFormCompany({ ...dataFormCompany, company_national_id: e.target.value });
+                                                                setErrors((prevErrors) => ({
+                                                                    ...prevErrors,
+                                                                    dataFormCompany: { ...prevErrors.dataFormCompany, company_national_id: '' }
+                                                                }));
+                                                            }}
                                                             value={dataFormCompany.company_national_id}
                                                         />
+                                                        {errors.dataFormCompany.company_national_id && (
+                                                            <span className="error">{errors.dataFormCompany.company_national_id}</span>
+                                                        )}
                                                     </div>
                                                     <div className='input-item-wrapper'>
                                                         <Input
@@ -553,9 +716,18 @@ export default function TypeActivity() {
                                                             icon={faPhone}
                                                             placeholder="شماره تماس شرکت"
                                                             type="text"
+                                                            onChange={(e) => {
+                                                                setDataFormCompany({ ...dataFormCompany, phone_number: e.target.value });
+                                                                setErrors((prevErrors) => ({
+                                                                    ...prevErrors,
+                                                                    dataFormCompany: { ...prevErrors.dataFormCompany, phone_number: '' }
+                                                                }));
+                                                            }}
                                                             value={dataFormCompany.phone_number}
-                                                            onChange={dataFormCompanyChange}
                                                         />
+                                                        {errors.dataFormCompany.phone_number && (
+                                                            <span className="error">{errors.dataFormCompany.phone_number}</span>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="signin-basic-info-wrapper margin-buttom">
@@ -566,9 +738,18 @@ export default function TypeActivity() {
                                                             icon={faLocationDot}
                                                             placeholder="ادرس شرکت"
                                                             type="text"
-                                                            onChange={dataFormCompanyChange}
+                                                            onChange={(e) => {
+                                                                setDataFormCompany({ ...dataFormCompany, address: e.target.value });
+                                                                setErrors((prevErrors) => ({
+                                                                    ...prevErrors,
+                                                                    dataFormCompany: { ...prevErrors.dataFormCompany, address: '' }
+                                                                }));
+                                                            }}
                                                             value={dataFormCompany.address}
                                                         />
+                                                        {errors.dataFormCompany.address && (
+                                                            <span className="error">{errors.dataFormCompany.address}</span>
+                                                        )}
                                                     </div>
                                                     <div className='input-item-wrapper'>
                                                         <Input
@@ -577,9 +758,18 @@ export default function TypeActivity() {
                                                             icon={faHashtag}
                                                             placeholder="کدپستی شرکت"
                                                             type="text"
-                                                            onChange={dataFormCompanyChange}
+                                                            onChange={(e) => {
+                                                                setDataFormCompany({ ...dataFormCompany, postal_code: e.target.value });
+                                                                setErrors((prevErrors) => ({
+                                                                    ...prevErrors,
+                                                                    dataFormCompany: { ...prevErrors.dataFormCompany, postal_code: '' }
+                                                                }));
+                                                            }}
                                                             value={dataFormCompany.postal_code}
                                                         />
+                                                        {errors.dataFormCompany.postal_code && (
+                                                            <span className="error">{errors.dataFormCompany.postal_code}</span>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="signin-basic-info-wrapper margin-buttom mt-4">
@@ -589,6 +779,9 @@ export default function TypeActivity() {
                                                             name="company_statute_image"
                                                             onChange={(name, file) => handleFileChange(name, file)}
                                                         />
+                                                        {errors.dataFormCompany.company_statute_image && (
+                                                            <span className="error">{errors.dataFormCompany.company_statute_image}</span>
+                                                        )}
                                                     </div>
                                                     <div className='input-item-wrapper2'>
                                                         <InputUpload
@@ -596,6 +789,9 @@ export default function TypeActivity() {
                                                             name="last_ad_changes_image"
                                                             onChange={(name, file) => handleFileChange(name, file)}
                                                         />
+                                                        {errors.dataFormCompany.last_ad_changes_image && (
+                                                            <span className="error">{errors.dataFormCompany.last_ad_changes_image}</span>
+                                                        )}
                                                     </div>
                                                     <div className='input-item-wrapper2'>
                                                         <InputUpload
@@ -603,6 +799,9 @@ export default function TypeActivity() {
                                                             name="company_image"
                                                             onChange={(name, file) => handleFileChange(name, file)}
                                                         />
+                                                        {errors.dataFormCompany.company_image && (
+                                                            <span className="error">{errors.dataFormCompany.company_image}</span>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -629,6 +828,26 @@ export default function TypeActivity() {
 
 
 
+// const dataFormCompanyChange = (e) => {
+//     const { name, value } = e.target;
+//     setDataFormCompany(prevState => ({
+//         ...prevState,
+//         [name]: value
+//     }));
+// };
 
 
+// const addSignatureChange = (e, index) => {
+//     const { name, value } = e.target;
+//     const newInputs = [...addSignature];
+//     newInputs[index][name] = value;
+//     setAddSignature(newInputs);
+// }
+
+// const handleFirstSignatureChange = (e, index) => {
+//     const { name, value } = e.target;
+//     const newInputs = [...firstSignature];
+//     newInputs[index][name] = value;
+//     setFirstSignature(newInputs);
+// }
 
