@@ -1,6 +1,6 @@
 import React from 'react'
 import './InputCheckBox.css'
-export default function InputCheckBox({ text, marginRight, onChange, isPermition, value }) {
+export default function InputCheckBox({ marginRight, onChange, isPermition, value }) {
     return (
         <div className={`checkbox-container mx-2 ${marginRight}`}>
             <input

@@ -4,13 +4,16 @@ import { Box, Tabs, Tab, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Input from '../../../Modules/Input/Input';
 import Texteara from '../../../Modules/Texteara/Textarea'
-import { faPhone, faUser, faEnvelope, faAddressCard, faHashtag, faCheck, faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faPhone, faUser, faEnvelope, faAddressCard, faHashtag } from '@fortawesome/free-solid-svg-icons';
 import DropDown from '../../../Modules/DropDown/DropDown'
 import InputRadio from '../../../Modules/InputRadio/InputRadio'
 import { Col } from 'react-bootstrap';
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn';
+import EditBtn from '../../../Modules/EditBtn/EditBtn';
+import { Formik } from 'formik'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
     fontFamily: 'inherit',
@@ -49,6 +52,8 @@ export default function Pform1() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+
     return (
         <>
             <div className="form1-container">
@@ -58,357 +63,288 @@ export default function Pform1() {
                         <CustomTab label="شرکتی" {...a11yProps(1)} />
                     </Tabs>
                     <TabPanel value={value} index={0} className={"tab1-pform1"}>
-                        <form>
-                            <div className='p-form1-part-one'>
-                                <div className="input-item-wrapper3">
-                                    <Input
-                                        name="first_name"
-                                        label="نام مالک"
-                                        icon={faUser}
-                                        placeholder="نام مالک"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                    <Input
-                                        name="first_name"
-                                        label="کد ملی مالک"
-                                        icon={faAddressCard}
-                                        placeholder="کد ملی مالک"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                    <Input
-                                        name="first_name"
-                                        label="نام آورنده"
-                                        icon={faUser}
-                                        placeholder="نام آورنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                    <Input
-                                        name=""
-                                        label="کد ملی آورنده"
-                                        icon={faAddressCard}
-                                        placeholder="کد ملی آورنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                </div>
-                                <div className="input-item-wrapper3">
-                                    <Input
-                                        name="first_name"
-                                        label="نام خانوادگی مالک"
-                                        icon={faUser}
-                                        placeholder="نام خانوادگی مالک"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                    <Input
-                                        name="first_name"
-                                        label="شماره تماس آورنده"
-                                        icon={faPhone}
-                                        placeholder="شماره تماس آورنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                    <Input
-                                        name="first_name"
-                                        label="نام خانوادگی آورنده"
-                                        icon={faUser}
-                                        placeholder="نام خانوادگی آورنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                    <Input
-                                        name="first_name"
-                                        label="شماره تماس آورنده"
-                                        icon={faPhone}
-                                        placeholder="شماره تماس آورنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"} />
-                                </div>
-                                <div className="input-item-wrapper3">
-                                    <Input
-                                        name="first_name"
-                                        label="شماره تماس تحویل دهنده"
-                                        icon={faPhone}
-                                        placeholder="شماره تماس تحویل دهنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                    <Input
-                                        name="first_name"
-                                        label="شماره هرم"
-                                        icon={faHashtag}
-                                        placeholder="شماره هرم"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                    <div>
-                                        <Texteara
-                                            styled={"h-p-form1"}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                        <Formik
+                            validate={(values) => {
+                                const errors = {};
+                                return errors;
+                            }}
 
-                            <div className="p-form1-part-two">
-                                <p className="title-p-form1-part-two">
-                                    اطلاعات تکمیلی :
-                                </p>
-                                <div className='moraje-container'>
-                                    <Col md={6} className='drop-moraje-wrapper'>
-                                        <Col md={4}>
-                                            <p className='drop-title'>نحوه نوبت دهی :</p>
-                                        </Col>
-                                        <Col md={8}>
-                                            <DropDown
-                                                haslable={false}
-                                            />
-                                        </Col>
-                                    </Col>
-                                    <Col md={6} className='moraje-wrappper '>
-                                        <Col md={4}>
-                                            <p className='moraje-title'>نحوه مراجعه :</p>
-                                        </Col>
-                                        <Col md={8}>
-                                            <div className='p-form1-part-two-radio'>
-                                                <InputRadio
-                                                    value={"مشتری شخصا جهت تعمیرات مراجعه کرده است"} />
-                                                <InputRadio
-                                                    value={"امداد"} />
+                            initialValues={{
+                            }}
+
+                            onSubmit={async (values, { setSubmitting }) => {
+                                try {
+                                    const response = await axios.post(`${IP}//`, values)
+                                    if (response.status === 200) {
+                                        setSubmitting(false)
+                                    }
+                                } catch (error) {
+                                    toast.error(error.response.data.detail, {
+                                        position: "top-left"
+                                    })
+                                    setSubmitting(false);
+                                }
+                            }}
+                        >
+                            {({ values, handleChange, handleSubmit, errors, touched, isSubmitting }) => (
+                                <form>
+                                    <div className='p-form1-contant'>
+                                        <div className='p-form1-row'>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="نام مالک"
+                                                    styled={"inputwidth"}
+                                                    icon={faUser}
+                                                />
+                                            </Col>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="نام خانوادگی مالک"
+                                                    styled={"inputwidth"}
+                                                    icon={faUser}
+                                                />
+                                            </Col>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="شماره تماس"
+                                                    styled={"inputwidth"}
+                                                    icon={faPhone}
+                                                />
+                                            </Col>
+                                        </div>
+                                        <div className='p-form1-row mt-4'>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="کد ملی مالک"
+                                                    styled={"inputwidth"}
+                                                    icon={faAddressCard}
+                                                />
+                                            </Col>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="شماره تماس مالک"
+                                                    styled={"inputwidth"}
+                                                    icon={faPhone}
+                                                />
+                                            </Col>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="شماره هرم"
+                                                    styled={"inputwidth"}
+                                                    icon={faHashtag}
+                                                />
+                                            </Col>
+                                        </div>
+                                        <div className='p-form1-row mt-4 p-form1-texte'>
+                                            <Texteara />
+                                        </div>
+                                        <div className='p-form1-row mt-4'>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="نام آورنده"
+                                                    styled={"inputwidth"}
+                                                    icon={faUser}
+                                                />
+                                            </Col>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="نام خانوادگی آورنده"
+                                                    styled={"inputwidth"}
+                                                    icon={faUser}
+                                                />
+                                            </Col>
+                                            <Col md={4}>
+                                                <Input
+                                                    label="شماره تماس آورنده"
+                                                    styled={"inputwidth"}
+                                                    icon={faPhone}
+                                                />
+                                            </Col>
+                                        </div>
+                                        <div className='p-form-row2 mt-5'>
+                                            <p className='complete-info'>اطلاعات تکمیلی :</p>
+                                            <div className="p-form2-complete">
+                                                <Col md={5} className='make-turn'>
+                                                    <span className='title-item-form'>نحوه نوبت دهی :</span>
+                                                    <DropDown
+                                                        styled={"dropwidth"} />
+                                                </Col>
+                                                <Col md={7} className='refer-wrapper'>
+                                                    <span className='title-item-form'>نحوه مراجعه :</span>
+                                                    <div className='refrer-option'>
+                                                        <InputRadio marginRight="radiostyle" text="عادی" />
+                                                        <InputRadio marginRight="radiostyle" text="امدادی" />
+                                                        <InputRadio marginRight="radiostyle" text="برگشتی" />
+                                                    </div>
+                                                </Col>
                                             </div>
-                                        </Col>
-                                    </Col>
-                                </div>
-                            </div>
-                            <div className="p-form1-part-tree">
-                                <p className="title-p-form1-part-tree">
-                                    نوع خدمات :
-                                </p>
-                                <div className="p-form1-checkbox-container">
-                                    <div className="chaeck-box-col1 check-col">
-                                        <InputCheckBox value={"مکانیک"} />
-                                        <InputCheckBox value={"زیروبند ساز"} />
-                                        <InputCheckBox value={"نقاش"} />
+                                        </div>
+                                        <div className='p-form-row3'>
+                                            <p className='title-item-form'>نوع خدمات :</p>
+                                            <div className='options-services-wrappper'>
+                                                <div className='options-services'>
+                                                    <InputCheckBox value={"مکانیک"} />
+                                                    <InputCheckBox value={"زیر و بندسازی"} />
+                                                    <InputCheckBox value={"نقاشی"} />
+
+                                                </div>
+                                                <div className='options-services'>
+                                                    <InputCheckBox value={"برق"} />
+                                                    <InputCheckBox value={"صافکاری"} />
+                                                    <InputCheckBox value={"اتوسرویس"} />
+
+                                                </div>
+                                                <div className='options-services'>
+                                                    <InputCheckBox value={"آپاراتی"} />
+                                                    <InputCheckBox value={"تزئینات"} />
+                                                    <InputCheckBox value={"آپشن"} />
+
+                                                </div>
+                                                <div className='options-services'>
+                                                    <InputCheckBox value={"سرویس سریع"} />
+                                                    <InputCheckBox value={"تعمیراتی"} />
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="chaeck-box-col2 check-col">
-                                        <InputCheckBox value={"برق"} />
-                                        <InputCheckBox value={"صافکاری"} />
-                                        <InputCheckBox value={"اتوسرویس"} />
+                                    <div className='p-form-actions'>
+                                        <EditBtn />
+                                        <ConfirmBtn />
                                     </div>
-                                    <div className="chaeck-box-col3 check-col">
-                                        <InputCheckBox value={"آپاراتی"} />
-                                        <InputCheckBox value={"تزئینات"} />
-                                        <InputCheckBox value={"آپشن"} />
-                                    </div>
-                                    <div className="chaeck-box-col4 check-col">
-                                        <InputCheckBox value={"امدادی تعمیراتی"} />
-                                        <InputCheckBox value={"تعمیراتی"} />
-                                        <InputCheckBox value={"برگشتی"} />
-                                    </div>
-                                    <div className="chaeck-box-col5 check-col">
-                                        <InputCheckBox value={"سرویس سریع"} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='pform-btns-action'>
-                                <button className='btn-action-fp1 edit1'>
-                                    ویرایش
-                                    <FontAwesomeIcon icon={faPencil} className='plus-btn-2' />
-                                </button>
-                                <button className='btn-action-fp1 done1'>
-                                    تایید
-                                    <FontAwesomeIcon icon={faCheck} className='plus-btn-2' />
-                                </button>
-                            </div>
-                        </form>
+                                </form>
+                            )}
+
+                        </Formik>
                     </TabPanel>
                     <TabPanel value={value} index={1} className={"tab1-pform1"}>
                         <form>
-                            <div className="p-form1-part-one-co">
-                                <div className="input-item-wrapper3">
-                                    <Input
-                                        name="first_name"
-                                        label="نام شرکت"
-                                        icon={faUser}
-                                        placeholder="نام شرکت"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                    <Input
-                                        name="first_name"
-                                        label="شناسه ملی"
-                                        icon={faAddressCard}
-                                        placeholder="شناسه ملی"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                </div>
-                                <div className="input-item-wrapper3">
-                                    <Input
-                                        name="first_name"
-                                        label="شماره تماس"
-                                        icon={faPhone}
-                                        placeholder="شماره تماس"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                    <Input
-                                        name="first_name"
-                                        label="شناسه اقتصادی"
-                                        icon={faAddressCard}
-                                        placeholder="شناسه اقتصادی"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                </div>
-                                <div className="input-item-wrapper3">
-                                    <Input
-                                        name="first_name"
-                                        label="شماره هرم"
-                                        icon={faHashtag}
-                                        placeholder="شماره هرم"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                    <Input
-                                        name="first_name"
-                                        label="شماره تماس تحویل گیرنده"
-                                        icon={faPhone}
-                                        placeholder="شماره تماس تحویل گیرنده"
-                                        type="text"
-                                        value={""}
-                                        onChange={""}
-                                        styled={"margin-buttom"}
-                                    />
-                                </div>
-                            </div>
-                            <div className="p-form1-part-two-co">
-                                <Col className='p-form1-part-two-co-right' md={7}>
-                                    <div className='w-50'>
+                            <div className='p-form1-contant-tab2'>
+                                <Col md={7}>
+                                    <div className="p-form1-row">
+                                        <Col md={6}>
+                                            <Input
+                                                label="نام شرکت"
+                                                styled={"inputwidth"}
+                                                icon={faUser}
+                                            />
+                                        </Col>
+                                        <Col md={6}>
+                                            <Input
+                                                label="شماره تماس"
+                                                styled={"inputwidth"}
+                                                icon={faPhone}
+                                            />
+                                        </Col>
+                                    </div>
+                                    <div className="p-form1-row mt-4">
+                                        <Col md={6}>
+                                            <Input
+                                                label="شناسه ملی"
+                                                styled={"inputwidth"}
+                                                icon={faAddressCard}
+                                            />
+                                        </Col>
+                                        <Col md={6}>
+                                            <Input
+                                                label="کد اقتصادی"
+                                                styled={"inputwidth"}
+                                                icon={faHashtag}
+                                            />
+                                        </Col>
+                                    </div>
+                                    <div className="p-form1-row mt-4">
+                                        <Col md={6}>
+                                            <Input
+                                                label="کدپستی"
+                                                styled={"inputwidth"}
+                                                icon={faEnvelope}
+                                            />
+                                        </Col>
+                                    </div>
+                                    <div className="p-form1-row mt-4">
+                                        <Texteara />
+                                    </div>
+                                </Col>
+                                <Col md={5} className='p-form1-contant-tab2-left'>
+                                    <Col className='tab2-left-item'>
                                         <Input
-                                            name="first_name"
                                             label="نام مالک"
+                                            styled={"inputwidth"}
                                             icon={faUser}
-                                            placeholder="نام مالک"
-                                            type="text"
-                                            value={""}
-                                            onChange={""}
-                                            styled={"margin-buttom"}
                                         />
-                                    </div>
-                                    <Texteara
-                                        styled={"p-co-texteara"}
-                                    />
-                                </Col>
-                                <Col md={6} className='radios-co-wrapper'>
-                                    <p className='drop-title'>نحوه نوبت دهی :</p>
-                                    <div className='mt-4'>
-                                        <div className='mt-4'>
-                                            <InputRadio value={"اینترنتی"} />
+                                    </Col>
+                                    <Col className='mt-4 tab2-left-item'>
+                                        <Input
+                                            label="نام مالک"
+                                            styled={"inputwidth"}
+                                            icon={faUser}
+                                        />
+                                    </Col>
+                                    <Col className='make-turn mt-5 tab2-left-item'>
+                                        <span className='title-item-form'>نحوه نوبت دهی :</span>
+                                        <DropDown
+                                            styled={"dropwidth"} />
+                                    </Col>
+                                    <Col className='tab2-refer-wrapper'>
+                                        <span className='title-item-form'>نحوه مراجعه :</span>
+                                        <div className='refrer-option'>
+                                            <InputRadio marginRight="radiostyle" text="عادی" />
+                                            <InputRadio marginRight="radiostyle" text="امدادی" />
+                                            <InputRadio marginRight="radiostyle" text="برگشتی" />
                                         </div>
-                                        <div className='mt-4'>
-                                            <InputRadio value={"حضوری"} />
-                                        </div>
-                                        <div className='mt-4'>
-                                            <InputRadio value={"تلفنی"} />
-                                        </div>
-                                        <div className='mt-4'>
-                                            <InputRadio value={"بدون اخذ نوبت"} />
-                                        </div>
-                                    </div>
+                                    </Col>
                                 </Col>
                             </div>
-                            <div className='p-form1-part-three-co mt-3'>
-                                <Col md={7} className='inputs-p-container'>
-                                    <div className="width-50">
-                                        <Input
-                                            name="first_name"
-                                            label="نام آورنده"
-                                            icon={faUser}
-                                            placeholder="نام آورنده"
-                                            type="text"
-                                            value={""}
-                                            onChange={""}
-                                            styled={"margin-buttom"} />
-                                        <Input
-                                            name="first_name"
-                                            label="کدملی آورنده"
-                                            icon={faAddressCard}
-                                            placeholder="کدملی آورنده"
-                                            type="text"
-                                            value={""}
-                                            onChange={""}
-                                            styled={"margin-buttom"} />
+                            <div className='p-form1-contant-tab2-botton'>
+                                <Col md={6}>
+                                    <div className="p-form1-row mt-4">
+                                        <Col md={6}>
+                                            <Input
+                                                label="نام آورنده"
+                                                styled={"inputwidth"}
+                                                icon={faUser}
+                                            />
+                                        </Col>
+                                        <Col md={6}>
+                                            <Input
+                                                label="نام خانوادگی آورنده"
+                                                styled={"inputwidth"}
+                                                icon={faUser}
+                                            />
+                                        </Col>
                                     </div>
-                                    <div className="width-50">
-                                        <Input
-                                            name="first_name"
-                                            label="نام خانوادگی آورنده"
-                                            icon={faUser}
-                                            placeholder="نام خانوادگی آورنده"
-                                            type="text"
-                                            value={""}
-                                            onChange={""}
-                                            styled={"margin-buttom"} />
-                                        <Input
-                                            name="first_name"
-                                            label="شماره تماس آورنده"
-                                            icon={faPhone}
-                                            placeholder="شماره تماس آورنده"
-                                            type="text"
-                                            value={""}
-                                            onChange={""}
-                                            styled={"margin-buttom"} />
+                                    <div className="p-form1-row mt-4">
+                                        <Col md={6}>
+                                            <Input
+                                                label="کد ملی آورنده"
+                                                styled={"inputwidth"}
+                                                icon={faAddressCard}
+                                            />
+                                        </Col>
+                                        <Col md={6}>
+                                            <Input
+                                                label="شماره تماس آورنده"
+                                                styled={"inputwidth"}
+                                                icon={faPhone}
+                                            />
+                                        </Col>
                                     </div>
                                 </Col>
-                                <Col md={5} className='p-form1-reference-co'>
-                                    <div>
-                                        <p className='drop-title'>نحوه مراجعه :</p>
-                                        <div>
-                                            <InputRadio value={"پذیرش امدادی"} />
-                                        </div>
+                                <Col md={6}>
+                                    <div className='p-form-actions'>
+                                        <EditBtn />
+                                        <ConfirmBtn />
                                     </div>
                                 </Col>
-                            </div>
-                            <div className='pform-btns-action'>
-                                <button className='btn-action-fp1 edit1'>
-                                    ویرایش
-                                    <FontAwesomeIcon icon={faPencil} className='plus-btn-2' />
-                                </button>
-                                <button className='btn-action-fp1 done1'>
-                                    تایید
-                                    <FontAwesomeIcon icon={faCheck} className='plus-btn-2' />
-                                </button>
                             </div>
                         </form>
                     </TabPanel>
                 </Box>
+                <ToastContainer />
             </div>
         </>
     )
 }
+
+

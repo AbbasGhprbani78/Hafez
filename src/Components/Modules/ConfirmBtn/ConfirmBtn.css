@@ -1,0 +1,17 @@
+@import url('../../../Styles/Main.css');
+
+.btn-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    border: none;
+    border-radius: 50px;
+    padding: 5px 15px;
+    color: #fff;
+    background-color: var(--color-3);
+}
+
+.ckeckicon {
+    margin: 0 12px 0 12px;
+}

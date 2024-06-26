@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ProgressBar.css';
 
-const ProgressBar = () => {
+const ProgressBar = ({ setContent }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     const handleNext = () => {
@@ -11,6 +11,16 @@ const ProgressBar = () => {
     const handlePrev = () => {
         setCurrentStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
     };
+
+
+    useEffect(() => {
+        if (currentStep === 1) {
+            setContent("اطلاعات اولیه مشتری :")
+        }
+        else if (currentStep === 2) {
+            setContent("اطلاعات اولیه خودرو")
+        }
+    }, [currentStep])
 
     return (
         <div className="pragress-wrapper d-flex justify-content-between" style={{ direction: "ltr" }}>
@@ -34,14 +44,7 @@ const ProgressBar = () => {
                 </div>
             </div>
 
-            <p className='main-text-progress'>
-                {
-                    currentStep === 1 ? "اطلاعات مشتری" :
-                        currentStep === 2 ? "اطلاعات خودرو" :
-                            currentStep === 3 ? "" :
-                                ""
-                }
-            </p>
+
             {/* <button className="btn" id="Prev" onClick={handlePrev} disabled={currentStep === 1}>
                 Prev
             </button>

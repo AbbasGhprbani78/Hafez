@@ -40,3 +40,18 @@
 .search-icon {
     color: var(--color-15);
 }
+
+.btn-2 {
+    all: unset;
+    color: #fff;
+    background-color: var(--color-3);
+    padding: 5px 15px 8px 15px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    font-size: calc(.8rem + .1vw);
+}
+
+.plus-btn-2 {
+    margin-right: 15px;
+}

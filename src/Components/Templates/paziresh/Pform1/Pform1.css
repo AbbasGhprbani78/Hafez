@@ -1,7 +1,6 @@
 @import url('../../../../Styles//Main.css');
 
-
-
+/* start style tab1 */
 .form1-container {
     width: 93%;
     margin: 1.5rem auto 0 auto;
@@ -13,171 +12,126 @@
     box-shadow: var(--box-shadow-2);
 }
 
-/* start part one form */
 
-.p-form1-part-one {
+.p-form1-contant {
+    width: 92%;
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+.p-form1-row {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding-bottom: 10px;
+    width: 100%;
 }
 
-.input-item-wrapper3 {
-    width: 29%;
+.inputwidth {
+    width: 80%;
 }
 
-.h-p-form1 {
-    height: 163px;
-    resize: none;
+.p-form-row2 {
+    width: 93.5%;
 }
 
-/* end  part one form*/
-
-
-
-/* start part two form */
-
-.p-form1-part-two,
-.p-form1-part-tree {
-    border-top: 1px solid var(--color-8);
-}
-
-.p-form1-part-two {
-    padding-bottom: 10px;
-}
-
-.title-p-form1-part-two,
-.title-p-form1-part-tree {
-    padding: 25px 0;
-    color: var(--color-1);
-}
-
-.moraje-container {
-    width: 77%;
-    margin: 0 auto 0 0;
+.p-form2-complete {
+    margin-top: 1.4rem;
     display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
-.drop-moraje-wrapper {
+.make-turn {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
 }
 
-.moraje-wrappper {
-    display: flex;
-    justify-content: space-between;
-}
-
-.moraje-title {
-    margin-right: 3rem;
-    width: max-content;
-}
-
-.drop-title,
-.moraje-title {
-    color: var(--color-1);
-    font-size: clamp(.8rem, .9vw, 1rem);
-}
-
-.p-form1-part-two-radio-wrapper {}
-
-/* end part two form */
-
-
-
-/* start style part three */
-.p-form1-checkbox-container {
-    width: 70%;
-    margin: 0 auto;
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-    font-size: clamp(.8rem, .9vw, 1rem);
-}
-
-/* ens style part three */
-.css-ahj2mt-MuiTypography-root {
-    font-size: inherit !important;
-    font-family: inherit !important;
-}
-
-
-.pform-btns-action {
+.refer-wrapper {
     display: flex;
     align-items: center;
     justify-content: end;
-    gap: 15px;
 }
 
-.btn-action-fp1 {
-    all: unset;
-    border-radius: 100px;
-    padding: 5px;
+.refrer-option {
     display: flex;
     align-items: center;
-    width: 105px;
+}
+
+.radiostyle {
+    margin-right: 2rem !important;
+}
+
+.p-form-row3 {
+    margin-top: 5rem;
+}
+
+.options-services-wrappper {
+    width: 93.5%;
+    display: flex;
     justify-content: center;
 }
 
-.edit1 {
+.options-services {
+    margin-right: 3.5rem;
+}
+
+.title-item-form {
     color: var(--color-1);
-    border: 1px solid var(--color-1);
-    background-color: #fff;
+    font-weight: bold;
+    font-size: clamp(.8rem, .9vw, 1rem);
 }
 
-.done1 {
-    background-color: var(--color-3);
-    color: #fff;
+.complete-info {
+    font-weight: bold;
+    color: var(--color-15);
+    font-size: clamp(1.1rem, 1vw, 1.7rem)
 }
 
-/*start style co   */
-.p-form1-part-one-co {
+.p-form-actions {
     display: flex;
-    justify-content: space-between;
-}
-
-.p-form1-part-two-co {
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-}
-
-.radios-co-wrapper {
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: end;
+    gap: 25px;
 }
 
-.p-form1-part-two-co-right {
-    border-bottom: 1px solid var(--color-8);
-    padding-bottom: 25px;
-}
+/* ens style tab1 */
 
-.p-co-texteara {
-    height: 150px;
-    resize: none;
-}
-
-.p-form1-part-three-co {
+/* start style tab2 */
+.p-form1-contant-tab2 {
     display: flex;
     justify-content: space-between;
-    align-items: start;
+    width: 92%;
 }
 
-.inputs-p-container {
+.p-form1-contant-tab2-left {}
+
+.tab2-left-item {
     display: flex;
-    align-items: start;
-    justify-content: space-between;
+    justify-content: end;
+    width: 80%;
 }
 
-.width-50 {
-    width: 45%;
-}
-
-.p-form1-reference-co {
+.tab2-refer-wrapper {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    margin-top: 7rem;
+    justify-content: end;
+}
+
+.p-form1-contant-tab2-botton {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+/* end style tab2 */
+.dropwidth {
+    width: 70%;
+    margin-right: 10px;
+}
+
+.p-form1-texte {
+    width: 93.5%;
 }
 
 .css-nzhyv8-MuiButtonBase-root-MuiTab-root.Mui-selected {
@@ -188,5 +142,6 @@
 .css-1aquho2-MuiTabs-indicator {
     background-color: var(--color-1) !important;
 }
+
 
 /* end style co */

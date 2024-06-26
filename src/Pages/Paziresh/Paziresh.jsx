@@ -1,19 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SideBar from '../../Components/Modules/SideBar/SideBar'
-import Header from '../../Components/Modules/Header/Header'
 import ProgressBar from '../../Components/Modules/ProgressBar/ProgressBar'
 import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 import Pform2 from '../../Components/Templates/paziresh/Pform2/Pform2'
+import './Paziresh.css'
 export default function Paziresh() {
+    const [content, setContent] = useState("اطلاعات اولیه مشتری :")
     return (
         <>
             <div className="content-conatiner">
                 <SideBar />
                 <div className='space-content'>
-                    <Header />
+                    <div className='headerP'>
+                        <p className='headerPtext'>
+                            {content}
+                        </p>
+                    </div>
                     <div className='my-4'>
-                        <ProgressBar />
-                        <Pform2 />
+                        <ProgressBar setContent={setContent} />
+                        <Pform1 />
                     </div>
                 </div>
             </div>

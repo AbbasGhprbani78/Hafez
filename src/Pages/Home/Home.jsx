@@ -7,7 +7,7 @@ export default function Home() {
 
     return (
         <>
-            {/* <div className="content-conatiner">
+            <div className="content-conatiner">
                 <SideBar />
                 <div className='space-content'>
                     <Header />
@@ -20,8 +20,8 @@ export default function Home() {
                         <div class="home-item div6">6</div>
                     </div>
                 </div>
-            </div> */}
-            <TypeActivity />
+            </div>
+            {/* <TypeActivity /> */}
         </>
     );
 }
