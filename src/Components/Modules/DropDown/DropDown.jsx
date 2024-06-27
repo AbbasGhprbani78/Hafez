@@ -1,6 +1,6 @@
 import React from 'react'
 import './DropDown.css'
-export default function DropDown({ haslable, styled }) {
+export default function DropDown({ haslable, styled, items, onChange, name }) {
 
     return (
         <>
@@ -10,11 +10,11 @@ export default function DropDown({ haslable, styled }) {
                     <label className='label-input mb-2'>نوع خودرو</label>
                 }
                 <div className="dropdown-wrapper">
-                    <select className='dropdown'>
+                    <select className='dropdown' onChange={onChange} name={name}>
                         <option value={-1} className='dropdown-item'></option>
-                        <option className='dropdown-item'>test 1</option>
-                        <option className='dropdown-item'>test 1</option>
-                        <option className='dropdown-item'>test 1</option>
+                        {items?.map((item, i) => (
+                            <option value={item} key={i}>{item}</option>
+                        ))}
                     </select>
                 </div>
             </div>

@@ -21,7 +21,7 @@
 
 .p-form1-row {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     justify-content: space-between;
     width: 100%;
 }
@@ -48,8 +48,13 @@
 
 .refer-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: end;
+    flex-direction: column;
+    align-items: end;
+}
+
+.refer-content {
+    display: flex;
+    flex-direction: column;
 }
 
 .refrer-option {
@@ -97,25 +102,35 @@
 /* ens style tab1 */
 
 /* start style tab2 */
+
+.p-fomrm1-tab2-wrapper {
+    width: 92%;
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
 .p-form1-contant-tab2 {
     display: flex;
     justify-content: space-between;
-    width: 92%;
+    align-items: start;
 }
 
-.p-form1-contant-tab2-left {}
+.p-form1-contant-tab2-left {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
 
 .tab2-left-item {
     display: flex;
-    justify-content: end;
     width: 80%;
+    flex-direction: column;
 }
 
 .tab2-refer-wrapper {
     display: flex;
     align-items: center;
     margin-top: 7rem;
-    justify-content: end;
 }
 
 .p-form1-contant-tab2-botton {
@@ -127,7 +142,20 @@
 /* end style tab2 */
 .dropwidth {
     width: 70%;
-    margin-right: 10px;
+}
+
+.dropwidth2 {
+    width: 80%;
+}
+
+.eara1 {
+    resize: none;
+    height: 100px;
+}
+
+.eara2 {
+    resize: none;
+    height: 120px;
 }
 
 .p-form1-texte {
