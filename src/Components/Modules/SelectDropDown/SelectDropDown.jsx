@@ -3,7 +3,8 @@ import './SelectDropDown.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFormikContext } from 'formik';
 
-export default function SelectDropDown({ icon, label, items, name }) {
+export default function SelectDropDown({ icon, label, items, name, setother }) {
+
     const { setFieldValue } = useFormikContext();
     const [options] = useState(items);
     const [filteredOptions, setFilteredOptions] = useState(options);
@@ -26,6 +27,7 @@ export default function SelectDropDown({ icon, label, items, name }) {
 
     const handleInputFocus = () => {
         setShowOptions(true);
+        setother(false)
     };
 
     const handleClickOutside = (event) => {
@@ -60,11 +62,26 @@ export default function SelectDropDown({ icon, label, items, name }) {
                     <ul className='list-cars'>
                         {
                             filteredOptions.length > 0 ?
-                                filteredOptions.map((item, i) => (
-                                    <li key={i} className='car-item' onClick={() => handleOptionClick(item)}>
-                                        {item}
+                                <>
+                                    {
+                                        filteredOptions.map((item, i) => (
+                                            <li key={i} className='car-item' onClick={() => handleOptionClick(item)}>
+                                                {item}
+                                            </li>
+                                        ))
+                                    }
+                                    <li className='car-item' onClick={() => {
+                                        setShowOptions(false)
+                                        setother(true)
+                                        setFieldValue(name, "")
+                                        setInputValue("")
+                                    }
+                                    } >
+                                        سایر
                                     </li>
-                                )) :
+                                </>
+
+                                :
                                 <li className='car-item'>
                                     موردی یافت نشد
                                 </li>

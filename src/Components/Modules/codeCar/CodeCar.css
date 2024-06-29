@@ -10,4 +10,5 @@
 
 .text-carector {
     color: var(--color-21);
+    font-size: .9rem;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './TypeActivity.css'
 import { Col } from 'react-bootstrap'
 import Input from '../../../Components/Modules/Input/Input'
@@ -16,6 +16,7 @@ import { IP } from '../../../App'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
     fontFamily: 'inherit',
@@ -307,6 +308,7 @@ export default function TypeActivity() {
                                         }
                                         return errors
                                     }}
+
                                     initialValues={{
                                         personal: "Personal",
                                         first_name: "",
