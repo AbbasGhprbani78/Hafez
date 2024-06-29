@@ -16,7 +16,11 @@ const Input = (({ name, label, icon, placeholder, type, styleInput, value, onCha
                 className='input-form'
                 autoComplete='off'
             />
-            <FontAwesomeIcon icon={icon} className='icon-input' />
+            {
+                icon &&
+                <FontAwesomeIcon icon={icon} className='icon-input' />
+            }
+
         </div>
 
     </div>

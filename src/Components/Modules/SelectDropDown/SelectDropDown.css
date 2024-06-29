@@ -1,0 +1,59 @@
+@import url('../../../Styles/Main.css');
+
+.select-car-wrapper {
+    width: 90%;
+}
+
+.select-car {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--color-8);
+    border-radius: var(--border-radius-1);
+    padding: 10px 9px 10px 15px;
+    background-color: var(--color-20);
+    position: relative;
+}
+
+.input-cars {
+    outline: none;
+    border: none;
+    width: 100%;
+    background-color: transparent;
+}
+
+.select-car-icon {
+    color: var(--color-1);
+}
+
+.list-cars {
+    position: absolute;
+    list-style: none;
+    top: 110%;
+    right: 0;
+    z-index: 2;
+    background-color: var(--color-20);
+    width: 100%;
+    border-radius: var(--border-radius-1);
+    border: 1px solid var(--color-8);
+    padding-left: 0;
+    max-height: 220px;
+    overflow-y: scroll;
+}
+
+.list-cars::-webkit-scrollbar {
+    display: none;
+}
+
+.car-item {
+    padding: 10px;
+    color: var(--color-3);
+    margin-top: 10px;
+    cursor: pointer;
+
+}
+
+.car-item:hover {
+    background-color: #a8a4a4d1;
+    color: #fff;
+}

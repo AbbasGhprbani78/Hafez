@@ -1,7 +1,13 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import './CodeCar.css'
-export default function CodeCar() {
+import { useFormikContext } from 'formik';
+export default function CodeCar({ name, value }) {
     const [inputs, setInputs] = useState(["", "", "", ""]);
+    const finalPlates = inputs.join("")
+    const { setFieldValue } = useFormikContext();
+    useEffect(() => {
+        setFieldValue(name, finalPlates)
+    }, [inputs])
     const inputRefs = useRef([]);
 
     const validateInput = (index, value) => {
@@ -39,8 +45,7 @@ export default function CodeCar() {
     return (
 
 
-        <div className='inputs-wrapper d-flex align-items-center justify-content-between mt-5' style={{ direction: "ltr", width: "29%", margin: "0 auto" }}>
-
+        <div className='inputs-wrapper d-flex align-items-center justify-content-between' style={{ direction: "ltr" }}>
             <div className='d-flex flex-column align-items-center'>
                 <input
                     className='input-carector'
@@ -86,7 +91,7 @@ export default function CodeCar() {
                 <span className='text-carector' >عدد 2 تایی</span>
             </div>
 
-            <p className='code-car'> : شماره پلاک</p>
+            <p className='code-car title-item-form'> : شماره پلاک</p>
         </div>
     )
 }

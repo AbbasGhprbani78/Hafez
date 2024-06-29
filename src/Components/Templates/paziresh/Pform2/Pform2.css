@@ -3,4 +3,138 @@
 .form2-container {
     width: 93%;
     margin: 1.5rem auto 0 auto;
+    border-radius: var(--border-radius-1);
+    box-shadow: var(--box-shadow-2);
+    padding: 24px
+}
+
+.p-form2-content {
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+.p-form2-row {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.widthinput {
+    width: 90%;
+}
+
+.p-form2-row2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4rem;
+}
+
+.amount-wrapper {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.amount-fuel-wrapper,
+.amount-cng-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.amount-fuel-content,
+.amount-cng-content {
+    margin-right: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+
+.f-text {
+    color: var(--color-1);
+    margin: 0 2rem;
+}
+
+
+.p-form2-row3 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+
+}
+
+.tire-wear-content {
+    display: flex;
+    align-items: center;
+    margin-top: 1.1rem;
+}
+
+.numbers-tire {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.inputtire {
+    width: 45%;
+}
+
+.p-form2-row4 {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+}
+
+
+.spare-tire-content {
+    display: flex;
+    align-items: center;
+    margin-top: 1.1rem;
+}
+
+.erosion-rate-content {
+    display: flex;
+    align-items: center;
+    margin-top: 1.1rem;
+}
+
+.p-form2-row5 {
+    margin-top: 4rem;
+    display: flex;
+
+}
+
+.input-erosion,
+.input-spare {
+    margin-right: 1.2rem;
+}
+
+.input-amount {
+    margin: 0 .6rem;
+}
+
+.p-form2-row6 {
+    margin-top: 4rem;
+}
+
+.vehicle-condition-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 1rem;
+
+}
+
+.vehicle-condition-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vehicle-item-text {
+    color: var(--color-1);
+    margin-top: 1rem;
+    font-weight: bold;
+    font-size: calc(.8rem + .1vw)
 }

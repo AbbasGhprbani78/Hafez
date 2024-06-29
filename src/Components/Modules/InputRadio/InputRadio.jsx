@@ -4,7 +4,7 @@ import './InputRadio.css';
 export default function InputRadio({ text, marginRight, onChange, value, checked, name }) {
     return (
         <>
-            <div className={`radio-container mx-2 ${marginRight}`}>
+            <div className={`radio-container  ${marginRight}`}>
                 <input
                     type="radio"
                     className='radio-input'
