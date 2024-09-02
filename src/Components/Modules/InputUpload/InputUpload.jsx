@@ -42,7 +42,7 @@ export default function InputUpload({ label, name, onChange }) {
             const reader = new FileReader();
             reader.onload = () => {
                 const base64String = reader.result.split(',')[1];
-                onChange(name, base64String);
+                (namonChangee, base64String);
             };
             reader.readAsDataURL(file);
         }

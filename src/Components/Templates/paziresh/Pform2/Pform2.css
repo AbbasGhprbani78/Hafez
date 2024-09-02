@@ -160,8 +160,67 @@
     border-bottom: 1px solid var(--color-1);
 }
 
-
-
 .p-form2-row7 {
     margin-top: 4rem;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.map-drop_wrapper {
+    width: 80%;
+}
+
+.part-machine-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-items: start;
+}
+
+.part-machine-item {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+
+.title-item {
+    font-size: clamp(1.2rem, 1, 4ren, 2rem);
+    font-weight: bold;
+    color: var(--color-3);
+}
+
+.belongings-wrapper {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.input-belongings {
+    all: unset;
+    border: 1px solid var(--color-8);
+    border-radius: var(--border-radius-1);
+    padding: 10px 9px 10px 15px;
+    background-color: var(--color-20);
+    margin-top: 10px;
+}
+
+.belongings-input {
+    width: 70%;
+}
+
+.belongings-item-container {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+
+}
+
+.belongings1 {
+    width: 75%;
+}
+
+.belonging2 {
+    width: 95%;
 }

@@ -64,6 +64,7 @@ export default function SignUp() {
                                 phone_number: "",
                                 password: ""
                             }}
+                            
                             onSubmit={async (values, { setSubmitting }) => {
                                 try {
                                     const response = await axios.post(`${IP}/user/signup/`, values)

@@ -1,13 +1,13 @@
 import React from 'react'
 import './DropDown.css'
-export default function DropDown({ haslable, styled, items, onChange, name }) {
+export default function DropDown({ lable, styled, items, onChange, name }) {
 
     return (
         <>
             <div className={`dropdown-container ${styled}`}>
                 {
-                    haslable &&
-                    <label className='label-input mb-2'>نوع خودرو</label>
+                    lable &&
+                    <label className='label-input mb-2'>{lable}</label>
                 }
                 <div className="dropdown-wrapper">
                     <select className='dropdown' onChange={onChange} name={name}>

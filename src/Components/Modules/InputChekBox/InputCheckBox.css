@@ -17,3 +17,16 @@
 }
 
 .lable-check {}
+
+.wrap-checkbox-dec {}
+
+.wrap-checkbox {
+    width: 200px;
+    max-width: 200px;
+    height: 63px;
+    resize: none;
+}
+
+.wrap-checkbox.wrap-checkbox::placeholder {
+    font-size: .9rem;
+}

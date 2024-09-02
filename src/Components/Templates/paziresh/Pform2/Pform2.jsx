@@ -13,6 +13,9 @@ import SelectDropDown from '../../../Modules/SelectDropDown/SelectDropDown'
 import { Formik } from 'formik'
 import MapCar from '../../../Modules/MapCar/MapCar'
 import CarModal from '../../../Modules/CarModal/CarModal'
+import DropDown from '../../../Modules/DropDown/DropDown'
+import PartMachine from './PartMachine/PartMachine'
+import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
 
 export default function Pform2() {
 
@@ -343,7 +346,7 @@ export default function Pform2() {
                                     </div>
                                 </div>
                                 <div className="p-form2-row6">
-                                    <p className='title-item-form'>وضعیت ظاهری خودرو/بدنه</p>
+                                    <p className='title-item'>وضعیت ظاهری خودرو/بدنه</p>
                                     <div className='vehicle-condition-wrapper'>
                                         <Col md={4} className='vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
@@ -418,7 +421,95 @@ export default function Pform2() {
                                     </div>
                                 </div>
                                 <div className="p-form2-row7">
-                                    <MapCar />
+                                    <Col md={3}>
+                                        <div className='map-drop_wrapper'>
+                                            <MapCar />
+                                            <div className='mt-4'>
+                                                <DropDown
+                                                    lable={"انتخاب تیپ خودرو"}
+                                                    items={["نوع 2", "نوع 1",]}
+                                                    onChange={""}
+                                                    name={""}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                    <Col md={9} className='part-machine-container'>
+                                        <Col md={4} className='part-machine-item'>
+                                            <PartMachine title={"1 سپر جلو"} />
+                                        </Col>
+                                        <Col md={4} className='part-machine-item'>
+                                            <PartMachine title={"1 سپر جلو"} />
+                                        </Col>
+                                        <Col md={4} className='part-machine-item'>
+                                            <PartMachine title={"1 سپر جلو"} />
+                                        </Col>
+                                        <Col md={4} className='part-machine-item'>
+                                            <PartMachine title={"1 سپر جلو"} />
+                                        </Col>
+                                        <Col md={4} className='part-machine-item'>
+                                            <PartMachine title={"1 سپر جلو"} />
+                                        </Col>
+                                        <Col md={4} className='part-machine-item'>
+                                            <PartMachine title={"1 سپر جلو"} />
+                                        </Col>
+                                    </Col>
+                                </div>
+                                <div className='p-form2-row8'>
+                                    <p className='title-item'>متعلقات خودرو</p>
+                                    <div className='belongings-wrapper'>
+                                        <Col md={4} >
+                                            <div className='belongings'>
+                                                <span className='title-item-form '>متعلقات بدنه</span>
+                                                <div className='belongings-item-container belongings1'>
+                                                    <div>
+                                                        <InputCheckBox value={"رکاب راست وچپ"} />
+                                                        <InputCheckBox value={"گارد عقب وجلو"} />
+                                                        <InputCheckBox value={"رینگ اسپرت"} />
+                                                        <InputCheckBox value={"پروژکتور"} />
+                                                        <InputCheckBox value={"آنتن"} />
+                                                    </div>
+                                                    <div>
+                                                        <InputCheckBox value={"پلاک جلو"} />
+                                                        <InputCheckBox value={"پلاک عقب"} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                        <Col md={5}>
+                                            <div className='belongings'>
+                                                <span className='title-item-form '>متعلقات داخلی</span>
+                                                <div className='belongings-item-container belonging2'>
+                                                    <div>
+                                                        <InputCheckBox value={"پخش صوت"} />
+                                                        <InputCheckBox value={"کفپوش"} />
+                                                        <InputCheckBox value={"آچار چرخ"} />
+                                                        <InputCheckBox value={"مثلث خطر"} />
+                                                        <InputCheckBox value={"چرخ زاپاس"} />
+                                                    </div>
+                                                    <div>
+                                                        <InputCheckBox value={"دزدگیر"} />
+                                                        <InputCheckBox value={"فندک"} />
+                                                        <InputCheckBox value={"قالپاق"} />
+                                                        <InputCheckBox value={"فلش"} />
+                                                    </div>
+                                                    <div>
+                                                        <InputCheckBox value={"جاسیگاری"} />
+                                                        <InputCheckBox value={"جک"} />
+                                                        <InputCheckBox value={"زه خودرو"} />                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Col >
+                                        <Col md={3} >
+                                            <div className='belongings belongings-input d-flex flex-column'>
+                                                <span className='title-item-form '>سایر متعلقات</span>
+                                                <input type="text" className='input-belongings' />
+                                            </div>
+                                        </Col>
+                                    </div>
+                                    <div className='mt-5'>
+                                        <InputCheckBox value={"همه موارد"} />
+                                    </div>
                                 </div>
                             </div>
                             <div className='p-form-actions'>
@@ -428,8 +519,6 @@ export default function Pform2() {
                         </form>
                     )}
                 </Formik>
-
-
             </div>
         </>
 
