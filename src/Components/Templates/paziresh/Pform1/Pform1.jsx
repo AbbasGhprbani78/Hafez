@@ -150,7 +150,7 @@ export default function Pform1() {
                                 <form onSubmit={handleSubmit}>
                                     <div className='p-form1-contant' >
                                         <div className='p-form1-row'>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="نام مالک"
                                                     styled={"inputwidth"}
@@ -163,7 +163,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.owner_name && touched.owner_name && <span className='error'>{errors.owner_name}</span>}
                                             </Col>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' l xs={12} md={4}>
                                                 <Input
                                                     label="نام خانوادگی مالک"
                                                     styled={"inputwidth"}
@@ -176,7 +176,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.owner_lastname && touched.owner_lastname && <span className='error'>{errors.owner_lastname}</span>}
                                             </Col>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره تماس مالک"
                                                     styled={"inputwidth"}
@@ -191,7 +191,7 @@ export default function Pform1() {
                                             </Col>
                                         </div>
                                         <div className='p-form1-row mt-4'>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="کد ملی مالک"
                                                     styled={"inputwidth"}
@@ -204,7 +204,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.nattion_code_owner && touched.nattion_code_owner && <span className='error'>{errors.nattion_code_owner}</span>}
                                             </Col>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره تماس مالک"
                                                     styled={"inputwidth"}
@@ -217,7 +217,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.phone_number_owner && touched.phone_number_owner && <span className='error'>{errors.phone_number_owner}</span>}
                                             </Col>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره هرم"
                                                     styled={"inputwidth"}
@@ -241,7 +241,7 @@ export default function Pform1() {
                                             {errors.address && touched.address && <span className='error'>{errors.address}</span>}
                                         </div>
                                         <div className='p-form1-row mt-4'>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="نام آورنده"
                                                     styled={"inputwidth"}
@@ -254,7 +254,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.name_bearer && touched.name_bearer && <span className='error'>{errors.name_bearer}</span>}
                                             </Col>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="نام خانوادگی آورنده"
                                                     styled={"inputwidth"}
@@ -267,7 +267,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.last_name_bearer && touched.last_name_bearer && <span className='error'>{errors.last_name_bearer}</span>}
                                             </Col>
-                                            <Col md={4}>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره تماس آورنده"
                                                     styled={"inputwidth"}
@@ -284,9 +284,9 @@ export default function Pform1() {
                                         <div className='p-form-row2 mt-5'>
                                             <p className='complete-info'>اطلاعات تکمیلی :</p>
                                             <div className="p-form2-complete">
-                                                <Col md={5} >
+                                                <Col xs={12} md={6} >
                                                     <div className='make-turn'>
-                                                        <span className='title-item-form'>نحوه نوبت دهی :</span>
+                                                        <span className='title-item-form'>نحوه نوبت دهی</span>
                                                         <DropDown
                                                             styled={"dropwidth"}
                                                             items={["تلفنی", "بدون اخذ نوبت", "حضوری", "اینترنتی"]}
@@ -297,10 +297,10 @@ export default function Pform1() {
                                                     </div>
                                                     {errors.make_turn && touched.make_turn && <span className='error'>{errors.make_turn}</span>}
                                                 </Col>
-                                                <Col md={7} className='refer-wrapper'>
+                                                <Col xs={12} md={6} className='refer-wrapper'>
                                                     <div className='refer-content'>
-                                                        <div className='d-flex align-items-center'>
-                                                            <span className='title-item-form'>نحوه مراجعه :</span>
+                                                        <div className='wrapper-refrer-option'>
+                                                            <span className='title-item-form'>نحوه مراجعه</span>
                                                             <div className='refrer-option'>
                                                                 <InputRadio
                                                                     marginRight="radiostyle"
@@ -334,7 +334,7 @@ export default function Pform1() {
                                             </div>
                                         </div>
                                         <div className='p-form-row3'>
-                                            <p className='title-item-form'>نوع خدمات :</p>
+                                            <p className='title-item-form'>نوع خدمات </p>
                                             <div className='options-services-wrappper'>
                                                 <div className='options-services'>
                                                     <InputCheckBox value={"مکانیک"} />
@@ -361,11 +361,12 @@ export default function Pform1() {
                                                 </div>
                                             </div>
                                         </div>
+                                        <div className='p-form-actions'>
+                                            <EditBtn />
+                                            <ConfirmBtn type="submit" isSubmitting={isSubmitting} />
+                                        </div>
                                     </div>
-                                    <div className='p-form-actions'>
-                                        <EditBtn />
-                                        <ConfirmBtn type="submit" isSubmitting={isSubmitting} />
-                                    </div>
+
                                 </form>
                             )}
 
@@ -475,13 +476,13 @@ export default function Pform1() {
                             {({ values, handleChange, handleSubmit, setFieldValue, errors, touched, isSubmitting }) => (
                                 <form onSubmit={handleSubmit}>
                                     <div className='p-fomrm1-tab2-wrapper'>
-                                        <div className='p-form1-contant-tab2'>
-                                            <Col md={7}>
+                                           <div className='co-row'>
+                                             <Col xs={12} md={7}>
                                                 <div className="p-form1-row">
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="نام شرکت"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faUser}
                                                             value={values.company_name}
                                                             placeholder={"نام شرکت"}
@@ -491,10 +492,10 @@ export default function Pform1() {
                                                         />
                                                         {errors.company_name && touched.company_name && <span className='error'>{errors.company_name}</span>}
                                                     </Col>
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="شماره تماس"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faPhone}
                                                             value={values.phone_number}
                                                             placeholder={"شماره تماس"}
@@ -505,11 +506,30 @@ export default function Pform1() {
                                                         {errors.phone_number && touched.phone_number && <span className='error'>{errors.phone_number}</span>}
                                                     </Col>
                                                 </div>
-                                                <div className="p-form1-row mt-4">
-                                                    <Col md={6}>
+                                            </Col>
+                                            <Col xs={12} md={5} className='p-form1-contant-tab2-left'>
+                                                <Col className='tab2-left-item mb-4 mb-lg-0'>
+                                                    <Input
+                                                        label="شماره هرم"
+                                                        styled={"inputwidth2"}
+                                                        icon={faUser}
+                                                        value={values.pyramid_number}
+                                                        placeholder="شماره هرم"
+                                                        name="pyramid_number"
+                                                        onChange={handleChange}
+                                                        type="text"
+                                                    />
+                                                    {errors.pyramid_number && touched.pyramid_number && <span className='error'>{errors.pyramid_number}</span>}
+                                                </Col>
+                                            </Col>
+                                           </div>
+                                          <div className='co-row mt-lg-4'>
+                                            <Col xs={12} md={7}>
+                                                <div className="p-form1-row">
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="شناسه ملی"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faAddressCard}
                                                             value={values.national_code}
                                                             placeholder={"شناسه ملی"}
@@ -519,10 +539,10 @@ export default function Pform1() {
                                                         />
                                                         {errors.national_code && touched.national_code && <span className='error'>{errors.national_code}</span>}
                                                     </Col>
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="کد اقتصادی"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faHashtag}
                                                             value={values.Economic_code}
                                                             placeholder={"کد اقتصادی"}
@@ -533,49 +553,12 @@ export default function Pform1() {
                                                         {errors.Economic_code && touched.Economic_code && <span className='error'>{errors.Economic_code}</span>}
                                                     </Col>
                                                 </div>
-                                                <div className="p-form1-row mt-4">
-                                                    <Col md={6}>
-                                                        <Input
-                                                            label="کدپستی"
-                                                            styled={"inputwidth"}
-                                                            icon={faEnvelope}
-                                                            value={values.postal_code}
-                                                            placeholder={"کدپستی"}
-                                                            name="postal_code"
-                                                            onChange={handleChange}
-                                                            type="text"
-                                                        />
-                                                        {errors.postal_code && touched.postal_code && <span className='error'>{errors.postal_code}</span>}
-                                                    </Col>
-                                                </div>
-                                                <div className=" mt-4">
-                                                    <Texteara
-                                                        value={values.address}
-                                                        onChange={handleChange}
-                                                        styled={"eara1"}
-                                                        name="address"
-                                                    />
-                                                    {errors.address && touched.address && <span className='error'>{errors.address}</span>}
-                                                </div>
                                             </Col>
-                                            <Col md={5} className='p-form1-contant-tab2-left'>
-                                                <Col className='tab2-left-item'>
-                                                    <Input
-                                                        label="شماره هرم"
-                                                        styled={"inputwidth"}
-                                                        icon={faUser}
-                                                        value={values.pyramid_number}
-                                                        placeholder="شماره هرم"
-                                                        name="pyramid_number"
-                                                        onChange={handleChange}
-                                                        type="text"
-                                                    />
-                                                    {errors.pyramid_number && touched.pyramid_number && <span className='error'>{errors.pyramid_number}</span>}
-                                                </Col>
-                                                <Col className='mt-4 tab2-left-item'>
+                                            <Col xs={12} md={5} className='p-form1-contant-tab2-left'>
+                                                <Col className=' tab2-left-item mb-4 mb-lg-0'>
                                                     <Input
                                                         label="شماره تماس"
-                                                        styled={"inputwidth"}
+                                                        styled={"inputwidth2"}
                                                         icon={faUser}
                                                         value={values.compony_phone_number}
                                                         placeholder="شماره تماس شرکت"
@@ -585,10 +568,29 @@ export default function Pform1() {
                                                     />
                                                     {errors.compony_phone_number && touched.compony_phone_number && <span className='error'>{errors.compony_phone_number}</span>}
                                                 </Col>
-                                                <Col className=' mt-4 tab2-left-item'>
+                                            </Col>
+                                          </div>
+                                           <div className='co-row mt-lg-4'>
+                                            <Col className='mb-4 mb-lg-0' xs={12} md={7}>
+                                                <Col xs={12} md={6}>
+                                                    <Input
+                                                        label="کدپستی"
+                                                        styled={"inputwidth2"}
+                                                        icon={faEnvelope}
+                                                        value={values.postal_code}
+                                                        placeholder={"کدپستی"}
+                                                        name="postal_code"
+                                                        onChange={handleChange}
+                                                        type="text"
+                                                    />
+                                                    {errors.postal_code && touched.postal_code && <span className='error'>{errors.postal_code}</span>}
+                                                </Col>
+                                            </Col>
+                                            <Col xs={12} md={5} className='p-form1-contant-tab2-left mb-4 mb-lg-0'>
+                                                <Col xs={12} md={6} className='tab2-left-item'>
                                                     <span style={{ marginRight: "8px" }} className='title-item-form mb-2'>نحوه نوبت دهی :</span>
                                                     <DropDown
-                                                        styled={"dropwidth2"}
+                                                        styled={"inputwidth2"}
                                                         items={["تلفنی", "بدون اخذ نوبت", "حضوری", "اینترنتی"]}
                                                         onChange={handleChange}
                                                         name="make_turn"
@@ -596,49 +598,62 @@ export default function Pform1() {
                                                     />
                                                     {errors.make_turn && touched.make_turn && <span className='error'>{errors.make_turn}</span>}
                                                 </Col>
-                                                <Col className=''>
-                                                    <div className='tab2-refer-wrapper'>
-                                                        <span className='title-item-form'>نحوه مراجعه :</span>
-                                                        <div className='refrer-option'>
-                                                            <InputRadio
-                                                                marginRight="radiostyle"
-                                                                text="عادی"
-                                                                name="normal"
-                                                                value={"normal"}
-                                                                onChange={() => setFieldValue('refer', 'normal')}
-                                                                checked={values.refer === "normal"}
+                                            </Col>
+                                           </div>
+                                        <div className='co-row mt-lg-4'>
+                                            <Col xs={12} md={6} >
+                                                <div className="texteara-co-row">
+                                                    <Texteara
+                                                        value={values.address}
+                                                        onChange={handleChange}
+                                                        styled={"eara1"}
+                                                        name="address"
+                                                    />
+                                                    {errors.address && touched.address && <span className='error'>{errors.address}</span>}
+                                               </div>
+                                            </Col>
+                                            <Col xs={12} md={6} className=''>
+                                                <div className='mt-4 mt-lg-0 tab2-refer-wrapper'>
+                                                    <span className='title-item-form'>نحوه مراجعه</span>
+                                                    <div className='refrer-option'>
+                                                        <InputRadio
+                                                            marginRight="radiostyle"
+                                                            text="عادی"
+                                                            name="normal"
+                                                            value={"normal"}
+                                                            onChange={() => setFieldValue('refer', 'normal')}
+                                                            checked={values.refer === "normal"}
 
-                                                            />
-                                                            <InputRadio
-                                                                marginRight="radiostyle"
-                                                                text="امدادی"
-                                                                name="relief"
-                                                                value={"relief"}
-                                                                onChange={() => setFieldValue('refer', 'relief')}
-                                                                checked={values.refer === "relief"}
+                                                        />
+                                                        <InputRadio
+                                                            marginRight="radiostyle"
+                                                            text="امدادی"
+                                                            name="relief"
+                                                            value={"relief"}
+                                                            onChange={() => setFieldValue('refer', 'relief')}
+                                                            checked={values.refer === "relief"}
 
-                                                            />
-                                                            <InputRadio
-                                                                marginRight="radiostyle"
-                                                                text="برگشتی"
-                                                                name="returned"
-                                                                value={"returned"}
-                                                                onChange={() => setFieldValue('refer', 'returned')}
-                                                                checked={values.refer === "returned"}
-                                                            />
-                                                        </div>
+                                                        />
+                                                        <InputRadio
+                                                            marginRight="radiostyle"
+                                                            text="برگشتی"
+                                                            name="returned"
+                                                            value={"returned"}
+                                                            onChange={() => setFieldValue('refer', 'returned')}
+                                                            checked={values.refer === "returned"}
+                                                        />
                                                     </div>
-                                                    {errors.refer && touched.refer && <span className='error'>{errors.refer}</span>}
-                                                </Col>
+                                                </div>
+                                                {errors.refer && touched.refer && <span className='error'>{errors.refer}</span>}
                                             </Col>
                                         </div>
                                         <div className='p-form1-contant-tab2-botton'>
-                                            <Col md={6}>
+                                            <Col xs={12} md={6}>
                                                 <div className="p-form1-row mt-4">
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="نام آورنده"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faUser}
                                                             value={values.bearer_name}
                                                             placeholder={"نام آورنده"}
@@ -648,10 +663,10 @@ export default function Pform1() {
                                                         />
                                                         {errors.bearer_name && touched.bearer_name && <span className='error'>{errors.bearer_name}</span>}
                                                     </Col>
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="نام خانوادگی آورنده"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faUser}
                                                             value={values.bearer_lastname}
                                                             placeholder={"نام خانوادگی آورنده"}
@@ -663,10 +678,10 @@ export default function Pform1() {
                                                     </Col>
                                                 </div>
                                                 <div className="p-form1-row mt-4">
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="کد ملی آورنده"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faAddressCard}
                                                             value={values.bearer_national}
                                                             placeholder={"کد ملی آورنده"}
@@ -676,10 +691,10 @@ export default function Pform1() {
                                                         />
                                                         {errors.bearer_national && touched.bearer_national && <span className='error'>{errors.bearer_national}</span>}
                                                     </Col>
-                                                    <Col md={6}>
+                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
                                                         <Input
                                                             label="شماره تماس آورنده"
-                                                            styled={"inputwidth"}
+                                                            styled={"inputwidth2"}
                                                             icon={faPhone}
                                                             value={values.bearer_phone_number}
                                                             placeholder={"شماره تماس آورنده"}
@@ -692,11 +707,12 @@ export default function Pform1() {
                                                 </div>
                                             </Col>
                                         </div>
+                                        <div className='p-form-actions'>
+                                            <EditBtn />
+                                            <ConfirmBtn type="submit" isSubmitting={isSubmitting} />
+                                        </div>
                                     </div>
-                                    <div className='p-form-actions'>
-                                        <EditBtn />
-                                        <ConfirmBtn type="submit" isSubmitting={isSubmitting} />
-                                    </div>
+                                    
                                 </form>
                             )}
 
@@ -713,14 +729,21 @@ export default function Pform1() {
 
 
 
-// try {
-//     const response = await axios.post(`${IP}//`, values)
-//     if (response.status === 200) {
-//         setSubmitting(false)
-//     }
-// } catch (error) {
-//     toast.error(error.response.data.detail, {
-//         position: "top-left"
-//     })
-//     setSubmitting(false);
-// }
+
+
+//  <div className="p-form1-row">
+                                                    
+//                                                 </div>
+//                                                 <div className="p-form1-row mt-4">
+                                                    
+//                                                 </div>
+//                                                 <div className="p-form1-row mt-4">
+                                                   
+//                                                 </div>
+
+
+
+
+  
+                                              
+                                                

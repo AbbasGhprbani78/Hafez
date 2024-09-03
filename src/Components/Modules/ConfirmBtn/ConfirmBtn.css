@@ -15,3 +15,10 @@
 .ckeckicon {
     margin: 0 12px 0 12px;
 }
+
+@media (max-width:600px) {
+
+    .btn-confirm {
+        width: 100%;
+    }
+}

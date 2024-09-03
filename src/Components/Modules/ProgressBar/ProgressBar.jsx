@@ -36,11 +36,7 @@ const ProgressBar = ({ setContent }) => {
                 </div>
                 <div className={`circle ${currentStep >= 3 ? 'active' : ''}`}>
                     3
-                    <p className='item-prog-text'>اطلاعات خودرو</p>
-                </div>
-                <div className={`circle ${currentStep >= 4 ? 'active' : ''}`}>
-                    4
-                    <p className='item-prog-text'>اطلاعات خودرو</p>
+                    <p className='item-prog-text'>اظهارات مشتری</p>
                 </div>
             </div>
 

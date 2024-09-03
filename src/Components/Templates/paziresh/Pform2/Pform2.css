@@ -8,6 +8,10 @@
     padding: 24px
 }
 
+.wide {
+    width: 100%;
+}
+
 .p-form2-content {
     max-height: 70vh;
     overflow-y: scroll;
@@ -44,7 +48,6 @@
 
 .amount-fuel-content,
 .amount-cng-content {
-    margin-right: 4rem;
     display: flex;
     align-items: center;
 }
@@ -192,6 +195,7 @@
 
 .belongings-wrapper {
     display: flex;
+    flex-wrap: wrap;
     align-items: start;
     justify-content: space-between;
     margin-top: 1rem;
@@ -212,6 +216,7 @@
 
 .belongings-item-container {
     display: flex;
+    flex-wrap: wrap;
     align-items: start;
     justify-content: space-between;
 
@@ -223,4 +228,80 @@
 
 .belonging2 {
     width: 95%;
+}
+
+
+
+@media (max-width:1587px) {
+    .codecar-itemes {
+        width: 80%;
+    }
+}
+
+@media (max-width:1351px) {
+    .map-drop_wrapper {
+        width: 90%;
+    }
+}
+
+@media (max-width:1346px) {
+    .belongings1 {
+        width: 80%;
+    }
+}
+
+
+@media (max-width:1262px) {
+    .f-text {
+        margin: 0 .5rem;
+    }
+}
+
+@media (max-width:1241px) {
+    .p-form2-row4 {
+        width: 85%;
+    }
+
+    .map-drop_wrapper {
+        width: 95%;
+    }
+}
+
+@media (max-width:1200px) {
+    .numbers-tire {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+
+@media (max-width:1191px) {
+    .map-drop_wrapper {
+        width: 90%;
+    }
+}
+
+@media (max-width:1182px) {
+    .codecar-itemes {
+        width: 90%;
+    }
+}
+
+@media (max-width:1113px) {
+    .amount-wrapper {
+        width: 100%;
+    }
+}
+
+
+@media (max-width:768px) {
+    .belongings1 {
+        width: 70%;
+    }
+}
+
+@media (max-width:600px) {
+    .belongings1 {
+        width: 100%;
+    }
 }

@@ -16,16 +16,18 @@ import CarModal from '../../../Modules/CarModal/CarModal'
 import DropDown from '../../../Modules/DropDown/DropDown'
 import PartMachine from './PartMachine/PartMachine'
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
-
+import { useContext } from 'react'
+import { MyContext } from '../../../../context/context'
 export default function Pform2() {
 
     const [otherCar, setotherCar] = useState(false)
     const [otherColor, setotherColor] = useState(false)
+    const { isOpen } = useContext(MyContext)
 
     return (
         <>
             <CarModal />
-            <div className='form2-container'>
+            <div className={`form2-container ${isOpen ? "wide" : ""}`}>
                 <Formik
                     validate={(values) => {
                         const errors = {};
@@ -134,16 +136,16 @@ export default function Pform2() {
                                     </Col>
                                 </div>
                                 <div className='p-form2-row2'>
-                                    <Col md={5}>
+                                    <Col md={6} lg={5}>
                                         <CodeCar
                                             name="number_plates"
                                             value={values.number_plates}
                                         />
                                     </Col>
-                                    <Col md={7} >
+                                    <Col md={6} lg={7}>
                                         <div className='amount-wrapper'>
                                             <div className="amount-fuel-wrapper my-4">
-                                                <span className='amount-fuel-text title-item-form'>میزان سوخت :</span>
+                                                <span className='amount-fuel-text title-item-form'>میزان سوخت</span>
                                                 <div className='amount-fuel-content'>
                                                     <span className='f-text'>F</span>
                                                     <InputRadio
@@ -178,7 +180,7 @@ export default function Pform2() {
                                                 </div>
                                             </div>
                                             <div className="amount-cng-wrapper my-4">
-                                                <span className='amount-cng-text title-item-form'>میزان CNG :</span>
+                                                <span className='amount-cng-text title-item-form'>میزان CNG</span>
                                                 <div className='amount-cng-content'>
                                                     <span className='f-text'>F</span>
                                                     <InputRadio
@@ -421,7 +423,7 @@ export default function Pform2() {
                                     </div>
                                 </div>
                                 <div className="p-form2-row7">
-                                    <Col md={3}>
+                                    <Col md={4} xl={3}>
                                         <div className='map-drop_wrapper'>
                                             <MapCar />
                                             <div className='mt-4'>
@@ -434,7 +436,7 @@ export default function Pform2() {
                                             </div>
                                         </div>
                                     </Col>
-                                    <Col md={9} className='part-machine-container'>
+                                    <Col md={8} xl={9} className='part-machine-container'>
                                         <Col md={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
@@ -458,49 +460,49 @@ export default function Pform2() {
                                 <div className='p-form2-row8'>
                                     <p className='title-item'>متعلقات خودرو</p>
                                     <div className='belongings-wrapper'>
-                                        <Col md={4} >
+                                        <Col xs={12} md={6} xl={4} >
                                             <div className='belongings'>
                                                 <span className='title-item-form '>متعلقات بدنه</span>
                                                 <div className='belongings-item-container belongings1'>
-                                                    <div>
+                                                    <Col xs={12} sm={6}>
                                                         <InputCheckBox value={"رکاب راست وچپ"} />
                                                         <InputCheckBox value={"گارد عقب وجلو"} />
                                                         <InputCheckBox value={"رینگ اسپرت"} />
                                                         <InputCheckBox value={"پروژکتور"} />
                                                         <InputCheckBox value={"آنتن"} />
-                                                    </div>
-                                                    <div>
+                                                    </Col>
+                                                    <Col xs={12} sm={6}>
                                                         <InputCheckBox value={"پلاک جلو"} />
                                                         <InputCheckBox value={"پلاک عقب"} />
-                                                    </div>
+                                                    </Col>
                                                 </div>
                                             </div>
                                         </Col>
-                                        <Col md={5}>
+                                        <Col xs={12} md={6} xl={5}>
                                             <div className='belongings'>
                                                 <span className='title-item-form '>متعلقات داخلی</span>
                                                 <div className='belongings-item-container belonging2'>
-                                                    <div>
+                                                    <Col xs={12} sm={4} md={6}>
                                                         <InputCheckBox value={"پخش صوت"} />
                                                         <InputCheckBox value={"کفپوش"} />
                                                         <InputCheckBox value={"آچار چرخ"} />
                                                         <InputCheckBox value={"مثلث خطر"} />
                                                         <InputCheckBox value={"چرخ زاپاس"} />
-                                                    </div>
-                                                    <div>
+                                                    </Col>
+                                                    <Col xs={12} sm={4} md={6}>
                                                         <InputCheckBox value={"دزدگیر"} />
                                                         <InputCheckBox value={"فندک"} />
                                                         <InputCheckBox value={"قالپاق"} />
                                                         <InputCheckBox value={"فلش"} />
-                                                    </div>
-                                                    <div>
+                                                    </Col>
+                                                    <Col xs={12} sm={4} md={6}>
                                                         <InputCheckBox value={"جاسیگاری"} />
                                                         <InputCheckBox value={"جک"} />
-                                                        <InputCheckBox value={"زه خودرو"} />                                                    </div>
+                                                        <InputCheckBox value={"زه خودرو"} />                                                    </Col>
                                                 </div>
                                             </div>
                                         </Col >
-                                        <Col md={3} >
+                                        <Col xs={12} md={4} xl={3} >
                                             <div className='belongings belongings-input d-flex flex-column'>
                                                 <span className='title-item-form '>سایر متعلقات</span>
                                                 <input type="text" className='input-belongings' />

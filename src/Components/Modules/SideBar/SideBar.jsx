@@ -1,27 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './SideBar.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faAlignRight, faNewspaper, faScrewdriverWrench, faLayerGroup, faBoxArchive, faChartPie, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import {
+    faHome,
+    faAlignRight,
+    faNewspaper,
+    faScrewdriverWrench,
+    faLayerGroup,
+    faBoxArchive,
+    faChartPie,
+    faRightToBracket
+}
+
+    from '@fortawesome/free-solid-svg-icons';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { MyContext } from '../../../context/context';
 export default function SideBar() {
 
     const navigate = useNavigate()
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggleDrawer = () => {
-        setIsOpen(!isOpen);
-    };
-
     const logoutHandler = () => {
         localStorage.removeItem('access')
         localStorage.removeItem("refresh")
         navigate("/login")
     }
 
+    const { toggleOpen, isOpen } = useContext(MyContext)
+
     return (
         <div className={`sidebar-container ${isOpen ? 'active-sidebar' : null} `}>
             <ul className="sidebarlist">
-                <li className="sidebar-item first-icon-sidebar" onClick={toggleDrawer}>
+                <li className="sidebar-item first-icon-sidebar" onClick={toggleOpen}>
                     <div className="icon-sidebar-wrapper">
                         <FontAwesomeIcon icon={faAlignRight} />
                     </div>
@@ -71,6 +80,6 @@ export default function SideBar() {
                     <p className="sidebar-item-text">خروج</p>
                 </li>
             </ul>
-        </div>
+        </div >
     )
 }

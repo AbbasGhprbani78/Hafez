@@ -45,53 +45,56 @@ export default function CodeCar({ name, value }) {
     return (
 
 
-        <div className='inputs-wrapper d-flex align-items-center justify-content-between' style={{ direction: "ltr" }}>
-            <div className='d-flex flex-column align-items-center'>
-                <input
-                    className='input-carector'
-                    type="text"
-                    value={inputs[0]}
-                    onChange={(e) => handleInputChange(0, e)}
-                    ref={el => inputRefs.current[0] = el}
-                />
-                <span className='text-carector'>عدد 2 تایی</span>
-            </div>
+        <div className='inputs-wrapper' style={{ direction: "ltr" }}>
+            <div className='d-flex align-items-center justify-content-between codecar-itemes'>
+                <div className='d-flex flex-column align-items-center'>
+                    <input
+                        className='input-carector'
+                        type="text"
+                        value={inputs[0]}
+                        onChange={(e) => handleInputChange(0, e)}
+                        ref={el => inputRefs.current[0] = el}
+                    />
+                    <span className='text-carector'>عدد 2 تایی</span>
+                </div>
 
-            <div className='d-flex flex-column align-items-center'>
-                <input
-                    className='input-carector'
-                    type="text"
-                    value={inputs[1]}
-                    onChange={(e) => handleInputChange(1, e)}
-                    ref={el => inputRefs.current[1] = el}
-                />
-                <span className='text-carector'>حرف</span>
-            </div>
+                <div className='d-flex flex-column align-items-center'>
+                    <input
+                        className='input-carector'
+                        type="text"
+                        value={inputs[1]}
+                        onChange={(e) => handleInputChange(1, e)}
+                        ref={el => inputRefs.current[1] = el}
+                    />
+                    <span className='text-carector'>حرف</span>
+                </div>
 
-            <div className='d-flex flex-column align-items-center'>
-                <input
-                    className='input-carector'
-                    type="text"
-                    value={inputs[2]}
-                    onChange={(e) => handleInputChange(2, e)}
-                    ref={el => inputRefs.current[2] = el}
-                />
-                <span className='text-carector'>عدد 3 تایی</span>
-            </div>
+                <div className='d-flex flex-column align-items-center'>
+                    <input
+                        className='input-carector'
+                        type="text"
+                        value={inputs[2]}
+                        onChange={(e) => handleInputChange(2, e)}
+                        ref={el => inputRefs.current[2] = el}
+                    />
+                    <span className='text-carector'>عدد 3 تایی</span>
+                </div>
 
-            <div className='d-flex flex-column align-items-center'>
-                <input
-                    className='input-carector'
-                    type="text"
-                    value={inputs[3]}
-                    placeholder='ایران'
-                    onChange={(e) => handleInputChange(3, e)}
-                    ref={el => inputRefs.current[3] = el}
-                />
-                <span className='text-carector' >عدد 2 تایی</span>
+                <div className='d-flex flex-column align-items-center'>
+                    <input
+                        className='input-carector'
+                        type="text"
+                        value={inputs[3]}
+                        placeholder='ایران'
+                        onChange={(e) => handleInputChange(3, e)}
+                        ref={el => inputRefs.current[3] = el}
+                    />
+                    <span className='text-carector' >عدد 2 تایی</span>
+                </div>
             </div>
-
-            <p className='code-car title-item-form'> : شماره پلاک</p>
+            <p className='code-car title-item-form '> : شماره پلاک</p>
         </div>
     )
 }
+
+

@@ -39,7 +39,7 @@ function App() {
           }
         }
       } else {
-        navigate('/login')
+        // navigate('/login')
       }
     }
 

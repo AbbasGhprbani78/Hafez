@@ -89,3 +89,15 @@
     font-size: .9rem;
     width: max-content;
 }
+
+
+@media (max-width:600px) {
+    .pragress-wrapper {
+        margin-left: 0;
+    }
+
+    .pragress-Container {
+        width: 250px;
+        margin: 0 auto 30px auto;
+    }
+}
