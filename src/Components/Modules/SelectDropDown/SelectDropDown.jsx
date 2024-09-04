@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './SelectDropDown.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useFormikContext } from 'formik';
 
 export default function SelectDropDown({ icon, label, items, name, setother }) {
 
-    const { setFieldValue } = useFormikContext();
     const [options] = useState(items);
     const [filteredOptions, setFilteredOptions] = useState(options);
     const [inputValue, setInputValue] = useState("");
@@ -21,7 +19,6 @@ export default function SelectDropDown({ icon, label, items, name, setother }) {
 
     const handleOptionClick = (option) => {
         setInputValue(option);
-        setFieldValue(name, option);
         setShowOptions(false);
     };
 
@@ -73,7 +70,6 @@ export default function SelectDropDown({ icon, label, items, name, setother }) {
                                     <li className='car-item' onClick={() => {
                                         setShowOptions(false)
                                         setother(true)
-                                        setFieldValue(name, "")
                                         setInputValue("")
                                     }
                                     } >

@@ -140,7 +140,6 @@
     align-items: center;
     justify-content: space-between;
     width: max-content;
-    width: 95%;
 }
 
 .detail-vehicle-condition-item {
@@ -238,6 +237,9 @@
     flex-wrap: wrap;
 }
 
+.dropwidth3 {
+    margin-top: 1.3rem;
+}
 
 @media (max-width:1587px) {
     .codecar-itemes {
@@ -345,6 +347,12 @@
 @media (max-width:860px) {
     .p-form2-row4 {
         width: 100%;
+    }
+}
+
+@media (max-width:848px) {
+    .vehicle-condition-item {
+        width: 95%;
     }
 }
 
@@ -507,6 +515,10 @@
     }
 
     .belongings-input {
+        width: 100%;
+    }
+
+    .vehicle-condition-item {
         width: 100%;
     }
 }

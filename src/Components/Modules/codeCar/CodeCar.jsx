@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './CodeCar.css'
-import { useFormikContext } from 'formik';
 export default function CodeCar({ name, value }) {
     const [inputs, setInputs] = useState(["", "", "", ""]);
     const finalPlates = inputs.join("")
-    const { setFieldValue } = useFormikContext();
     useEffect(() => {
-        setFieldValue(name, finalPlates)
+        // setFieldValue(name, finalPlates)
     }, [inputs])
     const inputRefs = useRef([]);
 
