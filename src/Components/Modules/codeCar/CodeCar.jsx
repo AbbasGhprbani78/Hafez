@@ -92,7 +92,7 @@ export default function CodeCar({ name, value }) {
                     <span className='text-carector' >عدد 2 تایی</span>
                 </div>
             </div>
-            <p className='code-car title-item-form '> : شماره پلاک</p>
+            <p className='code-car title-item-form '> شماره پلاک</p>
         </div>
     )
 }

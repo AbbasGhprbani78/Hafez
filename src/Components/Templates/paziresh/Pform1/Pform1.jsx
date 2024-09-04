@@ -163,7 +163,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.owner_name && touched.owner_name && <span className='error'>{errors.owner_name}</span>}
                                             </Col>
-                                            <Col className='mb-4 mb-lg-0' l xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' l xs={12} md={4}>
                                                 <Input
                                                     label="نام خانوادگی مالک"
                                                     styled={"inputwidth"}
@@ -176,7 +176,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.owner_lastname && touched.owner_lastname && <span className='error'>{errors.owner_lastname}</span>}
                                             </Col>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره تماس مالک"
                                                     styled={"inputwidth"}
@@ -190,8 +190,8 @@ export default function Pform1() {
                                                 {errors.phone_number && touched.phone_number && <span className='error'>{errors.phone_number}</span>}
                                             </Col>
                                         </div>
-                                        <div className='p-form1-row mt-4'>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                        <div className='p-form1-row'>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="کد ملی مالک"
                                                     styled={"inputwidth"}
@@ -204,7 +204,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.nattion_code_owner && touched.nattion_code_owner && <span className='error'>{errors.nattion_code_owner}</span>}
                                             </Col>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره تماس مالک"
                                                     styled={"inputwidth"}
@@ -217,7 +217,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.phone_number_owner && touched.phone_number_owner && <span className='error'>{errors.phone_number_owner}</span>}
                                             </Col>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره هرم"
                                                     styled={"inputwidth"}
@@ -241,7 +241,7 @@ export default function Pform1() {
                                             {errors.address && touched.address && <span className='error'>{errors.address}</span>}
                                         </div>
                                         <div className='p-form1-row mt-4'>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="نام آورنده"
                                                     styled={"inputwidth"}
@@ -254,7 +254,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.name_bearer && touched.name_bearer && <span className='error'>{errors.name_bearer}</span>}
                                             </Col>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="نام خانوادگی آورنده"
                                                     styled={"inputwidth"}
@@ -267,7 +267,7 @@ export default function Pform1() {
                                                 />
                                                 {errors.last_name_bearer && touched.last_name_bearer && <span className='error'>{errors.last_name_bearer}</span>}
                                             </Col>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={4}>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                                 <Input
                                                     label="شماره تماس آورنده"
                                                     styled={"inputwidth"}
@@ -281,7 +281,7 @@ export default function Pform1() {
                                                 {errors.phone_number_bearer && touched.phone_number_bearer && <span className='error'>{errors.phone_number_bearer}</span>}
                                             </Col>
                                         </div>
-                                        <div className='p-form-row2 mt-5'>
+                                        <div className='p-form-row2 mt-md-5'>
                                             <p className='complete-info'>اطلاعات تکمیلی :</p>
                                             <div className="p-form2-complete">
                                                 <Col xs={12} md={6} >
@@ -479,7 +479,7 @@ export default function Pform1() {
                                            <div className='co-row'>
                                              <Col xs={12} md={7}>
                                                 <div className="p-form1-row">
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="نام شرکت"
                                                             styled={"inputwidth2"}
@@ -492,7 +492,7 @@ export default function Pform1() {
                                                         />
                                                         {errors.company_name && touched.company_name && <span className='error'>{errors.company_name}</span>}
                                                     </Col>
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="شماره تماس"
                                                             styled={"inputwidth2"}
@@ -508,7 +508,7 @@ export default function Pform1() {
                                                 </div>
                                             </Col>
                                             <Col xs={12} md={5} className='p-form1-contant-tab2-left'>
-                                                <Col className='tab2-left-item mb-4 mb-lg-0'>
+                                                <Col className='tab2-left-item mb-4 mb-md-0'>
                                                     <Input
                                                         label="شماره هرم"
                                                         styled={"inputwidth2"}
@@ -523,10 +523,10 @@ export default function Pform1() {
                                                 </Col>
                                             </Col>
                                            </div>
-                                          <div className='co-row mt-lg-4'>
+                                          <div className='co-row mt-md-4'>
                                             <Col xs={12} md={7}>
                                                 <div className="p-form1-row">
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="شناسه ملی"
                                                             styled={"inputwidth2"}
@@ -539,7 +539,7 @@ export default function Pform1() {
                                                         />
                                                         {errors.national_code && touched.national_code && <span className='error'>{errors.national_code}</span>}
                                                     </Col>
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="کد اقتصادی"
                                                             styled={"inputwidth2"}
@@ -555,7 +555,7 @@ export default function Pform1() {
                                                 </div>
                                             </Col>
                                             <Col xs={12} md={5} className='p-form1-contant-tab2-left'>
-                                                <Col className=' tab2-left-item mb-4 mb-lg-0'>
+                                                <Col className=' tab2-left-item mb-4 mb-md-0'>
                                                     <Input
                                                         label="شماره تماس"
                                                         styled={"inputwidth2"}
@@ -570,8 +570,8 @@ export default function Pform1() {
                                                 </Col>
                                             </Col>
                                           </div>
-                                           <div className='co-row mt-lg-4'>
-                                            <Col className='mb-4 mb-lg-0' xs={12} md={7}>
+                                           <div className='co-row mt-md-4'>
+                                            <Col className='mb-4 mb-md-0' xs={12} md={7}>
                                                 <Col xs={12} md={6}>
                                                     <Input
                                                         label="کدپستی"
@@ -586,7 +586,7 @@ export default function Pform1() {
                                                     {errors.postal_code && touched.postal_code && <span className='error'>{errors.postal_code}</span>}
                                                 </Col>
                                             </Col>
-                                            <Col xs={12} md={5} className='p-form1-contant-tab2-left mb-4 mb-lg-0'>
+                                            <Col xs={12} md={5} className='p-form1-contant-tab2-left mb-4 mb-md-0'>
                                                 <Col xs={12} md={6} className='tab2-left-item'>
                                                     <span style={{ marginRight: "8px" }} className='title-item-form mb-2'>نحوه نوبت دهی :</span>
                                                     <DropDown
@@ -600,7 +600,7 @@ export default function Pform1() {
                                                 </Col>
                                             </Col>
                                            </div>
-                                        <div className='co-row mt-lg-4'>
+                                        <div className='co-row mt-md-4'>
                                             <Col xs={12} md={6} >
                                                 <div className="texteara-co-row">
                                                     <Texteara
@@ -613,7 +613,7 @@ export default function Pform1() {
                                                </div>
                                             </Col>
                                             <Col xs={12} md={6} className=''>
-                                                <div className='mt-4 mt-lg-0 tab2-refer-wrapper'>
+                                                <div className='mt-4 mt-md-0 tab2-refer-wrapper'>
                                                     <span className='title-item-form'>نحوه مراجعه</span>
                                                     <div className='refrer-option'>
                                                         <InputRadio
@@ -648,9 +648,9 @@ export default function Pform1() {
                                             </Col>
                                         </div>
                                         <div className='p-form1-contant-tab2-botton'>
-                                            <Col xs={12} md={6}>
+                                            <Col xs={12} md={7} lg={6}>
                                                 <div className="p-form1-row mt-4">
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="نام آورنده"
                                                             styled={"inputwidth2"}
@@ -663,7 +663,7 @@ export default function Pform1() {
                                                         />
                                                         {errors.bearer_name && touched.bearer_name && <span className='error'>{errors.bearer_name}</span>}
                                                     </Col>
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="نام خانوادگی آورنده"
                                                             styled={"inputwidth2"}
@@ -678,7 +678,7 @@ export default function Pform1() {
                                                     </Col>
                                                 </div>
                                                 <div className="p-form1-row mt-4">
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="کد ملی آورنده"
                                                             styled={"inputwidth2"}
@@ -691,7 +691,7 @@ export default function Pform1() {
                                                         />
                                                         {errors.bearer_national && touched.bearer_national && <span className='error'>{errors.bearer_national}</span>}
                                                     </Col>
-                                                    <Col className='mb-4 mb-lg-0' xs={12} md={6}>
+                                                    <Col className='mb-4 mb-md-0' xs={12} md={6}>
                                                         <Input
                                                             label="شماره تماس آورنده"
                                                             styled={"inputwidth2"}

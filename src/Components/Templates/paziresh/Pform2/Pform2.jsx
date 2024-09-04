@@ -64,7 +64,7 @@ export default function Pform2() {
                         <form onSubmit={handleSubmit}>
                             <div className='p-form2-content'>
                                 <div className='p-form2-row'>
-                                    <Col md={4}>
+                                    <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                         <SelectDropDown
                                             icon={faAngleDown}
                                             label={"نوع خودرو"}
@@ -76,7 +76,7 @@ export default function Pform2() {
                                     </Col>
                                     {
                                         otherCar &&
-                                        <Col md={4}>
+                                        <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                             <Input
                                                 label="سایر"
                                                 styled={"widthinput"}
@@ -88,7 +88,7 @@ export default function Pform2() {
                                         </Col>
                                     }
 
-                                    <Col md={4}>
+                                    <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                         <Input
                                             label="شماره شاسی"
                                             styled={"widthinput"}
@@ -100,8 +100,8 @@ export default function Pform2() {
                                         />
                                     </Col>
                                 </div>
-                                <div className='p-form2-row  mt-4'>
-                                    <Col md={4}>
+                                <div className='p-form2-row mt-md-4'>
+                                    <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                         <SelectDropDown
                                             icon={faAngleDown}
                                             label={"رنگ"}
@@ -112,7 +112,7 @@ export default function Pform2() {
                                     </Col>
                                     {
                                         otherColor &&
-                                        <Col md={4}>
+                                        <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                             <Input
                                                 label="سایر"
                                                 styled={"widthinput"}
@@ -123,7 +123,7 @@ export default function Pform2() {
                                             />
                                         </Col>
                                     }
-                                    <Col md={4}>
+                                    <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                         <Input
                                             label="کارکرد خودرو"
                                             styled={"widthinput"}
@@ -136,46 +136,57 @@ export default function Pform2() {
                                     </Col>
                                 </div>
                                 <div className='p-form2-row2'>
-                                    <Col md={6} lg={5}>
+                                    <Col xs={12} lg={5}>
                                         <CodeCar
                                             name="number_plates"
                                             value={values.number_plates}
                                         />
                                     </Col>
-                                    <Col md={6} lg={7}>
+                                    <Col className='mt-4 mt-lg-0' xs={12} lg={7}>
                                         <div className='amount-wrapper'>
                                             <div className="amount-fuel-wrapper my-4">
                                                 <span className='amount-fuel-text title-item-form'>میزان سوخت</span>
                                                 <div className='amount-fuel-content'>
                                                     <span className='f-text'>F</span>
-                                                    <InputRadio
-                                                        text="100%"
-                                                        marginRight={"input-amount"}
-                                                        value={100}
-                                                        onChange={() => setFieldValue('amount_fuel', 100)}
-                                                        checked={values.amount_fuel === 100}
-                                                    />
-                                                    <InputRadio
-                                                        text="75%"
-                                                        marginRight={"input-amount"}
-                                                        value={75}
-                                                        onChange={() => setFieldValue('amount_fuel', 75)}
-                                                        checked={values.amount_fuel === 75}
-                                                    />
-                                                    <InputRadio
-                                                        text="50%"
-                                                        marginRight={"input-amount"}
-                                                        value={50}
-                                                        onChange={() => setFieldValue('amount_fuel', 50)}
-                                                        checked={values.amount_fuel === 50}
-                                                    />
-                                                    <InputRadio
-                                                        text="25%"
-                                                        marginRight={"input-amount"}
-                                                        value={25}
-                                                        onChange={() => setFieldValue('amount_fuel', 25)}
-                                                        checked={values.amount_fuel === 25}
-                                                    />
+                                                    <div className='radio-fuel-wrapper'>
+                                                        <div className='radio-fuel-item'>
+                                                            <InputRadio
+                                                                text="100%"
+                                                                marginRight={"input-amount"}
+                                                                value={100}
+                                                                onChange={() => setFieldValue('amount_fuel', 100)}
+                                                                checked={values.amount_fuel === 100}
+                                                            />
+                                                        </div>
+                                                        <div className='radio-fuel-item'>
+                                                            <InputRadio
+                                                                text="75%"
+                                                                marginRight={"input-amount"}
+                                                                value={75}
+                                                                onChange={() => setFieldValue('amount_fuel', 75)}
+                                                                checked={values.amount_fuel === 75}
+                                                            />
+                                                        </div>
+                                                        <div className='radio-fuel-item' >
+                                                            <InputRadio
+                                                                text="50%"
+                                                                marginRight={"input-amount"}
+                                                                value={50}
+                                                                onChange={() => setFieldValue('amount_fuel', 50)}
+                                                                checked={values.amount_fuel === 50}
+                                                            />
+                                                        </div>
+                                                        <div className='radio-fuel-item' >
+                                                            <InputRadio
+                                                                text="25%"
+                                                                marginRight={"input-amount"}
+                                                                value={25}
+                                                                onChange={() => setFieldValue('amount_fuel', 25)}
+                                                                checked={values.amount_fuel === 25}
+                                                            />
+                                                        </div>
+                                                    </div>
+
                                                     <span className='f-text'>E</span>
                                                 </div>
                                             </div>
@@ -183,34 +194,44 @@ export default function Pform2() {
                                                 <span className='amount-cng-text title-item-form'>میزان CNG</span>
                                                 <div className='amount-cng-content'>
                                                     <span className='f-text'>F</span>
-                                                    <InputRadio
-                                                        text="100%"
-                                                        marginRight={"input-amount"}
-                                                        value={100}
-                                                        onChange={() => setFieldValue('cng_mount', 100)}
-                                                        checked={values.cng_mount === 100}
-                                                    />
-                                                    <InputRadio
-                                                        text="75%"
-                                                        marginRight={"input-amount"}
-                                                        value={75}
-                                                        onChange={() => setFieldValue('cng_mount', 75)}
-                                                        checked={values.cng_mount === 75}
-                                                    />
-                                                    <InputRadio
-                                                        text="50%"
-                                                        marginRight={"input-amount"}
-                                                        value={50}
-                                                        onChange={() => setFieldValue('cng_mount', 50)}
-                                                        checked={values.cng_mount === 50}
-                                                    />
-                                                    <InputRadio
-                                                        text="25%"
-                                                        marginRight={"input-amount"}
-                                                        value={25}
-                                                        onChange={() => setFieldValue('cng_mount', 25)}
-                                                        checked={values.cng_mount === 25}
-                                                    />
+                                                    <div className='radio-fuel-wrapper'>
+                                                        <div className='radio-fuel-item'>
+                                                            <InputRadio
+                                                                text="100%"
+                                                                marginRight={"input-amount"}
+                                                                value={100}
+                                                                onChange={() => setFieldValue('cng_mount', 100)}
+                                                                checked={values.cng_mount === 100}
+                                                            />
+                                                        </div>
+                                                        <div className='radio-fuel-item'>
+                                                            <InputRadio
+                                                                text="75%"
+                                                                marginRight={"input-amount"}
+                                                                value={75}
+                                                                onChange={() => setFieldValue('cng_mount', 75)}
+                                                                checked={values.cng_mount === 75}
+                                                            />
+                                                        </div>
+                                                        <div className='radio-fuel-item'>
+                                                            <InputRadio
+                                                                text="50%"
+                                                                marginRight={"input-amount"}
+                                                                value={50}
+                                                                onChange={() => setFieldValue('cng_mount', 50)}
+                                                                checked={values.cng_mount === 50}
+                                                            />
+                                                        </div>
+                                                        <div className='radio-fuel-item'>
+                                                            <InputRadio
+                                                                text="25%"
+                                                                marginRight={"input-amount"}
+                                                                value={25}
+                                                                onChange={() => setFieldValue('cng_mount', 25)}
+                                                                checked={values.cng_mount === 25}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                     <span className='f-text'>E</span>
                                                 </div>
 
@@ -219,7 +240,7 @@ export default function Pform2() {
                                     </Col>
                                 </div>
                                 <div className='p-form2-row3'>
-                                    <Col md={5}>
+                                    <Col xs={12} md={7} lg={5}>
                                         <div className='tire-wear-wrapper'>
                                             <span className='title-item-form'>میزان فرسایش لاستیک ها</span>
                                             <div className="tire-wear-content">
@@ -263,7 +284,7 @@ export default function Pform2() {
                                             </div>
                                         </div>
                                     </Col>
-                                    <Col md={7}>
+                                    <Col xs={12} md={5} lg={7}>
                                         <div className='numbers-tire'>
                                             <Input
                                                 label={"تعداد لاستیک پنچر"}
@@ -337,9 +358,10 @@ export default function Pform2() {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div className="p-form2-row5">
-                                    <div className="title-item-form">تمیزی خودرو :</div>
-                                    <div className='mx-5'>
+                                    <div className="title-item-form">تمیزی خودرو</div>
+                                    <div className='mx-sm-5'>
                                         <ClearProgress
                                             name="car_cleanliness"
                                             value={values.car_cleanliness}
@@ -347,10 +369,11 @@ export default function Pform2() {
                                         />
                                     </div>
                                 </div>
+
                                 <div className="p-form2-row6">
                                     <p className='title-item'>وضعیت ظاهری خودرو/بدنه</p>
                                     <div className='vehicle-condition-wrapper'>
-                                        <Col md={4} className='vehicle-condition-item-content'>
+                                        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUpload
                                                     name="front_car"
@@ -362,7 +385,7 @@ export default function Pform2() {
                                                 </div>
                                             </div>
                                         </Col>
-                                        <Col md={4} className='vehicle-condition-item-content'>
+                                        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUpload
                                                     name="back_car"
@@ -374,7 +397,7 @@ export default function Pform2() {
                                                 </div>
                                             </div>
                                         </Col>
-                                        <Col md={4} className='vehicle-condition-item-content'>
+                                        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUpload
                                                     name="right_car"
@@ -386,7 +409,7 @@ export default function Pform2() {
                                                 </div>
                                             </div>
                                         </Col>
-                                        <Col md={4} className='mt-4 vehicle-condition-item-content'>
+                                        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUpload
                                                     name="left_car"
@@ -397,7 +420,7 @@ export default function Pform2() {
                                                     <p className='viewmore'>دیدن بیشتر</p>
                                                 </div>                                        </div>
                                         </Col>
-                                        <Col md={4} className='mt-4 vehicle-condition-item-content'>
+                                        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUpload
                                                     name="car_km"
@@ -408,7 +431,7 @@ export default function Pform2() {
                                                     <p className='viewmore'>دیدن بیشتر</p>
                                                 </div>                                        </div>
                                         </Col>
-                                        <Col md={4} className='mt-4 vehicle-condition-item-content'>
+                                        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUpload
                                                     name="engine_door_open"
@@ -422,37 +445,38 @@ export default function Pform2() {
                                         </Col>
                                     </div>
                                 </div>
+
                                 <div className="p-form2-row7">
-                                    <Col md={4} xl={3}>
+                                    <Col xs={12} lg={4} xl={3}>
                                         <div className='map-drop_wrapper'>
                                             <MapCar />
-                                            <div className='mt-4'>
-                                                <DropDown
-                                                    lable={"انتخاب تیپ خودرو"}
-                                                    items={["نوع 2", "نوع 1",]}
-                                                    onChange={""}
-                                                    name={""}
-                                                />
-                                            </div>
+                                            <DropDown
+                                                styled={"dropwidth3"}
+                                                lable={"انتخاب تیپ خودرو"}
+                                                items={["نوع 2", "نوع 1",]}
+                                                onChange={""}
+                                                name={""}
+                                            />
                                         </div>
                                     </Col>
-                                    <Col md={8} xl={9} className='part-machine-container'>
-                                        <Col md={4} className='part-machine-item'>
+
+                                    <Col xs={12} lg={8} xl={9} className='part-machine-container'>
+                                        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
-                                        <Col md={4} className='part-machine-item'>
+                                        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
-                                        <Col md={4} className='part-machine-item'>
+                                        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
-                                        <Col md={4} className='part-machine-item'>
+                                        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
-                                        <Col md={4} className='part-machine-item'>
+                                        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
-                                        <Col md={4} className='part-machine-item'>
+                                        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
                                             <PartMachine title={"1 سپر جلو"} />
                                         </Col>
                                     </Col>
@@ -502,21 +526,21 @@ export default function Pform2() {
                                                 </div>
                                             </div>
                                         </Col >
-                                        <Col xs={12} md={4} xl={3} >
+                                        <Col className='mt-4 mt-md-0' xs={12} md={4} xl={3} >
                                             <div className='belongings belongings-input d-flex flex-column'>
                                                 <span className='title-item-form '>سایر متعلقات</span>
                                                 <input type="text" className='input-belongings' />
                                             </div>
                                         </Col>
                                     </div>
-                                    <div className='mt-5'>
+                                    <div className='mt-4 mt-md-5'>
                                         <InputCheckBox value={"همه موارد"} />
                                     </div>
                                 </div>
-                            </div>
-                            <div className='p-form-actions'>
-                                <EditBtn />
-                                <ConfirmBtn type="submit" isSubmitting={isSubmitting} />
+                                <div className='p-form-actions'>
+                                    <EditBtn />
+                                    <ConfirmBtn type="submit" isSubmitting={isSubmitting} />
+                                </div>
                             </div>
                         </form>
                     )}

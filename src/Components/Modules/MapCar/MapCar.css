@@ -92,3 +92,38 @@
     width: 47%;
     border-radius: 10px;
 }
+
+@media (max-width:992px) {
+    .grid-container {
+        width: 30%;
+        margin-left: 4rem;
+    }
+}
+
+@media (max-width:860px) {
+    .grid-container {
+        width: 35%;
+        margin-left: 4rem;
+    }
+}
+
+@media (max-width:760px) {
+    .grid-container {
+        width: 45%;
+        margin-left: 4rem;
+    }
+}
+
+@media (max-width:622px) {
+    .grid-container {
+        width: 50%;
+        margin-left: 2rem;
+    }
+}
+
+@media (max-width:600px) {
+    .grid-container {
+        width: 90%;
+        margin-left: 0
+    }
+}

@@ -48,3 +48,14 @@
 input[type='range'] {
     accent-color: var(--color-1);
 }
+
+@media (max-width:440px) {
+    .range-container {
+        width: 95% !important;
+        margin: 0 auto;
+    }
+
+    .range-input {
+        height: 2.3px;
+    }
+}

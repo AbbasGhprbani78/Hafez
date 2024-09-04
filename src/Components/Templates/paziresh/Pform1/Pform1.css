@@ -292,6 +292,10 @@
 }
 
 @media (max-width:600px) {
+    .form1-container {
+        width: 100%;
+    }
+
     .options-services-wrappper {
         flex-direction: column;
     }
@@ -318,7 +322,7 @@
     }
 
     .p-form-actions {
-        margin-top: 1rem;
+        margin: 1rem 0 0 0;
         flex-direction: column;
         width: 100%;
         gap: 15px;
@@ -332,5 +336,21 @@
         display: flex;
         flex-direction: column;
         align-items: start;
+    }
+
+    .make-turn {
+        width: 100%;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+    }
+
+    .dropwidth {
+        width: 100%;
+    }
+
+    .p-form-row3 {
+        margin-top: 2rem;
     }
 }

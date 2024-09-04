@@ -19,7 +19,7 @@ export default function Paziresh() {
                     </div>
                     <div className='my-4'>
                         <ProgressBar setContent={setContent} />
-                        <Pform2 />
+                        <Pform1 />
                     </div>
                 </div>
             </div>

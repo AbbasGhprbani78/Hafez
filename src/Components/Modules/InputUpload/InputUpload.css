@@ -8,6 +8,7 @@
     font-size: clamp(.8rem, .9vw, 1rem);
     color: var(--color-1);
     font-weight: bold;
+    width: 100%;
 }
 
 .uploadInput-title {

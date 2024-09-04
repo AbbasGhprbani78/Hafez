@@ -41,3 +41,24 @@
         margin-bottom: 1rem;
     }
 }
+
+@media (max-width:992px) {
+    .inputs-wrapper {
+        flex-direction: row;
+    }
+}
+
+@media (max-width:600px) {
+    .inputs-wrapper {
+        flex-direction: column-reverse;
+        align-items: end;
+    }
+
+    .input-carector {
+        width: 38px;
+    }
+
+    .text-carector {
+        font-size: .8rem;
+    }
+}

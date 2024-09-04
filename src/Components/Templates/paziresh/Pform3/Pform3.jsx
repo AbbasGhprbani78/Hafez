@@ -66,7 +66,7 @@ export default function Pform3() {
                         </div>
 
                     </div>
-                    <div className='estimate-item'>
+                    <div className='mt-3 mt-sm-0 estimate-item'>
                         <div className='estimate-input'>
                             <Input
                                 label={"تخمین زمان تعمیر"}
@@ -116,11 +116,12 @@ export default function Pform3() {
                         </Table>
                     </TableContainer>
                 </div>
+                <div className='p-form-actions pt-3'>
+                    <EditBtn />
+                    <ConfirmBtn type="submit" isSubmitting={""} />
+                </div>
             </div>
-            <div className='p-form-actions pt-3'>
-                <EditBtn />
-                <ConfirmBtn type="submit" isSubmitting={""} />
-            </div>
+
         </div>
     )
 }

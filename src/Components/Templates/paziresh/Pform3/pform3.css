@@ -3,7 +3,8 @@
     margin: 1.5rem auto 0 auto;
     border-radius: var(--border-radius-1);
     box-shadow: var(--box-shadow-2);
-    padding: 24px
+    padding: 24px;
+    margin: 1.5rem auto 0 auto;
 }
 
 .p-form3-content {
@@ -41,6 +42,7 @@
     margin-top: .5rem;
     height: 25vh;
     width: 90%;
+    max-height: 340px !important;
 }
 
 .statements-text::placeholder {
@@ -118,4 +120,94 @@
     padding: 7px 15px;
     cursor: pointer;
     color: #fff;
+}
+
+@media (max-width:1130px) {
+    .pform3-container {
+        width: 100%;
+    }
+}
+
+
+@media (max-width:992px) {
+    .estimate-input {
+        width: 70%;
+    }
+}
+
+@media (max-width:768px) {
+
+    .statements-coustomer,
+    .statements-export {
+        width: 70%;
+    }
+
+    .estimate-input {
+        width: 85%;
+    }
+
+    .statements-container {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .p-form3-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width:600px) {
+    .pform3-container {
+        padding: 5px 10px;
+    }
+
+    .statements-container {
+        width: 100%;
+    }
+
+    .statements-text {
+        width: 100%;
+    }
+
+    .statements-coustomer,
+    .statements-export {
+        width: 95%;
+    }
+
+    .statements-content {
+        flex-direction: column;
+    }
+
+    .estimate-wrapper {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .pform3-container-table {
+        width: 100%;
+    }
+
+    .estimate-input {
+        width: 100%;
+    }
+
+    .estimate-item {
+        width: 100%;
+    }
+
+    .statements-media {
+        margin-right: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .statements-export,
+    .statements-coustomer {
+        margin-top: 2rem;
+    }
 }
