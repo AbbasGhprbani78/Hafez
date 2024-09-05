@@ -5,15 +5,18 @@ import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 import Pform2 from '../../Components/Templates/paziresh/Pform2/Pform2'
 import Pform3 from '../../Components/Templates/paziresh/Pform3/Pform3'
 import './Paziresh.css'
+import axios from 'axios'
 export default function Paziresh() {
     const [content, setContent] = useState("اطلاعات اولیه مشتری :")
-    const [currentTab, setCurrentTab] = useState(1);
+    const [currentTab, setCurrentTab] = useState(2);
+    const [form, setForm] = useState('')
 
     const [formData, setFormData] = useState({
         tab1: {},
         tab2: {},
         tab3: {}
     });
+
 
     const handleFormDataUpdate = (tab, data) => {
         setFormData(prevData => ({
@@ -25,6 +28,35 @@ export default function Paziresh() {
 
     const handleNextTab = () => {
         setCurrentTab(prevTab => prevTab + 1);
+    };
+
+    const handlePrevTab = () => {
+        setCurrentTab(prevTab => prevTab - 1);
+    }
+
+    const handleSubmit = async () => {
+        const formDataToSend = new FormData();
+
+        Object.keys(formData).forEach((tab) => {
+            Object.entries(formData[tab]).forEach(([key, value]) => {
+                formDataToSend.append(key, value);
+            });
+        });
+
+        try {
+
+            const response = axios.post("api/submit/", formDataToSend)
+
+            if (response.status === 200) {
+                console.log(response.data)
+            }
+
+
+            alert('Data submitted successfully!');
+        } catch (error) {
+            console.error('Error submitting data:', error);
+            alert('Error submitting data');
+        }
     };
 
 
@@ -44,8 +76,12 @@ export default function Paziresh() {
                             currentTab === 1 &&
                             <Pform1
                                 formData={formData.tab1}
-                                updateFormData={(data) => handleFormDataUpdate('tab1', data)}
+                                updateFormData={(data, form) => {
+                                    handleFormDataUpdate('tab1', data)
+                                    setForm(form)
+                                }}
                                 nextTab={handleNextTab}
+                                form={form}
                             />
 
                         }
@@ -55,6 +91,7 @@ export default function Paziresh() {
                                 formData={formData.tab1}
                                 updateFormData={(data) => handleFormDataUpdate('tab2', data)}
                                 nextTab={handleNextTab}
+                                prevTab={handlePrevTab}
                             />
 
                         }
@@ -64,6 +101,7 @@ export default function Paziresh() {
                                 formData={formData.tab1}
                                 updateFormData={(data) => handleFormDataUpdate('tab3', data)}
                                 nextTab={handleNextTab}
+                                prevTab={handlePrevTab}
                             />
 
                         }
@@ -77,31 +115,3 @@ export default function Paziresh() {
 
 
 
-// const handleSubmit = async () => {
-//     const formDataToSend = new FormData();
-
-//     // Convert the collected form data into FormData format
-//     Object.keys(formData).forEach((tab) => {
-//         Object.entries(formData[tab]).forEach(([key, value]) => {
-//             formDataToSend.append(key, value);
-//         });
-//     });
-
-//     try {
-//         // Example: Sending form data to an API endpoint
-//         const response = await fetch('/api/submit', {
-//             method: 'POST',
-//             body: formDataToSend, // Send as FormData
-//         });
-
-//         if (!response.ok) {
-//             throw new Error('Failed to submit data');
-//         }
-
-//         // Handle successful submission
-//         alert('Data submitted successfully!');
-//     } catch (error) {
-//         console.error('Error submitting data:', error);
-//         alert('Error submitting data');
-//     }
-// };

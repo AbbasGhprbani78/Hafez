@@ -17,7 +17,7 @@ import PartMachine from './PartMachine/PartMachine'
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
-export default function Pform2({ formData, updateFormData, nextTab }) {
+export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 
     const [otherCar, setotherCar] = useState(false)
     const [otherColor, setotherColor] = useState(false)
@@ -523,7 +523,7 @@ export default function Pform2({ formData, updateFormData, nextTab }) {
                             </div>
                         </div>
                         <div className='p-form-actions'>
-                            <EditBtn />
+                            <EditBtn onClick={prevTab} />
                             <ConfirmBtn type="submit" />
                         </div>
                     </div>
