@@ -2,29 +2,36 @@ import React, { useState, useRef, useEffect } from 'react';
 import './SelectDropDown.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function SelectDropDown({ icon, label, items, name, setother }) {
-
+export default function SelectDropDown({ icon, label, items, name, setother, formik }) {
     const [options] = useState(items);
     const [filteredOptions, setFilteredOptions] = useState(options);
-    const [inputValue, setInputValue] = useState("");
     const [showOptions, setShowOptions] = useState(false);
     const dropdownRef = useRef(null);
 
+    // Formik value for this field
+    const inputValue = formik.values[name];
+
     const handleInputChange = (e) => {
         const value = e.target.value;
-        setInputValue(value);
+        formik.setFieldValue(name, value);
         setFilteredOptions(options.filter(option => option.toLowerCase().includes(value.toLowerCase())));
         setShowOptions(true);
     };
 
     const handleOptionClick = (option) => {
-        setInputValue(option);
+        formik.setFieldValue(name, option);
+        if (option === 'سایر') {
+            formik.setFieldValue(name, option);
+            setother(true);
+        } else {
+            setother(false);
+            formik.setFieldValue(name, option);
+        }
         setShowOptions(false);
     };
 
     const handleInputFocus = () => {
         setShowOptions(true);
-        setother(false)
     };
 
     const handleClickOutside = (event) => {
@@ -57,31 +64,19 @@ export default function SelectDropDown({ icon, label, items, name, setother }) {
                 <FontAwesomeIcon icon={icon} className='select-car-icon' />
                 {showOptions && (
                     <ul className='list-cars'>
-                        {
-                            filteredOptions.length > 0 ?
-                                <>
-                                    {
-                                        filteredOptions.map((item, i) => (
-                                            <li key={i} className='car-item' onClick={() => handleOptionClick(item)}>
-                                                {item}
-                                            </li>
-                                        ))
-                                    }
-                                    <li className='car-item' onClick={() => {
-                                        setShowOptions(false)
-                                        setother(true)
-                                        setInputValue("")
-                                    }
-                                    } >
-                                        سایر
+                        {filteredOptions.length > 0 ? (
+                            <>
+                                {filteredOptions.map((item, i) => (
+                                    <li key={i} className='car-item' onClick={() => handleOptionClick(item)}>
+                                        {item}
                                     </li>
-                                </>
-
-                                :
-                                <li className='car-item'>
-                                    موردی یافت نشد
-                                </li>
-                        }
+                                ))}
+                            </>
+                        ) : (
+                            <li className='car-item'>
+                                موردی یافت نشد
+                            </li>
+                        )}
                     </ul>
                 )}
             </div>

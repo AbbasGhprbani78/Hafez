@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './CodeCar.css'
-export default function CodeCar({ name, value }) {
+export default function CodeCar({ name, value, onChange }) {
     const [inputs, setInputs] = useState(["", "", "", ""]);
     const finalPlates = inputs.join("")
     useEffect(() => {
-        // setFieldValue(name, finalPlates)
+        onChange(name, finalPlates)
     }, [inputs])
     const inputRefs = useRef([]);
 

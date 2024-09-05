@@ -50,7 +50,6 @@ export default function Pform1({ formData, updateFormData, nextTab, form }) {
 
     const [value, setValue] = useState(0);
     const [localData, setLocalData] = useState(formData);
-
     const phoneNumberRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
     const nationalIdRegex = /^[0-9]{10}$/
     const postalCodeRegex = /^[0-9]{10}$/;
