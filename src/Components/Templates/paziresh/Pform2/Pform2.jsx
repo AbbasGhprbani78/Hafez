@@ -7,7 +7,7 @@ import { Col } from 'react-bootstrap'
 import CodeCar from '../../../Modules/codeCar/CodeCar'
 import InputRadio from '../../../Modules/InputRadio/InputRadio'
 import ClearProgress from '../../../Modules/ClearProgress/ClearProgress'
-import InputUpload from '../../../Modules/InputUpload/InputUpload'
+import InputUloadPform2 from '../../../Modules/InputUpload/InputUloadPform2'
 import { faHashtag, faGauge, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import SelectDropDown from '../../../Modules/SelectDropDown/SelectDropDown'
 import MapCar from '../../../Modules/MapCar/MapCar'
@@ -31,6 +31,18 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     const [tireWear, setTireWear] = useState(null);
     const [spareTire, setSpareTire] = useState('');
     const [erosionRate, setErosionRate] = useState(null);
+    const [opneModal, setOpenModal] = useState(false)
+    const [imgImModal, setImgModal] = useState("")
+    const [modalText, setModalText] = useState('');
+    const [currentIndex, setCurrentIndex] = useState(null);
+    const [imgPartMachine, setImgPartMachine] = useState([
+        { part: "front_car", image: "", text: "" },
+        { part: "back_car", image: "", text: "" },
+        { part: "right_car", image: "", text: "" },
+        { part: "left_car", image: "", text: "" },
+        { part: "car_km", image: "", text: "" },
+        { part: "engine_door_open", image: "", text: "" }
+    ]);
 
 
 
@@ -55,6 +67,12 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
             .required('تعداد لاستیک پنچر را وارد کنید'),
         spare_tire: Yup.string().required('وضعیت لاستیک زاپاس را انتخاب کنید'),
         erosion_rate: Yup.number().required('میزان فرسایش را انتخاب کنید'),
+        car_parts: Yup.array().of(
+            Yup.object({
+                image: Yup.string().required('تصویر الزامی است'),
+                text: Yup.string().required('توضیحات الزامی است')
+            })
+        )
     });
 
     const formik = useFormik({
@@ -72,6 +90,16 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
             number_punctured_tires: '',
             spare_tire: '',
             erosion_rate: '',
+            car_cleanliness: 0,
+
+            car_parts: [
+                { part: "front_car", image: "", text: "" },
+                { part: "back_car", image: "", text: "" },
+                { part: "right_car", image: "", text: "" },
+                { part: "left_car", image: "", text: "" },
+                { part: "car_km", image: "", text: "" },
+                { part: "engine_door_open", image: "", text: "" }
+            ]
         },
         validationSchema,
         onSubmit: (values) => {
@@ -126,6 +154,20 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
         formik.setFieldValue('erosion_rate', value);
     };
 
+
+    const handleOpenModal = (index) => {
+        setCurrentIndex(index);
+        setModalText(formik.values.car_parts[index].text);
+        setOpenModal(true);
+    };
+
+    const handleSaveText = () => {
+        if (currentIndex !== null) {
+            formik.setFieldValue(`car_parts[${currentIndex}].text`, modalText);
+            setOpenModal(false)
+        }
+    };
+
     useEffect(() => {
         updateFormData(localData);
     }, [localData]);
@@ -133,7 +175,14 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 
     return (
         <>
-            <CarModal />
+            <CarModal
+                opneModal={opneModal}
+                setOpenModal={setOpenModal}
+                imgImModal={imgImModal}
+                modalText={modalText}
+                setModalText={setModalText}
+                handleSaveText={handleSaveText}
+            />
             <div className={`form2-container ${isOpen ? "wide" : ""}`}>
                 <form onSubmit={formik.handleSubmit}>
                     <div className='p-form2-content'>
@@ -372,7 +421,54 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                                 )}
                             </div>
                         </div>
-
+                        <div className="p-form2-row5">
+                            <div className="title-item-form">تمیزی خودرو</div>
+                            <div className='mx-sm-5'>
+                                <ClearProgress
+                                    name="car_cleanliness"
+                                    value={formik.values.car_cleanliness}
+                                    onChange={formik.handleChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="p-form2-row6">
+                            <p className='title-item'>وضعیت ظاهری خودرو/بدنه</p>
+                            <div className='vehicle-condition-wrapper'>
+                                {
+                                    formik.values.car_parts.map((item, index) => (
+                                        <Col key={index} xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
+                                            <div className='vehicle-condition-item'>
+                                                <InputUloadPform2
+                                                    name={`car_parts[${index}].image`}
+                                                    setImgModal={setImgModal}
+                                                    formik={formik}
+                                                />
+                                                <div className='detail-vehicle-condition-item'>
+                                                    <p className='vehicle-item-text'>
+                                                        {item.part === "front_car" ?
+                                                            "جلو ماشین" :
+                                                            item.part === "back_car" ?
+                                                                "عقب ماشین" :
+                                                                item.part === "right_car" ?
+                                                                    "سمت راست" :
+                                                                    item.part === "left_car" ?
+                                                                        "سمت چپ" :
+                                                                        item.part === "car_km" ?
+                                                                            "کیلومتر ماشین" :
+                                                                            item.part === "engine_door_open" ?
+                                                                                "درب موتور باز" :
+                                                                                null
+                                                        }
+                                                    </p>
+                                                    <p className='viewmore' onClick={() => handleOpenModal(index)}>دیدن بیشتر</p>
+                                                </div>
+                                            </div>
+                                            <p className='saved-text'>{item.text}</p>
+                                        </Col>
+                                    ))
+                                }
+                            </div>
+                        </div>
                         <div className='p-form-actions'>
                             <EditBtn onClick={prevTab} />
                             <ConfirmBtn type="submit" />
@@ -387,94 +483,17 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 
 
 
+// {
+//     formik.errors.car_parts && formik.errors.car_parts.map((partError, index) => (
+//         <div key={index}>
+//             {partError.image && <span className="error">{partError.image}</span>}
+//             {partError.text && <span className="error">{partError.text}</span>}
+//         </div>
+//     ))
+// }
 
 
-{/* <div className="p-form2-row5">
-    <div className="title-item-form">تمیزی خودرو</div>
-    <div className='mx-sm-5'>
-        <ClearProgress
-            name="car_cleanliness"
-            value={""}
-            onChange={""}
-        />
-    </div>
-</div>
-<div className="p-form2-row6">
-    <p className='title-item'>وضعیت ظاهری خودرو/بدنه</p>
-    <div className='vehicle-condition-wrapper'>
-        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
-            <div className='vehicle-condition-item'>
-                <InputUpload
-                    name="front_car"
-                    onChange={""}
-                />
-                <div className='detail-vehicle-condition-item'>
-                    <p className='vehicle-item-text'>جلو ماشین</p>
-                    <p className='viewmore'>دیدن بیشتر</p>
-                </div>
-            </div>
-        </Col>
-        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
-            <div className='vehicle-condition-item'>
-                <InputUpload
-                    name="back_car"
-                    onChange={""}
-                />
-                <div className='detail-vehicle-condition-item'>
-                    <p className='vehicle-item-text'>عقب ماشین</p>
-                    <p className='viewmore'>دیدن بیشتر</p>
-                </div>
-            </div>
-        </Col>
-        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
-            <div className='vehicle-condition-item'>
-                <InputUpload
-                    name="right_car"
-                    onChange={""}
-                />
-                <div className='detail-vehicle-condition-item'>
-                    <p className='vehicle-item-text'>سمت راست</p>
-                    <p className='viewmore'>دیدن بیشتر</p>
-                </div>
-            </div>
-        </Col>
-        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
-            <div className='vehicle-condition-item'>
-                <InputUpload
-                    name="left_car"
-                    onChange={""}
-                />
-                <div className='detail-vehicle-condition-item'>
-                    <p className='vehicle-item-text'>سمت چپ</p>
-                    <p className='viewmore'>دیدن بیشتر</p>
-                </div>                                        </div>
-        </Col>
-        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
-            <div className='vehicle-condition-item'>
-                <InputUpload
-                    name="car_km"
-                    onChange={""}
-                />
-                <div className='detail-vehicle-condition-item'>
-                    <p className='vehicle-item-text'>کیلومتر ماشین</p>
-                    <p className='viewmore'>دیدن بیشتر</p>
-                </div>                                        </div>
-        </Col>
-        <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
-            <div className='vehicle-condition-item'>
-                <InputUpload
-                    name="engine_door_open"
-                    onChange={""}
-                />
-                <div className='detail-vehicle-condition-item'>
-                    <p className='vehicle-item-text'>درب موتور باز</p>
-                    <p className='viewmore'>دیدن بیشتر</p>
-                </div>
-            </div>
-        </Col>
-    </div>
-</div>
-<div className="p-form2-row7">
+{/* <div className="p-form2-row7">
     <Col xs={12} lg={4} xl={3}>
         <div className='map-drop_wrapper'>
             <MapCar />
@@ -564,4 +583,4 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     <div className='mt-4 mt-md-5'>
         <InputCheckBox value={"همه موارد"} />
     </div>
-</div>   */}
+</div>    */}

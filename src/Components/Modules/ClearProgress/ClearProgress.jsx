@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ClearProgress.css';
 
 export default function ClearProgress({ name, value, onChange }) {
-    const [inputValue, setInputValue] = useState(0);
-
-
+  
     return (
         <div className='range-container'>
             <input

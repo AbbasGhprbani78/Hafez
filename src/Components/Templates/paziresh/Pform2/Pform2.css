@@ -131,14 +131,12 @@
 
 .vehicle-condition-item-content {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
 }
 
 .vehicle-condition-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
     width: max-content;
 }
 
@@ -239,6 +237,13 @@
 
 .dropwidth3 {
     margin-top: 1.3rem;
+}
+
+.saved-text {
+    width: 50%;
+    text-align: start;
+    margin-top: 1.2rem;
+    font-size: .9rem;
 }
 
 @media (max-width:1587px) {
