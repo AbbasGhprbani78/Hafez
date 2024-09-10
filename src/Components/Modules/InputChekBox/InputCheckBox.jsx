@@ -1,27 +1,32 @@
-import React from 'react'
-import './InputCheckBox.css'
-export default function InputCheckBox({ marginRight, onChange, isPermition, value, isdescription, checked }) {
+import React, { useState } from 'react';
+import './InputCheckBox.css';
+
+export default function InputCheckBox({ value, onChange, isdescription }) {
+    const [checked, setChecked] = useState(false);
+
+    const handleChange = (event) => {
+        const isChecked = event.target.checked;
+        setChecked(isChecked);
+        onChange(isChecked);
+    };
+
     return (
         <>
-            <div className={`checkbox-container mx-2 ${marginRight}`}>
+            <div className='checkbox-container mx-2'>
                 <input
                     type="checkbox"
                     className='check-input'
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={handleChange}
                     checked={checked}
                 />
-                <label htmlFor="" className='lable-check'>{value}</label>
-
+                <label className='label-check'>{value}</label>
             </div>
-            {
-                isdescription &&
+            {isdescription && (
                 <div className='wrap-checkbox-dec'>
                     <textarea className='wrap-checkbox textarea' placeholder='توضیحات'></textarea>
                 </div>
-            }
-
+            )}
         </>
-
-    )
+    );
 }

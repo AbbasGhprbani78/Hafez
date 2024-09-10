@@ -18,7 +18,6 @@ export default function Paziresh() {
     });
 
 
-    console.log(formData.tab2)
 
     const handleFormDataUpdate = (tab, data) => {
         setFormData(prevData => ({

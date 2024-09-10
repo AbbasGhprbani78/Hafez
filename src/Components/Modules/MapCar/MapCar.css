@@ -15,6 +15,7 @@
     justify-content: center;
     color: #fff;
     cursor: pointer;
+    background-color: #d9d9d9;
 }
 
 .item1 {
@@ -54,18 +55,6 @@
     left: 0;
 }
 
-.item1,
-.item2,
-.item3,
-.item4,
-.item5,
-.item7,
-.item8,
-.item9,
-.item10,
-.item11 {
-    background-color: #d9d9d9;
-}
 
 .item6 {
     background-color: #eeeeee;
@@ -91,6 +80,10 @@
 .item6 {
     width: 47%;
     border-radius: 10px;
+}
+
+.activepart {
+    background-color: var(--color-3);
 }
 
 @media (max-width:992px) {

@@ -35,15 +35,45 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     const [imgImModal, setImgModal] = useState("")
     const [modalText, setModalText] = useState('');
     const [currentIndex, setCurrentIndex] = useState(null);
-    const [imgPartMachine, setImgPartMachine] = useState([
-        { part: "front_car", image: "", text: "" },
-        { part: "back_car", image: "", text: "" },
-        { part: "right_car", image: "", text: "" },
-        { part: "left_car", image: "", text: "" },
-        { part: "car_km", image: "", text: "" },
-        { part: "engine_door_open", image: "", text: "" }
-    ]);
+    const [machineParts, setMachineParts] = useState([])
 
+
+    const carParts = [
+        {
+            number: 1,
+            name: "front part",
+            belongings: [
+                { name: "engine door", description: "" },
+                { name: "glass", description: "" },
+                { name: "Headlights", description: "" },
+                { name: "Front guides", description: "" },
+                { name: "fog breaker", description: "" },
+            ]
+        },
+        {
+            number: 2,
+            name: "back part",
+            belongings: [
+                { name: "Box door", description: "" },
+                { name: "glass", description: "" },
+                { name: "Headlights", description: "" },
+            ]
+        },
+        {
+            number: 3,
+            name: "Left front fender",
+            belongings: [
+                { name: "spread flowers", description: "" },
+            ]
+        },
+        {
+            number: 4,
+            name: "right front fender",
+            belongings: [
+                { name: "spread flowers", description: "" },
+            ]
+        },
+    ]
 
 
     const validationSchema = Yup.object({
@@ -67,7 +97,7 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
             .required('تعداد لاستیک پنچر را وارد کنید'),
         spare_tire: Yup.string().required('وضعیت لاستیک زاپاس را انتخاب کنید'),
         erosion_rate: Yup.number().required('میزان فرسایش را انتخاب کنید'),
-        car_parts: Yup.array().of(
+        car_image_desc: Yup.array().of(
             Yup.object({
                 image: Yup.string().required('تصویر الزامی است'),
                 text: Yup.string().required('توضیحات الزامی است')
@@ -91,15 +121,19 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
             spare_tire: '',
             erosion_rate: '',
             car_cleanliness: 0,
-
-            car_parts: [
+            car_image_desc: [
                 { part: "front_car", image: "", text: "" },
                 { part: "back_car", image: "", text: "" },
                 { part: "right_car", image: "", text: "" },
                 { part: "left_car", image: "", text: "" },
                 { part: "car_km", image: "", text: "" },
                 { part: "engine_door_open", image: "", text: "" }
-            ]
+            ],
+
+            car_part: {
+                vehicleType: "",
+            },
+            selectParts: []
         },
         validationSchema,
         onSubmit: (values) => {
@@ -157,13 +191,13 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 
     const handleOpenModal = (index) => {
         setCurrentIndex(index);
-        setModalText(formik.values.car_parts[index].text);
+        setModalText(formik.values.car_image_desc[index].text);
         setOpenModal(true);
     };
 
     const handleSaveText = () => {
         if (currentIndex !== null) {
-            formik.setFieldValue(`car_parts[${currentIndex}].text`, modalText);
+            formik.setFieldValue(`car_image_desc[${currentIndex}].text`, modalText);
             setOpenModal(false)
         }
     };
@@ -173,6 +207,50 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     }, [localData]);
 
 
+    const selectPart = (number) => {
+        const mainpart = carParts.find(part => part.number === number);
+        if (mainpart) {
+            const updatedParts = machineParts;
+            const isAlreadySelected = updatedParts.some(part => part.number === mainpart.number);
+
+            const newParts = isAlreadySelected
+                ? updatedParts.filter(part => part.number !== mainpart.number)
+                : [...updatedParts, mainpart];
+
+            setMachineParts(newParts)
+        }
+    };
+
+    const handleCheckBoxChange = (partNumber, belongingName, isChecked) => {
+        const updatedSelectParts = [...formik.values.selectParts];
+        const existingPartIndex = updatedSelectParts.findIndex(part => part.number === partNumber);
+
+        if (existingPartIndex !== -1) {
+
+            const existingPart = updatedSelectParts[existingPartIndex];
+            if (isChecked) {
+
+                existingPart.belongings.push({ name: belongingName, description: "" });
+            } else {
+
+                existingPart.belongings = existingPart.belongings.filter(b => b.name !== belongingName);
+                if (existingPart.belongings.length === 0) {
+                    updatedSelectParts.splice(existingPartIndex, 1);
+                }
+            }
+            updatedSelectParts[existingPartIndex] = existingPart;
+        } else if (isChecked) {
+            updatedSelectParts.push({
+                number: partNumber,
+                name: carParts.find(part => part.number === partNumber)?.name || '',
+                belongings: [{ name: belongingName, description: "" }]
+            });
+        }
+        const cleanedParts = updatedSelectParts.filter(part => part.belongings.length > 0);
+        formik.setFieldValue('selectParts', cleanedParts);
+    };
+
+    console.log(formik.values)
     return (
         <>
             <CarModal
@@ -435,11 +513,11 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                             <p className='title-item'>وضعیت ظاهری خودرو/بدنه</p>
                             <div className='vehicle-condition-wrapper'>
                                 {
-                                    formik.values.car_parts.map((item, index) => (
+                                    formik.values.car_image_desc.map((item, index) => (
                                         <Col key={index} xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                             <div className='vehicle-condition-item'>
                                                 <InputUloadPform2
-                                                    name={`car_parts[${index}].image`}
+                                                    name={`car_image_desc[${index}].image`}
                                                     setImgModal={setImgModal}
                                                     formik={formik}
                                                 />
@@ -469,6 +547,36 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                                 }
                             </div>
                         </div>
+                        <div className="p-form2-row7">
+                            <Col xs={12} lg={4} xl={3}>
+                                <div className='map-drop_wrapper'>
+                                    <MapCar
+                                        selectPart={selectPart}
+                                        selectParts={machineParts}
+                                    />
+                                    <DropDown
+                                        styled="dropwidth3"
+                                        lable="انتخاب تیپ خودرو"
+                                        items={["نوع 2", "نوع 1"]}
+                                        name="car_part.vehicleType"
+                                        onChange={formik.handleChange}
+                                        defaultValue={formik.values.car_part.vehicleType}
+                                    />
+                                </div>
+                            </Col>
+
+                            <Col xs={12} lg={8} xl={9} className='part-machine-container'>
+                                {machineParts.length > 0 && machineParts.map(part => (
+                                    <Col xs={12} sm={6} lg={4} className='part-machine-item' key={part.number}>
+                                        <PartMachine
+                                            part={part}
+                                            onCheckboxChange={(belongingName, isChecked) => handleCheckBoxChange(part.number, belongingName, isChecked)}
+                                        />
+                                    </Col>
+                                ))}
+                            </Col>
+
+                        </div>
                         <div className='p-form-actions'>
                             <EditBtn onClick={prevTab} />
                             <ConfirmBtn type="submit" />
@@ -484,7 +592,7 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 
 
 // {
-//     formik.errors.car_parts && formik.errors.car_parts.map((partError, index) => (
+//     formik.errors.car_image_desc && formik.errors.car_image_desc.map((partError, index) => (
 //         <div key={index}>
 //             {partError.image && <span className="error">{partError.image}</span>}
 //             {partError.text && <span className="error">{partError.text}</span>}
@@ -493,42 +601,8 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 // }
 
 
-{/* <div className="p-form2-row7">
-    <Col xs={12} lg={4} xl={3}>
-        <div className='map-drop_wrapper'>
-            <MapCar />
-            <DropDown
-                styled={"dropwidth3"}
-                lable={"انتخاب تیپ خودرو"}
-                items={["نوع 2", "نوع 1",]}
-                onChange={""}
-                name={""}
-            />
-        </div>
-    </Col>
 
-    <Col xs={12} lg={8} xl={9} className='part-machine-container'>
-        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
-            <PartMachine title={"1 سپر جلو"} />
-        </Col>
-        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
-            <PartMachine title={"1 سپر جلو"} />
-        </Col>
-        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
-            <PartMachine title={"1 سپر جلو"} />
-        </Col>
-        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
-            <PartMachine title={"1 سپر جلو"} />
-        </Col>
-        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
-            <PartMachine title={"1 سپر جلو"} />
-        </Col>
-        <Col xs={12} sm={6} lg={4} className='part-machine-item'>
-            <PartMachine title={"1 سپر جلو"} />
-        </Col>
-    </Col>
-</div>
-<div className='p-form2-row8'>
+{/* <div className='p-form2-row8'>
     <p className='title-item'>متعلقات خودرو</p>
     <div className='belongings-wrapper'>
         <Col xs={12} md={6} xl={4} >
@@ -583,4 +657,4 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     <div className='mt-4 mt-md-5'>
         <InputCheckBox value={"همه موارد"} />
     </div>
-</div>    */}
+</div>     */}

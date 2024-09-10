@@ -376,7 +376,6 @@ export default function Pform1({ formData, updateFormData, nextTab, form }) {
                                                     items={["تلفنی", "بدون اخذ نوبت", "حضوری", "اینترنتی"]}
                                                     onChange={formik.handleChange}
                                                     name="make_turn"
-                                                    value={formik.values.make_turn}
                                                     defaultValue={formik.values.make_turn}
                                                 />
                                                 {formik.errors.make_turn && formik.touched.make_turn && (
@@ -426,12 +425,14 @@ export default function Pform1({ formData, updateFormData, nextTab, form }) {
                                     <p className='title-item-form'>نوع خدمات </p>
                                     <div className='options-services-wrappper'>
                                         {["مکانیک", "زیر و بندسازی", "نقاشی", "برق", "صافکاری", "اتوسرویس", "آپاراتی", "تزئینات", "آپشن", "سرویس سریع", "تعمیراتی"].map(service => (
-                                            <InputCheckBox
-                                                key={service}
-                                                value={service}
-                                                onChange={handleCheckboxChange}
-                                                checked={formik.values.type_of_service.includes(service)}
-                                            />
+                                            <Col md={4}>
+                                                <InputCheckBox
+                                                    key={service}
+                                                    value={service}
+                                                    onChange={handleCheckboxChange}
+                                                    checked={formik.values.type_of_service.includes(service)}
+                                                />
+                                            </Col>
                                         ))}
                                     </div>
                                     {formik.errors.type_of_service && formik.touched.type_of_service && (
