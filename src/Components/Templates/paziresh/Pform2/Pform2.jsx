@@ -36,6 +36,8 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     const [modalText, setModalText] = useState('');
     const [currentIndex, setCurrentIndex] = useState(null);
     const [machineParts, setMachineParts] = useState([])
+    const [selectAll, setSelectAll] = useState(false);
+
 
 
     const carParts = [
@@ -133,7 +135,13 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
             car_part: {
                 vehicleType: "",
             },
-            selectParts: []
+            selectParts: [],
+
+            Car_accessories: {
+                Body_accessories: [],
+                Interior_accessories: [],
+                Other_accessories: ""
+            }
         },
         validationSchema,
         onSubmit: (values) => {
@@ -174,7 +182,6 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
         setTireWear(Number(event.target.value));
         formik.setFieldValue('tireWear', Number(event.target.value));
     };
-
 
     const handleSpareTireChange = (event) => {
         const value = event.target.value;
@@ -263,8 +270,65 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
         formik.setFieldValue('selectParts', cleanedParts);
     };
 
+    const chnageCheckboxBodyAccessories = (value) => {
+        const currentAccessories = formik.values.Car_accessories.Body_accessories;
+        if (currentAccessories.includes(value)) {
+            formik.setFieldValue('Car_accessories.Body_accessories', currentAccessories.filter(item => item !== value));
+        } else {
+            formik.setFieldValue('Car_accessories.Body_accessories', [...currentAccessories, value]);
+        }
+    };
 
+    const chnageCheckboxInteriorAccessories = (value) => {
+        const currentAccessories = formik.values.Car_accessories.Interior_accessories;
+        if (currentAccessories.includes(value)) {
+            formik.setFieldValue('Car_accessories.Interior_accessories', currentAccessories.filter(item => item !== value));
+        } else {
+            formik.setFieldValue('Car_accessories.Interior_accessories', [...currentAccessories, value]);
+        }
+    };
 
+    const handleSelectAll = () => {
+        const bodyItems = [
+            "رکاب راست وچپ",
+            "گارد عقب وجلو",
+            "رینگ اسپرت",
+            "پروژکتور",
+            "آنتن",
+            "پلاک جلو",
+            "پلاک عقب"
+        ];
+
+        const interiorItems = [
+            "پخش صوت",
+            "کفپوش",
+            "آچار چرخ",
+            "مثلث خطر",
+            "چرخ زاپاس",
+            "جاسیگاری",
+            "دزدگیر",
+            "فندک",
+            "قالپاق",
+            "فلش",
+            "جک",
+            "زه خودرو"
+        ];
+
+        if (!selectAll) {
+            // Check all checkboxes
+            formik.setFieldValue('Car_accessories.Body_accessories', bodyItems);
+            formik.setFieldValue('Car_accessories.Interior_accessories', interiorItems);
+        } else {
+            // Uncheck all checkboxes
+            formik.setFieldValue('Car_accessories.Body_accessories', []);
+            formik.setFieldValue('Car_accessories.Interior_accessories', []);
+        }
+
+        // Toggle the state of selectAll
+        setSelectAll(!selectAll);
+    };
+
+ 
 
     return (
         <>
@@ -602,15 +666,22 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                                         <span className='title-item-form '>متعلقات بدنه</span>
                                         <div className='belongings-item-container belongings1'>
                                             <Col xs={12} sm={6}>
-                                                <InputCheckBox value={"رکاب راست وچپ"} />
-                                                <InputCheckBox value={"گارد عقب وجلو"} />
-                                                <InputCheckBox value={"رینگ اسپرت"} />
-                                                <InputCheckBox value={"پروژکتور"} />
-                                                <InputCheckBox value={"آنتن"} />
-                                            </Col>
-                                            <Col xs={12} sm={6}>
-                                                <InputCheckBox value={"پلاک جلو"} />
-                                                <InputCheckBox value={"پلاک عقب"} />
+                                                {
+                                                    ["رکاب راست وچپ",
+                                                        "گارد عقب وجلو",
+                                                        "رینگ اسپرت",
+                                                        "پروژکتور",
+                                                        "آنتن",
+                                                        "پلاک جلو",
+                                                        "پلاک عقب"].map(item => (
+                                                            <InputCheckBox
+                                                                key={item}
+                                                                value={item}
+                                                                onChange={() => chnageCheckboxBodyAccessories(item)}
+                                                                checked={formik.values.Car_accessories.Body_accessories.includes(item)}
+                                                            />
+                                                        ))
+                                                }
                                             </Col>
                                         </div>
                                     </div>
@@ -620,20 +691,29 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                                         <span className='title-item-form '>متعلقات داخلی</span>
                                         <div className='belongings-item-container belonging2'>
                                             <Col xs={12} sm={4} md={6}>
-                                                <InputCheckBox value={"پخش صوت"} />
-                                                <InputCheckBox value={"کفپوش"} />
-                                                <InputCheckBox value={"آچار چرخ"} />
-                                                <InputCheckBox value={"مثلث خطر"} />
-                                                <InputCheckBox value={"چرخ زاپاس"} />
-                                                <InputCheckBox value={"جاسیگاری"} />
-                                            </Col>
-                                            <Col xs={12} sm={4} md={6}>
-                                                <InputCheckBox value={"دزدگیر"} />
-                                                <InputCheckBox value={"فندک"} />
-                                                <InputCheckBox value={"قالپاق"} />
-                                                <InputCheckBox value={"فلش"} />
-                                                <InputCheckBox value={"جک"} />
-                                                <InputCheckBox value={"زه خودرو"} />
+                                                {
+                                                    [
+                                                        "پخش صوت",
+                                                        "کفپوش",
+                                                        "آچار چرخ",
+                                                        "مثلث خطر",
+                                                        "چرخ زاپاس",
+                                                        "جاسیگاری",
+                                                        "دزدگیر",
+                                                        "فندک",
+                                                        "قالپاق",
+                                                        "فلش",
+                                                        "جک",
+                                                        "زه خودرو"
+                                                    ].map(item => (
+                                                        <InputCheckBox
+                                                            key={item}
+                                                            value={item}
+                                                            onChange={() => chnageCheckboxInteriorAccessories(item)}
+                                                            checked={formik.values.Car_accessories.Interior_accessories.includes(item)}
+                                                        />
+                                                    ))
+                                                }
                                             </Col>
                                         </div>
                                     </div>
@@ -641,12 +721,22 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                                 <Col className='mt-4 mt-md-0' xs={12} md={4} xl={3} >
                                     <div className='belongings belongings-input d-flex flex-column'>
                                         <span className='title-item-form '>سایر متعلقات</span>
-                                        <input type="text" className='input-belongings' />
+                                        <input
+                                            type="text"
+                                            className='input-belongings'
+                                            name="Car_accessories.Other_accessories"
+                                            value={formik.values.Car_accessories.Other_accessories}
+                                            onChange={formik.handleChange}
+                                        />
                                     </div>
                                 </Col>
                             </div>
                             <div className='mt-4 mt-md-5'>
-                                <InputCheckBox value={"همه موارد"} />
+                                <InputCheckBox
+                                    value={"همه موارد"}
+                                    checked={selectAll}
+                                    onChange={handleSelectAll}
+                                />
                             </div>
                         </div>
                         <div className='p-form-actions'>
