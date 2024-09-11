@@ -226,13 +226,10 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
         const existingPartIndex = updatedSelectParts.findIndex(part => part.number === partNumber);
 
         if (existingPartIndex !== -1) {
-
             const existingPart = updatedSelectParts[existingPartIndex];
             if (isChecked) {
-
                 existingPart.belongings.push({ name: belongingName, description: "" });
             } else {
-
                 existingPart.belongings = existingPart.belongings.filter(b => b.name !== belongingName);
                 if (existingPart.belongings.length === 0) {
                     updatedSelectParts.splice(existingPartIndex, 1);
@@ -250,7 +247,25 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
         formik.setFieldValue('selectParts', cleanedParts);
     };
 
-    console.log(formik.values)
+    const handleDescriptionChange = (partNumber, belongingName, description) => {
+        const updatedSelectParts = [...formik.values.selectParts];
+        const existingPartIndex = updatedSelectParts.findIndex(part => part.number === partNumber);
+
+        if (existingPartIndex !== -1) {
+            const existingPart = updatedSelectParts[existingPartIndex];
+            const belongingIndex = existingPart.belongings.findIndex(b => b.name === belongingName);
+            if (belongingIndex !== -1) {
+                existingPart.belongings[belongingIndex].description = description;
+            }
+            updatedSelectParts[existingPartIndex] = existingPart;
+        }
+        const cleanedParts = updatedSelectParts.filter(part => part.belongings.length > 0);
+        formik.setFieldValue('selectParts', cleanedParts);
+    };
+
+
+
+
     return (
         <>
             <CarModal
@@ -571,11 +586,68 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
                                         <PartMachine
                                             part={part}
                                             onCheckboxChange={(belongingName, isChecked) => handleCheckBoxChange(part.number, belongingName, isChecked)}
+                                            onDescriptionChange={(partNumber, belongingName, description) => handleDescriptionChange(part.number, belongingName, description)}
                                         />
                                     </Col>
+
                                 ))}
                             </Col>
 
+                        </div>
+                        <div className='p-form2-row8'>
+                            <p className='title-item'>متعلقات خودرو</p>
+                            <div className='belongings-wrapper'>
+                                <Col xs={12} md={6} xl={4} >
+                                    <div className='belongings'>
+                                        <span className='title-item-form '>متعلقات بدنه</span>
+                                        <div className='belongings-item-container belongings1'>
+                                            <Col xs={12} sm={6}>
+                                                <InputCheckBox value={"رکاب راست وچپ"} />
+                                                <InputCheckBox value={"گارد عقب وجلو"} />
+                                                <InputCheckBox value={"رینگ اسپرت"} />
+                                                <InputCheckBox value={"پروژکتور"} />
+                                                <InputCheckBox value={"آنتن"} />
+                                            </Col>
+                                            <Col xs={12} sm={6}>
+                                                <InputCheckBox value={"پلاک جلو"} />
+                                                <InputCheckBox value={"پلاک عقب"} />
+                                            </Col>
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col xs={12} md={6} xl={5}>
+                                    <div className='belongings'>
+                                        <span className='title-item-form '>متعلقات داخلی</span>
+                                        <div className='belongings-item-container belonging2'>
+                                            <Col xs={12} sm={4} md={6}>
+                                                <InputCheckBox value={"پخش صوت"} />
+                                                <InputCheckBox value={"کفپوش"} />
+                                                <InputCheckBox value={"آچار چرخ"} />
+                                                <InputCheckBox value={"مثلث خطر"} />
+                                                <InputCheckBox value={"چرخ زاپاس"} />
+                                                <InputCheckBox value={"جاسیگاری"} />
+                                            </Col>
+                                            <Col xs={12} sm={4} md={6}>
+                                                <InputCheckBox value={"دزدگیر"} />
+                                                <InputCheckBox value={"فندک"} />
+                                                <InputCheckBox value={"قالپاق"} />
+                                                <InputCheckBox value={"فلش"} />
+                                                <InputCheckBox value={"جک"} />
+                                                <InputCheckBox value={"زه خودرو"} />
+                                            </Col>
+                                        </div>
+                                    </div>
+                                </Col >
+                                <Col className='mt-4 mt-md-0' xs={12} md={4} xl={3} >
+                                    <div className='belongings belongings-input d-flex flex-column'>
+                                        <span className='title-item-form '>سایر متعلقات</span>
+                                        <input type="text" className='input-belongings' />
+                                    </div>
+                                </Col>
+                            </div>
+                            <div className='mt-4 mt-md-5'>
+                                <InputCheckBox value={"همه موارد"} />
+                            </div>
                         </div>
                         <div className='p-form-actions'>
                             <EditBtn onClick={prevTab} />
@@ -602,59 +674,3 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
 
 
 
-{/* <div className='p-form2-row8'>
-    <p className='title-item'>متعلقات خودرو</p>
-    <div className='belongings-wrapper'>
-        <Col xs={12} md={6} xl={4} >
-            <div className='belongings'>
-                <span className='title-item-form '>متعلقات بدنه</span>
-                <div className='belongings-item-container belongings1'>
-                    <Col xs={12} sm={6}>
-                        <InputCheckBox value={"رکاب راست وچپ"} />
-                        <InputCheckBox value={"گارد عقب وجلو"} />
-                        <InputCheckBox value={"رینگ اسپرت"} />
-                        <InputCheckBox value={"پروژکتور"} />
-                        <InputCheckBox value={"آنتن"} />
-                    </Col>
-                    <Col xs={12} sm={6}>
-                        <InputCheckBox value={"پلاک جلو"} />
-                        <InputCheckBox value={"پلاک عقب"} />
-                    </Col>
-                </div>
-            </div>
-        </Col>
-        <Col xs={12} md={6} xl={5}>
-            <div className='belongings'>
-                <span className='title-item-form '>متعلقات داخلی</span>
-                <div className='belongings-item-container belonging2'>
-                    <Col xs={12} sm={4} md={6}>
-                        <InputCheckBox value={"پخش صوت"} />
-                        <InputCheckBox value={"کفپوش"} />
-                        <InputCheckBox value={"آچار چرخ"} />
-                        <InputCheckBox value={"مثلث خطر"} />
-                        <InputCheckBox value={"چرخ زاپاس"} />
-                    </Col>
-                    <Col xs={12} sm={4} md={6}>
-                        <InputCheckBox value={"دزدگیر"} />
-                        <InputCheckBox value={"فندک"} />
-                        <InputCheckBox value={"قالپاق"} />
-                        <InputCheckBox value={"فلش"} />
-                    </Col>
-                    <Col xs={12} sm={4} md={6}>
-                        <InputCheckBox value={"جاسیگاری"} />
-                        <InputCheckBox value={"جک"} />
-                        <InputCheckBox value={"زه خودرو"} />                                                    </Col>
-                </div>
-            </div>
-        </Col >
-        <Col className='mt-4 mt-md-0' xs={12} md={4} xl={3} >
-            <div className='belongings belongings-input d-flex flex-column'>
-                <span className='title-item-form '>سایر متعلقات</span>
-                <input type="text" className='input-belongings' />
-            </div>
-        </Col>
-    </div>
-    <div className='mt-4 mt-md-5'>
-        <InputCheckBox value={"همه موارد"} />
-    </div>
-</div>     */}

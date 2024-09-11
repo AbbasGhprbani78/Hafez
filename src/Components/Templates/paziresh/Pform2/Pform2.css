@@ -246,6 +246,10 @@
     font-size: .9rem;
 }
 
+.p-form2-row8 {
+    margin-top: 4rem;
+}
+
 @media (max-width:1587px) {
     .codecar-itemes {
         width: 80%;

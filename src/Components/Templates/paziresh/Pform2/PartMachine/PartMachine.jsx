@@ -1,19 +1,19 @@
 import React from 'react';
 import './PartMachine.css';
-import InputCheckBox from '../../../../Modules/InputChekBox/InputCheckBox';
+import InputCheckBoxPartMachine from '../../../../Modules/InputChekBox/InputCheckBoxPartMachine';
 
 
-export default function PartMachine({ part, onCheckboxChange }) {
+export default function PartMachine({ part, onCheckboxChange, onDescriptionChange }) {
     return (
         <div className='partmachine-wrapper'>
             <span className='title-partmachine'>{part.name}</span>
             <div className='check-boxes-wrapper'>
                 {part.belongings.map(belonging => (
-                    <InputCheckBox
+                    <InputCheckBoxPartMachine
                         key={belonging.name}
                         value={belonging.name}
-                        isdescription={""}
                         onChange={(isChecked) => onCheckboxChange(belonging.name, isChecked)}
+                        onDescriptionChange={(description) => onDescriptionChange(part.number, belonging.name, description)}
                     />
                 ))}
             </div>
