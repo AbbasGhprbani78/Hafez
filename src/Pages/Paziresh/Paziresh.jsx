@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import SideBar from '../../Components/Modules/SideBar/SideBar'
 import ProgressBar from '../../Components/Modules/ProgressBar/ProgressBar'
 import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
@@ -8,7 +8,7 @@ import './Paziresh.css'
 import axios from 'axios'
 export default function Paziresh() {
     const [content, setContent] = useState("اطلاعات اولیه مشتری :")
-    const [currentTab, setCurrentTab] = useState(2);
+    const [currentTab, setCurrentTab] = useState(1);
     const [form, setForm] = useState('')
 
     const [formData, setFormData] = useState({
@@ -28,37 +28,52 @@ export default function Paziresh() {
 
 
     const handleNextTab = () => {
-        setCurrentTab(prevTab => prevTab + 1);
+        if (currentTab === 3) {
+            handleSubmit()
+        } else {
+            setCurrentTab(prevTab => prevTab + 1);
+        }
     };
 
     const handlePrevTab = () => {
-        setCurrentTab(prevTab => prevTab - 1);
+        if (currentTab === 1) {
+            return false
+        } else {
+            setCurrentTab(prevTab => prevTab - 1);
+        }
     }
+
 
     const handleSubmit = async () => {
         const formDataToSend = new FormData();
 
         Object.keys(formData).forEach((tab) => {
             Object.entries(formData[tab]).forEach(([key, value]) => {
-                formDataToSend.append(key, value);
+
+                if (key === 'expertAudio' || key === 'customerAudio') {
+                    if (value) {
+                        formDataToSend.append(key, value, `${key}.webm`);
+                    }
+                } else {
+                    formDataToSend.append(key, value);
+                }
             });
         });
 
-        try {
+        console.log(formData)
+        // try {
+        //     const response = await axios.post("api/submit/", formDataToSend);
 
-            const response = axios.post("api/submit/", formDataToSend)
-
-            if (response.status === 200) {
-                console.log(response.data)
-            }
-
-
-            alert('Data submitted successfully!');
-        } catch (error) {
-            console.error('Error submitting data:', error);
-            alert('Error submitting data');
-        }
+        //     if (response.status === 200) {
+        //         console.log(response.data);
+        //         alert('Data submitted successfully!');
+        //     }
+        // } catch (error) {
+        //     console.error('Error submitting data:', error);
+        //     alert('Error submitting data');
+        // }
     };
+
 
 
     return (
@@ -83,6 +98,7 @@ export default function Paziresh() {
                                 }}
                                 nextTab={handleNextTab}
                                 form={form}
+                                setContent={setContent}
                             />
 
                         }
@@ -93,6 +109,7 @@ export default function Paziresh() {
                                 updateFormData={(data) => handleFormDataUpdate('tab2', data)}
                                 nextTab={handleNextTab}
                                 prevTab={handlePrevTab}
+                                setContent={setContent}
                             />
 
                         }
@@ -103,6 +120,7 @@ export default function Paziresh() {
                                 updateFormData={(data) => handleFormDataUpdate('tab3', data)}
                                 nextTab={handleNextTab}
                                 prevTab={handlePrevTab}
+                                setContent={setContent}
                             />
 
                         }

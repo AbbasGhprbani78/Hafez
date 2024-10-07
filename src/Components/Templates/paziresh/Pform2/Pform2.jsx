@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Pform2.css'
 import Input from '../../../Modules/Input/Input'
 import EditBtn from '../../../Modules/EditBtn/EditBtn'
@@ -20,7 +20,7 @@ import { MyContext } from '../../../../context/context'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
+export default function Pform2({ formData, updateFormData, nextTab, prevTab, setContent }) {
 
     const [otherCar, setotherCar] = useState(false)
     const [otherColor, setotherColor] = useState(false)
@@ -37,6 +37,7 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
     const [currentIndex, setCurrentIndex] = useState(null);
     const [machineParts, setMachineParts] = useState([])
     const [selectAll, setSelectAll] = useState(false);
+    setContent("اطلاعات اولیه خودرو :")
 
 
 
@@ -328,7 +329,7 @@ export default function Pform2({ formData, updateFormData, nextTab, prevTab }) {
         setSelectAll(!selectAll);
     };
 
- 
+
 
     return (
         <>

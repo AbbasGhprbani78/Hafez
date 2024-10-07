@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import './Pform1.css'
 import { Box, Tabs, Tab, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -14,6 +14,7 @@ import EditBtn from '../../../Modules/EditBtn/EditBtn';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
     fontFamily: 'inherit',
@@ -46,7 +47,7 @@ function a11yProps(index) {
     };
 }
 
-export default function Pform1({ formData, updateFormData, nextTab, form }) {
+export default function Pform1({ formData, updateFormData, nextTab, form, setContent }) {
 
     const [value, setValue] = useState(0);
     const [localData, setLocalData] = useState(formData);
@@ -54,6 +55,7 @@ export default function Pform1({ formData, updateFormData, nextTab, form }) {
     const nationalIdRegex = /^[0-9]{10}$/
     const postalCodeRegex = /^[0-9]{10}$/;
     const economicCodeRegex = /^[0-9]{12}$/;
+    setContent("اطلاعات اولیه مشتری :")
 
     const validationSchema = Yup.object({
         owner_name: Yup.string()

@@ -11,13 +11,13 @@ export default function Home() {
                 <SideBar />
                 <div className='space-content'>
                     <Header />
-                    <div class="home-container">
-                        <div class="home-item div1">1</div>
-                        <div class="home-item div2">2</div>
-                        <div class="home-item div3">3</div>
-                        <div class="home-item div4">4</div>
-                        <div class="home-item div5">5</div>
-                        <div class="home-item div6">6</div>
+                    <div className="home-container">
+                        <div className="home-item div1">1</div>
+                        <div className="home-item div2">2</div>
+                        <div className="home-item div3">3</div>
+                        <div className="home-item div4">4</div>
+                        <div className="home-item div5">5</div>
+                        <div className="home-item div6">6</div>
                     </div>
                 </div>
             </div>
