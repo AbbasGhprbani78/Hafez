@@ -2,7 +2,7 @@ import React from 'react';
 import './CarModel.css';
 
 export default function CarModal({ opneModal, setOpenModal, imgImModal, modalText, setModalText, handleSaveText }) {
-    const imgUrl = imgImModal instanceof Blob ? URL.createObjectURL(imgImModal) : '';
+    const imgUrl = imgImModal ? `data:image/jpeg;base64,${imgImModal}` : '';
 
     return (
         <div className={`carModal-container ${opneModal ? "activeModalCar" : ""}`}>
@@ -14,7 +14,7 @@ export default function CarModal({ opneModal, setOpenModal, imgImModal, modalTex
                 <textarea
                     className='modal-textarea'
                     placeholder='توضیحات'
-                    value={modalText}
+                    value={modalText || ''}
                     onChange={(e) => setModalText(e.target.value)}
                 />
                 <button className='btn-modalcar mt-3' onClick={handleSaveText}>ثبت</button>

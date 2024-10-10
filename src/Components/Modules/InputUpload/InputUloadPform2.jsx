@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './InputUpload.css';
+
 export default function InputUloadPform2({ label, name, setImgModal, formik }) {
     const [imageUpload, setImageUpload] = useState(null);
     const [previewUrl, setPreviewUrl] = useState("");
@@ -22,14 +23,13 @@ export default function InputUloadPform2({ label, name, setImgModal, formik }) {
         e.stopPropagation();
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             const file = e.dataTransfer.files[0];
-            setImgModal(file)
+            setImgModal(file);
             setImageUpload(file);
             setPreviewUrl(URL.createObjectURL(file));
             const reader = new FileReader();
             reader.onload = () => {
                 const base64String = reader.result.split(',')[1];
-                formik.setFieldValue(`car_parts[${name}].image`, base64String);
-                onChange(name, base64String);
+                formik.setFieldValue(name, base64String);
             };
             reader.readAsDataURL(file);
         }
@@ -39,13 +39,12 @@ export default function InputUloadPform2({ label, name, setImgModal, formik }) {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             setImageUpload(file);
-            setImgModal(file)
+            setImgModal(file); 
             setPreviewUrl(URL.createObjectURL(file));
             const reader = new FileReader();
             reader.onload = () => {
                 const base64String = reader.result.split(',')[1];
-                formik.setFieldValue(`car_parts[${name}].image`, base64String);
-                (namonChangee, base64String);
+                formik.setFieldValue(name, base64String); 
             };
             reader.readAsDataURL(file);
         }
@@ -53,9 +52,7 @@ export default function InputUloadPform2({ label, name, setImgModal, formik }) {
 
     return (
         <div className='uploadInput-container'>
-            <p className="uploadInput-title mb-2">
-                {label}
-            </p>
+            <p className="uploadInput-title mb-2">{label}</p>
             <div
                 className="uploadInput-wrapper"
                 onDragOver={handleDragOver}
@@ -82,5 +79,5 @@ export default function InputUloadPform2({ label, name, setImgModal, formik }) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

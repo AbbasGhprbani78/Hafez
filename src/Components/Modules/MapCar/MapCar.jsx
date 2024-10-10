@@ -1,4 +1,4 @@
-import React from 'react';
+
 import './MapCar.css';
 
 export default function MapCar({ selectPart, selectParts }) {
@@ -8,7 +8,7 @@ export default function MapCar({ selectPart, selectParts }) {
     };
 
     const isActive = (number) => {
-        return selectParts.some(part => part.number === number);
+        return selectParts.some(part => part.value_number == number);
     };
 
     return (
@@ -42,19 +42,19 @@ export default function MapCar({ selectPart, selectParts }) {
                 </div>
                 <div className='d-flex justify-content-between'>
                     <div
-                        className={`item item5 ${isActive(5) ? 'active' : ''}`}
+                        className={`item item5 ${isActive(5) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(5)}
                     >
                         5
                     </div>
                     <div
-                        className={`item item6 ${isActive(6) ? 'active' : ''}`}
+                        className={`item item6 ${isActive(6) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(6)}
                     >
                         6
                     </div>
                     <div
-                        className={`item item7 ${isActive(7) ? 'active' : ''}`}
+                        className={`item item7 ${isActive(7) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(7)}
                     >
                         7
@@ -62,25 +62,25 @@ export default function MapCar({ selectPart, selectParts }) {
                 </div>
                 <div className='d-flex justify-content-between'>
                     <div
-                        className={`item item8 ${isActive(8) ? 'active' : ''}`}
+                        className={`item item8 ${isActive(8) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(8)}
                     >
                         8<div className='path path-3'></div>
                     </div>
                     <div
-                        className={`item item9 ${isActive(9) ? 'active' : ''}`}
+                        className={`item item9 ${isActive(9) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(9)}
                     >
                         9
                     </div>
                     <div
-                        className={`item item10 ${isActive(10) ? 'active' : ''}`}
+                        className={`item item10 ${isActive(10) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(10)}
                     >
                         10
                     </div>
                     <div
-                        className={`item item11 ${isActive(11) ? 'active' : ''}`}
+                        className={`item item11 ${isActive(11) ? 'activepart' : ''}`}
                         onClick={() => handleItemClick(11)}
                     >
                         11<div className='path path-4'></div>

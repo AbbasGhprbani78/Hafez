@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './InputCheckBox.css';
-export default function InputCheckBoxPartMachine({ value, onChange, onDescriptionChange }) {
+
+export default function InputCheckBoxPartMachine({ value, onChange, onDescriptionChange, name, setValueNumber }) {
     const [checked, setChecked] = useState(false);
     const [description, setDescription] = useState('');
 
     const handleChange = (event) => {
         const isChecked = event.target.checked;
-        setChecked(isChecked);
-        onChange(isChecked);
+        setChecked(isChecked); 
+        onChange(isChecked); 
         if (!isChecked) {
-            setDescription('');
-            onDescriptionChange('');
+            setDescription(''); 
+            onDescriptionChange(''); 
         }
     };
+
+
+
 
     const handleDescriptionChange = (event) => {
         const newDescription = event.target.value;
@@ -30,7 +34,8 @@ export default function InputCheckBoxPartMachine({ value, onChange, onDescriptio
                     onChange={handleChange}
                     checked={checked}
                 />
-                <label className='label-check'>{value}</label>
+
+                <label className='label-check'>{name}</label>
             </div>
             {checked && (
                 <div className='wrap-checkbox-dec'>

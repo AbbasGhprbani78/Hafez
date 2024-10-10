@@ -1,34 +1,53 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './SelectDropDown.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 
-export default function SelectDropDown({ icon, label, items, name, setother, formik }) {
-    const [options] = useState(items);
-    const [filteredOptions, setFilteredOptions] = useState(options);
+export default function SelectDropDown({ icon, label, items, name, setother, formik, chnageType, setAllTips }) {
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const [options, setOptions] = useState();
+    const [filteredOptions, setFilteredOptions] = useState();
     const [showOptions, setShowOptions] = useState(false);
+    const [displayedValue, setDisplayedValue] = useState('');
     const dropdownRef = useRef(null);
 
-    // Formik value for this field
-    const inputValue = formik.values[name];
+
+
 
     const handleInputChange = (e) => {
         const value = e.target.value;
-        formik.setFieldValue(name, value);
-        setFilteredOptions(options.filter(option => option.toLowerCase().includes(value.toLowerCase())));
+        setDisplayedValue(value);
+        setFilteredOptions(options.filter(option => option.value.toLowerCase().includes(value.toLowerCase())));
         setShowOptions(true);
     };
 
-    const handleOptionClick = (option) => {
-        formik.setFieldValue(name, option);
-        if (option === 'سایر') {
-            formik.setFieldValue(name, option);
+    const handleOptionClick = async (id, value) => {
+        formik.setFieldValue(name, id);
+        setDisplayedValue(value);
+
+        if (value === 'سایر') {
             setother(true);
         } else {
             setother(false);
-            formik.setFieldValue(name, option);
         }
+
         setShowOptions(false);
+
+        if (chnageType) {
+            try {
+                const res = await axios.get(`${apiUrl}/app/parts-detail/${id}`);
+                if (res.status === 200) {
+                    setAllTips(res.data)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
     };
+
 
     const handleInputFocus = () => {
         setShowOptions(true);
@@ -47,6 +66,12 @@ export default function SelectDropDown({ icon, label, items, name, setother, for
         };
     }, []);
 
+
+    useEffect(() => {
+        setOptions(items);
+        setFilteredOptions(items);
+    }, [items]);
+
     return (
         <div className='select-car-wrapper' ref={dropdownRef}>
             <label htmlFor="myInput" className='label-input mb-2'>{label}</label>
@@ -56,7 +81,7 @@ export default function SelectDropDown({ icon, label, items, name, setother, for
                     id="myInput"
                     name={name}
                     className='input-cars'
-                    value={inputValue}
+                    value={displayedValue}
                     onChange={handleInputChange}
                     onFocus={handleInputFocus}
                     autoComplete='off'
@@ -67,8 +92,8 @@ export default function SelectDropDown({ icon, label, items, name, setother, for
                         {filteredOptions.length > 0 ? (
                             <>
                                 {filteredOptions.map((item, i) => (
-                                    <li key={i} className='car-item' onClick={() => handleOptionClick(item)}>
-                                        {item}
+                                    <li key={i} className='car-item' onClick={() => handleOptionClick(item.value_id, item.value)}>
+                                        {item.value}
                                     </li>
                                 ))}
                             </>

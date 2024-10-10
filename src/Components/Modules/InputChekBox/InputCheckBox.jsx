@@ -1,6 +1,7 @@
-import React from 'react'
+
 import './InputCheckBox.css'
-export default function InputCheckBox({ marginRight, onChange, checked, value }) {
+export default function InputCheckBox({ marginRight, onChange, checked, value, text }) {
+
     return (
         <>
             <div className={`checkbox-container mx-2 ${marginRight}`}>
@@ -11,7 +12,8 @@ export default function InputCheckBox({ marginRight, onChange, checked, value })
                     checked={checked}
                     onChange={onChange}
                 />
-                <label htmlFor="" className='lable-check'>{value}</label>
+
+                <label htmlFor="" className='lable-check'>{text}</label>
 
             </div>
 

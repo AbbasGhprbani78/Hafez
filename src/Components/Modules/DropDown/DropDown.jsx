@@ -1,7 +1,7 @@
-import React from 'react'
+
 import './DropDown.css'
 export default function DropDown({ lable, styled, items, onChange, name, defaultValue }) {
-    
+
     return (
         <>
             <div className={`dropdown-container ${styled}`}>
@@ -13,7 +13,7 @@ export default function DropDown({ lable, styled, items, onChange, name, default
                     <select className='dropdown' onChange={onChange} name={name} value={defaultValue}>
                         <option value={-1} className='dropdown-item'></option>
                         {items?.map((item, i) => (
-                            <option value={item} key={i}>{item}</option>
+                            <option value={item.value} key={i}>{item.name}</option>
                         ))}
                     </select>
                 </div>
