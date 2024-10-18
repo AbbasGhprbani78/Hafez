@@ -1,4 +1,4 @@
-import { useDebugValue, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Pform2.css'
 import Input from '../../../Modules/Input/Input'
 import EditBtn from '../../../Modules/EditBtn/EditBtn'
@@ -21,30 +21,62 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios'
 
-export default function Pform2({ nextTab, prevTab, setContent }) {
+export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [otherCar, setotherCar] = useState(false)
     const [otherColor, setotherColor] = useState(false)
     const [allCar, setAllCar] = useState([]);
     const [allColor, setAllColor] = useState([]);
-    const { isOpen } = useContext(MyContext)
-    const [fuelLevel, setFuelLevel] = useState(null);
-    const [cngLevel, setCngLevel] = useState(null);
-    const [tireWear, setTireWear] = useState(null);
-    const [spareTire, setSpareTire] = useState('');
-    const [erosionRate, setErosionRate] = useState(null);
+    const { isOpen, dataForm, idForm, editMode } = useContext(MyContext)
     const [opneModal, setOpenModal] = useState(false)
     const [imgImModal, setImgModal] = useState("")
     const [modalText, setModalText] = useState('');
     const [currentTextField, setCurrentTextField] = useState('');
-    const [allTips, setAllTips] = useState("")
+    const [allTips, setAllTips] = useState([])
     const [carParts, setCarPart] = useState([])
     const [machineParts, setMachineParts] = useState([])
-    // const [selectAll, setSelectAll] = useState(false);
+    const [allAccessories, setAllAccessories] = useState([])
+    const [chnageImage,setChangeImage]=useState(false)
+    const [loading, setLoading] = useState(false)
 
+    const [form2, setForm2] = useState(
+        {
+            customer_secend_form: {
+                customer: coustomer,
+                material: "",
+                other_car: "",
+                chassis_number: "",
+                color: "",
+                other_color: "",
+                car_operation: "",
+                license_plate_number: "",
+                amount_fuel: "",
+                amount_cng: "",
+                tire_wear_rate: "",
+                number_punctured_tires: "",
+                condition_spare_tire: "",
+                erosion_rate: "",
+                car_cleanliness: 0,
+                front_car_image: "",
+                front_car_text: "",
+                behind_car_image: "",
+                behind_car_text: "",
+                right_side_image: "",
+                right_side_text: "",
+                left_side_image: "",
+                left_side_text: "",
+                car_km_image: "",
+                car_km_text: "",
+                engine_door_open_image: "",
+                engine_door_open_text: "",
+                other_accessories: ""
+            },
+            fill_form: [],
+            accessories: []
+        }
+    )
 
     const validationSchema = Yup.object({
-        tip: Yup.string().required('تیپ خودرو را انتخاب کنید'),
         customer_secend_form: Yup.object({
             material: Yup.string().required('نوع خودرو را وارد کنید'),
             color: Yup.string().required("رنگ را انتخاب کنید"),
@@ -72,100 +104,85 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
             erosion_rate: Yup.number().required('میزان فرسایش را انتخاب کنید'),
 
         }),
+        accessories: Yup.array()
+            .min(1, 'حداقل یکی از متعلقات را انتخاب کنید')
+            .required('Accessories selection is required'),
     });
 
-    const formik = useFormik({
-        initialValues: {
-            tip: "",
-            customer_secend_form: {
-                coustomer: "",
-                material: "",
-                color: "",
-                chassis_number: "",
-                car_operation: "",
-                license_plate_number: "",
-                amount_fuel: "",
-                amount_cng: "",
-                number_punctured_tires: "",
-                tire_wear_rate: "",
-                condition_spare_tire: "",
-                erosion_rate: "",
-                car_cleanliness: 0,
-                ...(otherCar && { other_car: '' }),
-                ...(otherColor && { other_color: '' }),
-                front_car_image: "",
-                front_car_text: "",
-                behind_car_image: "",
-                behind_car_text: "",
-                right_side_image: "",
-                right_side_text: "",
-                left_side_image: "",
-                left_side_text: "",
-                car_km_image: "",
-                car_km_text: "",
-                engine_door_open_image: "",
-                engine_door_open_text: "",
-                other_accessories: ""
-            },
-            secondpart: {
-                fill_form: []
+    const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
+        setForm2(prevForm => {
+            const updatedForm = [...prevForm.fill_form];
+
+            if (isChecked) {
+                updatedForm.push({ parts: belongingId, description: '', value_number: valuenumber });
+            } else {
+                const index = updatedForm.findIndex(item => item.parts === belongingId);
+                if (index !== -1) {
+                    updatedForm.splice(index, 1);
+                }
             }
-        },
-        validationSchema,
-        onSubmit: (values) => {
-            console.log(values)
-        },
-    });
 
-
-    const handleCodeCarChange = (name, value) => {
-        formik.setFieldValue(name, value);
+            return {
+                ...prevForm,
+                fill_form: updatedForm
+            };
+        });
     };
 
-    const handleFuelChange = (event) => {
-        const value = event.target.value;
-        setFuelLevel(value);
-        formik.setFieldValue('customer_secend_form.amount_fuel', value);
+    const handleDescriptionChange = (belongingId, newDescription) => {
+        setForm2(prevForm => {
+            const updatedForm = prevForm.fill_form.map(item => {
+                if (item.parts === belongingId) {
+                    return { ...item, description: newDescription };
+                }
+                return item;
+            });
+
+            return {
+                ...prevForm,
+                fill_form: updatedForm
+            };
+        });
     };
 
-    const handleCngChange = (event) => {
-        const value = event.target.value;
-        setCngLevel(value);
-        formik.setFieldValue('customer_secend_form.amount_cng', value);
+    const handleDropdownChange = (name, value) => {
+        const mainTip = allTips.filter(item => item.car_tip_id == value)
+        setCarPart(mainTip[0]?.body_condition);
     };
 
-    const handleTireWearChange = (event) => {
-        const value = event.target.value;
-        setTireWear(value);
-        formik.setFieldValue('customer_secend_form.tire_wear_rate', value);
+    const handleAccessoryChange = (id) => {
+        setForm2(prev => {
+            const { accessories } = prev;
+            if (accessories.includes(id)) {
+                return { ...prev, accessories: accessories.filter(acc => acc !== id) };
+            } else {
+                return { ...prev, accessories: [...accessories, id] };
+            }
+        });
     };
 
-    const handleSpareTireChange = (event) => {
-        const value = event.target.value;
-        console.log(value)
-        setSpareTire(value);
-        formik.setFieldValue('customer_secend_form.condition_spare_tire', value);
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm2(prevState => ({
+            ...prevState,
+            customer_secend_form: {
+                ...prevState.customer_secend_form,
+                [name]: value,
+            },
+        }));
     };
 
-    const handleErosionRateChange = (event) => {
-        const value = event.target.value;
-        setErosionRate(value);
-        formik.setFieldValue('customer_secend_form.erosion_rate', value);
-    };
-
-    const handleOpenModal = (imageField, text_field) => {
-        const imageValue = formik.values.customer_secend_form[imageField];
-        const textValue = formik.values.customer_secend_form[text_field];
-        setImgModal(imageValue);
-        setModalText(textValue)
-        setCurrentTextField(text_field)
-        setOpenModal(true);
-    };
-
-    const handleSaveText = () => {
-        formik.setFieldValue(`customer_secend_form.${currentTextField}`, modalText);
-        setOpenModal(false);
-        setModalText("")
+    const handleLicensePlateChange = (value) => {
+        setForm2((prev) => {
+            const updatedForm = {
+                ...prev,
+                customer_secend_form: {
+                    ...prev.customer_secend_form,
+                    license_plate_number: value
+                }
+            };
+            return updatedForm;
+        });
     };
 
     const selectPart = (number) => {
@@ -178,139 +195,104 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                 : [...updatedParts, mainpart];
 
             setMachineParts(newParts)
-            const updatedFillForm = formik.values.secondpart.fill_form;
+            const updatedFillForm = form2.fill_form;
 
             if (isAlreadySelected) {
-                console.log(number)
                 const newFillForm = updatedFillForm.filter(item => Number(item.value_number) !== number);
-                console.log(newFillForm)
-                formik.setFieldValue('secondpart.fill_form', newFillForm);
+                setForm2(prevForm => ({
+                    ...prevForm,
+                    fill_form: newFillForm
+                }));
             }
         }
     };
 
-    const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
-        const updatedForm = formik.values.secondpart.fill_form;
-
-        if (isChecked) {
-            updatedForm.push({ parts: belongingId, description: '', value_number: valuenumber });
-        } else {
-
-            const index = updatedForm.findIndex(item => item.parts === belongingId);
-            if (index !== -1) {
-                updatedForm.splice(index, 1);
-            }
-        }
-
-        formik.setFieldValue('secondpart.fill_form', updatedForm);
-
+    const handleOpenModal = (imageField, textField) => {
+        const textValue = form2.customer_secend_form[textField];
+        setModalText(textValue);
+        setCurrentTextField(textField);
+        setOpenModal(true);
     };
 
-    const handleDescriptionChange = (belongingId, newDescription) => {
-        const updatedForm = formik.values.secondpart.fill_form.map(item => {
-            if (item.parts === belongingId) {
-                return { ...item, description: newDescription };
+    const handleSaveText = () => {
+        setForm2(prev => ({
+            ...prev,
+            customer_secend_form: {
+                ...prev.customer_secend_form,
+                [currentTextField]: modalText
             }
-            return item;
-        });
-
-        formik.setFieldValue('secondpart.fill_form', updatedForm);
+        }));
+        setOpenModal(false);
+        setModalText("");
     };
 
-
-    ////////
-
-    // const chnageCheckboxInteriorAccessories = (value) => {
-    //     const currentAccessories = formik.values.Car_accessories.Interior_accessories;
-    //     if (currentAccessories.includes(value)) {
-    //         formik.setFieldValue('Car_accessories.Interior_accessories', currentAccessories.filter(item => item !== value));
-    //     } else {
-    //         formik.setFieldValue('Car_accessories.Interior_accessories', [...currentAccessories, value]);
-    //     }
-    // };
-
-    // const handleSelectAll = () => {
-    //     const bodyItems = [
-    //         "رکاب راست وچپ",
-    //         "گارد عقب وجلو",
-    //         "رینگ اسپرت",
-    //         "پروژکتور",
-    //         "آنتن",
-    //         "پلاک جلو",
-    //         "پلاک عقب"
-    //     ];
-
-    //     const interiorItems = [
-    //         "پخش صوت",
-    //         "کفپوش",
-    //         "آچار چرخ",
-    //         "مثلث خطر",
-    //         "چرخ زاپاس",
-    //         "جاسیگاری",
-    //         "دزدگیر",
-    //         "فندک",
-    //         "قالپاق",
-    //         "فلش",
-    //         "جک",
-    //         "زه خودرو"
-    //     ];
-
-    //     if (!selectAll) {
-    //         // Check all checkboxes
-    //         formik.setFieldValue('Car_accessories.Body_accessories', bodyItems);
-    //         formik.setFieldValue('Car_accessories.Interior_accessories', interiorItems);
-    //     } else {
-    //         // Uncheck all checkboxes
-    //         formik.setFieldValue('Car_accessories.Body_accessories', []);
-    //         formik.setFieldValue('Car_accessories.Interior_accessories', []);
-    //     }
-
-    //     // Toggle the state of selectAll
-    //     setSelectAll(!selectAll);
-    // };
-
-
-
-    useEffect(() => {
-        const getMaterial = async () => {
-            try {
-                const res = await axios.get(`${apiUrl}/app/materials/`)
-                if (res.status === 200) {
-                    setAllCar(res.data[0].values)
-                    setAllColor(res.data[1].values)
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        const getAccessories = async () => {
-            try {
-                const res = await axios.get(`${apiUrl}/app//`)
-                if (res.status === 200) {
-                    console.log(res.data)
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        getMaterial()
-        // getAccessories()
-        setContent("اطلاعات اولیه خودرو :")
-    }, [])
-
-
-    useEffect(() => {
-        if (allTips?.car_tips?.length > 0) {
-            setCarPart(allTips.car_tips[0].body_condition);
-        }
-    }, [allTips]);
-
-
-    const transformedCarTips = allTips?.car_tips?.map(item => ({
+    const transformedCarTips = allTips?.map(item => ({
         value: item.car_tip_id,
         name: item.car_tip
     }));
 
+
+    const allAccessoryIds = allAccessories
+        ? allAccessories.flatMap(group => group.children.map(item => item.id))
+        : [];
+
+
+    const handleSelectAll = () => {
+        if (form2.accessories.length === allAccessoryIds.length) {
+            setForm2(prev => ({ ...prev, accessories: [] }));
+        } else {
+            setForm2(prev => ({ ...prev, accessories: allAccessoryIds }));
+        }
+    };
+
+    const selectedAll = form2.accessories.length === allAccessoryIds.length;
+
+    const getAllParts = async () => {
+        try {
+            const res = await axios.get(`${apiUrl}/app/parts-detail/`);
+            if (res.status === 200) {
+                setAllTips(res.data.car_tips)
+                setAllAccessories(res.data.car_tips[0].car_accessories)
+
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getMaterial = async () => {
+        try {
+            const res = await axios.get(`${apiUrl}/app/materials/`)
+            if (res.status === 200) {
+                setAllCar(res.data[0].values)
+                setAllColor(res.data[1].values)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getMaterial()
+        getAllParts()
+        setContent("اطلاعات اولیه خودرو :")
+    }, [])
+
+    useEffect(() => {
+        if (dataForm?.customer_form_two?.other_car) {
+            setotherCar(true);
+        }
+        if (dataForm.customer_form_two?.other_color) {
+            setotherColor(true);
+        }
+    }, [dataForm]);
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    };
+
+    console.log(form2)
     return (
         <>
             <CarModal
@@ -320,9 +302,11 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                 modalText={modalText}
                 setModalText={setModalText}
                 handleSaveText={handleSaveText}
+                editMode={editMode}
+                chnageImage={chnageImage}
             />
             <div className={`form2-container ${isOpen ? "wide" : ""}`}>
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div className='p-form2-content'>
                         <div className='p-form2-row'>
                             <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -330,15 +314,11 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                     icon={faAngleDown}
                                     label={"نوع خودرو"}
                                     items={allCar}
-                                    name="customer_secend_form.material"
+                                    name="material"
                                     setother={setotherCar}
-                                    formik={formik}
-                                    chnageType={true}
-                                    setAllTips={setAllTips}
+                                    value={form2.customer_secend_form.material}
+                                    onChange={handleInputChange}
                                 />
-                                {formik.errors.customer_secend_form?.material && formik.touched.customer_secend_form?.material && (
-                                    <span className='error'>{formik.errors.customer_secend_form.material}</span>
-                                )}
                             </Col>
                             {otherCar && (
                                 <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -346,15 +326,10 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                         label="سایر"
                                         styled={"widthinput"}
                                         placeholder="سایر"
-                                        name="customer_secend_form.other_car"
-                                        value={formik.values.customer_secend_form.other_car}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
+                                        name="other_car"
+                                        value={form2.customer_secend_form.other_car}
+                                        onChange={handleInputChange}
                                     />
-                                    {formik.errors.customer_secend_form?.other_car && formik.touched.customer_secend_form?.other_car && (
-                                        <span className='error'>{formik.errors.customer_secend_form.other_car}</span>
-                                    )}
-
                                 </Col>
                             )}
                             <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -363,14 +338,10 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                     styled={"widthinput"}
                                     placeholder="شماره شاسی"
                                     icon={faHashtag}
-                                    name="customer_secend_form.chassis_number"
-                                    value={formik.values.customer_secend_form.chassis_number}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                    name="chassis_number"
+                                    value={form2.customer_secend_form.chassis_number}
+                                    onChange={handleInputChange}
                                 />
-                                {formik.errors.customer_secend_form?.chassis_number && formik.touched.customer_secend_form?.chassis_number && (
-                                    <span className='error'>{formik.errors.customer_secend_form.chassis_number}</span>
-                                )}
                             </Col>
                         </div>
                         <div className='p-form2-row mt-md-4'>
@@ -379,14 +350,10 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                     icon={faAngleDown}
                                     label={"رنگ"}
                                     items={allColor}
-                                    name="customer_secend_form.color"
+                                    name="color"
                                     setother={setotherColor}
-                                    formik={formik}
+                                    value={form2.customer_secend_form.color}
                                 />
-                                {formik.errors.customer_secend_form?.color && formik.touched.customer_secend_form?.color && (
-                                    <span className='error'>{formik.errors.customer_secend_form.color}</span>
-                                )}
-
                             </Col>
                             {
                                 otherColor &&
@@ -395,16 +362,10 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                         label="سایر"
                                         styled={"widthinput"}
                                         placeholder="سایر"
-                                        name="customer_secend_form.other_color"
-                                        value={formik.values.customer_secend_form.other_color}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
+                                        name="other_color"
+                                        value={form2.customer_secend_form.other_color}
+                                        onChange={handleInputChange}
                                     />
-                                    {formik.errors.customer_secend_form?.other_color && formik.touched.customer_secend_form?.other_color && (
-                                        <span className='error'>{formik.errors.customer_secend_form.other_color}</span>
-                                    )}
-
-
                                 </Col>
                             }
                             <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -413,28 +374,20 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                     styled={"widthinput"}
                                     placeholder="Km"
                                     icon={faGauge}
-                                    name="customer_secend_form.car_operation"
-                                    value={formik.values.customer_secend_form.car_operation || ''}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                    name="car_operation"
+                                    value={form2.customer_secend_form.car_operation}
+                                    onChange={handleInputChange}
                                 />
-                                {formik.touched.customer_secend_form?.car_operation && formik.errors.customer_secend_form?.car_operation && (
-                                    <span className='error'>{formik.errors.customer_secend_form.car_operation}</span>
-                                )}
-
                             </Col>
 
                         </div>
                         <div className='p-form2-row2'>
                             <Col xs={12} lg={5}>
                                 <CodeCar
-                                    name="customer_secend_form.license_plate_number"
-                                    value={formik.values.customer_secend_form.license_plate_number}
-                                    onChange={handleCodeCarChange}
+                                    name="license_plate_number"
+                                    value={form2.customer_secend_form.license_plate_number}
+                                    setFieldValue={handleLicensePlateChange}
                                 />
-                                {formik.touched.customer_secend_form?.license_plate_number && formik.errors.customer_secend_form?.license_plate_number && (
-                                    <span className='error'>{formik.errors.customer_secend_form.license_plate_number}</span>
-                                )}
                             </Col>
                             <Col className='mt-4 mt-lg-0' xs={12} lg={7}>
                                 <div className='amount-wrapper'>
@@ -448,32 +401,41 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                                         <InputRadio
                                                             text={`${value}%`}
                                                             value={value}
-                                                            checked={fuelLevel == value}
-                                                            onChange={handleFuelChange}
-                                                            marginRight="input-amount"
+                                                            checked={form2.customer_secend_form.amount_fuel === value}
+                                                            onChange={(e) => setForm2(prev => ({
+                                                                ...prev,
+                                                                customer_secend_form: {
+                                                                    ...prev.customer_secend_form,
+                                                                    amount_fuel: value
+                                                                }
+                                                            }))}
+                                                            marginRigh
                                                         />
+
                                                     </div>
                                                 ))}
                                             </div>
                                             <span className='f-text'>E</span>
                                         </div>
                                     </div>
-                                    {formik.touched.customer_secend_form?.amount_fuel && formik.errors.customer_secend_form?.amount_fuel && (
-                                        <span className='error'>{formik.errors.customer_secend_form.amount_fuel}</span>
-                                    )}
-
                                     <div className="amount-cng-wrapper my-4">
                                         <span className='amount-cng-text title-item-form'>میزان CNG</span>
                                         <div className='amount-cng-content'>
                                             <span className='f-text'>F</span>
                                             <div className='radio-fuel-wrapper'>
-                                                {[100, 75, 50, 25].map(value => (
+                                                {[100, 75, 50, 25].map((value) => (
                                                     <div className='radio-fuel-item' key={value}>
                                                         <InputRadio
                                                             text={`${value}%`}
                                                             value={value}
-                                                            checked={cngLevel == value}
-                                                            onChange={handleCngChange}
+                                                            checked={form2.customer_secend_form.amount_cng === value}
+                                                            onChange={(e) => setForm2(prev => ({
+                                                                ...prev,
+                                                                customer_secend_form: {
+                                                                    ...prev.customer_secend_form,
+                                                                    amount_cng: value
+                                                                }
+                                                            }))}
                                                             marginRight="input-amount"
                                                         />
                                                     </div>
@@ -482,34 +444,32 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                             <span className='f-text'>E</span>
                                         </div>
                                     </div>
-                                    {formik.touched.customer_secend_form?.amount_cng && formik.errors.customer_secend_form?.amount_cng && (
-                                        <span className='error'>{formik.errors.customer_secend_form.amount_cng}</span>
-                                    )}
-
                                 </div>
                             </Col>
                         </div>
                         <div className='p-form2-row3'>
                             <Col xs={12} md={7} lg={5}>
-                                <div className='tire-wear-wrapper'>
+                                <div className='tire-wear-wrapper '>
                                     <span className='title-item-form'>میزان فرسایش لاستیک ها</span>
                                     <div className="tire-wear-content">
-                                        {[90, 70, 50, 30, 10].map(value => (
+                                        {[90, 70, 50, 30, 10].map((value) => (
                                             <InputRadio
                                                 key={value}
                                                 text={`${value}%`}
                                                 value={value}
-                                                checked={tireWear == value}
-                                                onChange={handleTireWearChange}
+                                                checked={form2.tire_wear_rate === value}
+                                                onChange={(e) => setForm2(prev => ({
+                                                    ...prev,
+                                                    customer_secend_form: {
+                                                        ...prev.customer_secend_form,
+                                                        tire_wear_rate: value
+                                                    }
+                                                }))}
                                                 marginRight={"input-erosion"}
                                             />
                                         ))}
                                     </div>
                                 </div>
-                                {formik.touched.customer_secend_form?.tire_wear_rate && formik.errors.customer_secend_form?.tire_wear_rate && (
-                                    <span className='error'>{formik.errors.customer_secend_form.tire_wear_rate}</span>
-                                )}
-
                             </Col>
                             <Col xs={12} md={5} lg={7}>
                                 <div className='numbers-tire'>
@@ -517,15 +477,10 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                         label={"تعداد لاستیک پنچر"}
                                         styled={"inputtire"}
                                         placeholder="از 0 تا 4"
-                                        name="customer_secend_form.number_punctured_tires"
-                                        value={formik.values.customer_secend_form.number_punctured_tires || ''}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
+                                        name="number_punctured_tires"
+                                        value={form2.customer_secend_form.number_punctured_tires}
+                                        onChange={handleInputChange}
                                     />
-                                    {formik.touched.customer_secend_form?.number_punctured_tires && formik.errors.customer_secend_form?.number_punctured_tires && (
-                                        <span className='error'>{formik.errors.customer_secend_form.number_punctured_tires}</span>
-                                    )}
-
                                 </div>
                             </Col>
                         </div>
@@ -533,156 +488,171 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                             <div className="spare-tire-wrapper">
                                 <p className='spare-tire-text title-item-form'>وضعیت لاستیک زاپاس</p>
                                 <div className="spare-tire-content">
-                                    {['true', 'false'].map(value => (
+                                    {[true, false].map((value) => (
                                         <InputRadio
                                             key={value}
-                                            text={value == 'true' ? 'دارد' : 'ندارد'}
+                                            text={value === true ? 'دارد' : 'ندارد'}
                                             value={value}
-                                            checked={spareTire == value}
-                                            onChange={handleSpareTireChange}
+                                            checked={form2.customer_secend_form.condition_spare_tire === value}
+                                            onChange={(e) => setForm2(prev => ({
+                                                ...prev,
+                                                customer_secend_form: {
+                                                    ...prev.customer_secend_form,
+                                                    condition_spare_tire: value
+                                                }
+                                            }))}
                                             marginRight={"input-spare"}
                                         />
                                     ))}
                                 </div>
-                                {formik.touched.customer_secend_form?.condition_spare_tire && formik.errors.customer_secend_form?.condition_spare_tire && (
-                                    <span className='error'>{formik.errors.customer_secend_form.condition_spare_tire}</span>
-                                )}
-
                             </div>
-                            {
-                                spareTire === "true" &&
-                                <div className="erosion-rate-wrappper">
-                                    <p className="title-item-form">میزان فرسایش</p>
-                                    <div className="erosion-rate-content">
-                                        {[90, 70, 50, 30, 10].map(value => (
-                                            <InputRadio
-                                                key={value}
-                                                text={`${value}%`}
-                                                value={value}
-                                                checked={erosionRate == value}
-                                                onChange={handleErosionRateChange}
-                                                marginRight={"input-erosion"}
-                                            />
-                                        ))}
-                                    </div>
-                                    {formik.touched.customer_secend_form?.erosion_rate && formik.errors.customer_secend_form?.erosion_rate && (
-                                        <span className='error'>{formik.errors.customer_secend_form.erosion_rate}</span>
-                                    )}
+                            <div className="erosion-rate-wrapper">
+                                <p className="title-item-form">میزان فرسایش</p>
+                                <div className="erosion-rate-content">
+                                    {[90, 70, 50, 30, 10].map((value) => (
+                                        <InputRadio
+                                            key={value}
+                                            text={`${value}%`}
+                                            value={value}
+                                            checked={form2.customer_secend_form.erosion_rate === value}
+                                            onChange={(e) => setForm2(prev => ({
+                                                ...prev,
+                                                customer_secend_form: {
+                                                    ...prev.customer_secend_form,
+                                                    condition_spare_tire: value
+                                                }
+                                            }))}
+                                            marginRight={"input-erosion"}
+                                        />
+                                    ))}
                                 </div>
-                            }
-
+                            </div>
                         </div>
                         <div className="p-form2-row5">
                             <div className="title-item-form">تمیزی خودرو</div>
                             <div className='mx-sm-5'>
                                 <ClearProgress
-                                    name="customer_secend_form.car_cleanliness"
-                                    value={formik.values.customer_secend_form.car_cleanliness}
-                                    onChange={formik.handleChange}
+                                    name="car_cleanliness"
+                                    value={form2.customer_secend_form.car_cleanliness}
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
                         <div className="p-form2-row6">
                             <p className='title-item'>وضعیت ظاهری خودرو/بدنه</p>
                             <div className='vehicle-condition-wrapper'>
+                                {/* Front car */}
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
-                                            name={`customer_secend_form.front_car_image`}
+                                            name="front_car_image"
                                             setImgModal={setImgModal}
-                                            formik={formik}
+                                            setForm2={setForm2}
+                                            src={form2.customer_secend_form.front_car_image}
+                                            editMode={editMode}
+                                            setChangeImage={setChangeImage}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>جلو ماشین</p>
-                                            <p className='viewmore'
-                                                onClick={() => handleOpenModal('front_car_image', `front_car_text`)}>
-                                                دیدن بیشتر
-                                            </p>
+                                            <p className='viewmore' onClick={() => handleOpenModal('front_car_image', 'front_car_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{formik.values.customer_secend_form.front_car_text}</p>
+                                    <p className='saved-text'>{form2.customer_secend_form.front_car_text}</p>
                                 </Col>
+
+                                {/* Behind car */}
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
-                                            name={`customer_secend_form.behind_car_image`}
+                                            name="behind_car_image"
                                             setImgModal={setImgModal}
-                                            formik={formik}
+                                            setForm2={setForm2}
+                                            src={form2.customer_secend_form.behind_car_image}
+                                            setChangeImage={setChangeImage}
+                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
-                                            <p className='vehicle-item-text'>
-                                                عقب ماشین
-                                            </p>
-                                            <p className='viewmore'
-                                                onClick={() => handleOpenModal('behind_car_image', 'behind_car_text')}>
-                                                دیدن بیشتر</p>
+                                            <p className='vehicle-item-text'>عقب ماشین</p>
+                                            <p className='viewmore' onClick={() => handleOpenModal('behind_car_image', 'behind_car_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{formik.values.customer_secend_form.behind_car_text}</p>
+                                    <p className='saved-text'>{form2.customer_secend_form.behind_car_text}</p>
                                 </Col>
+
+                                {/* Right side */}
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
-                                            name={`customer_secend_form.right_side_image`}
+                                            name="right_side_image"
                                             setImgModal={setImgModal}
-                                            formik={formik}
+                                            setForm2={setForm2}
+                                            src={form2.customer_secend_form.right_side_image}
+                                            setChangeImage={setChangeImage}
+                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
-                                            <p className='vehicle-item-text'>
-                                                سمت راست
-                                            </p>
+                                            <p className='vehicle-item-text'>سمت راست</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('right_side_image', 'right_side_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{formik.values.customer_secend_form.right_side_text}</p>
+                                    <p className='saved-text'>{form2.customer_secend_form.right_side_text}</p>
                                 </Col>
+
+                                {/* Left side */}
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
-                                            name={`customer_secend_form.left_side_image`}
+                                            name="left_side_image"
                                             setImgModal={setImgModal}
-                                            formik={formik}
+                                            setForm2={setForm2}
+                                            src={form2.customer_secend_form.left_side_image}
+                                            setChangeImage={setChangeImage}
+                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
-                                            <p className='vehicle-item-text'>
-                                                سمت چپ
-                                            </p>
+                                            <p className='vehicle-item-text'>سمت چپ</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('left_side_image', 'left_side_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{formik.values.customer_secend_form.left_side_text}</p>
+                                    <p className='saved-text'>{form2.customer_secend_form.left_side_text}</p>
                                 </Col>
+
+                                {/* Car kilometers */}
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
-                                            name={`customer_secend_form.car_km_image`}
+                                            name="car_km_image"
                                             setImgModal={setImgModal}
-                                            formik={formik}
+                                            setForm2={setForm2}
+                                            src={form2.customer_secend_form.left_side_image}
+                                            setChangeImage={setChangeImage}
+                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
-                                            <p className='vehicle-item-text'>
-                                                کیلومتر ماشین
-                                            </p>
+                                            <p className='vehicle-item-text'>کیلومتر ماشین</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('car_km_image', 'car_km_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{formik.values.customer_secend_form.car_km_text}</p>
+                                    <p className='saved-text'>{form2.customer_secend_form.car_km_text}</p>
                                 </Col>
+
+                                {/* Engine door */}
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
-                                            name={`customer_secend_form.engine_door_open_image`}
+                                            name="engine_door_open_image"
                                             setImgModal={setImgModal}
-                                            formik={formik}
+                                            setForm2={setForm2}
+                                            src={form2.customer_secend_form.engine_door_open_image}
+                                            setChangeImage={setChangeImage}
+                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
-                                            <p className='vehicle-item-text'>
-                                                درب موتور باز
-                                            </p>
+                                            <p className='vehicle-item-text'>درب موتور باز</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('engine_door_open_image', 'engine_door_open_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{formik.values.customer_secend_form.engine_door_open_text}</p>
+                                    <p className='saved-text'>{form2.customer_secend_form.engine_door_open_text}</p>
                                 </Col>
                             </div>
                         </div>
@@ -698,11 +668,8 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                         lable="انتخاب تیپ خودرو"
                                         items={transformedCarTips}
                                         name="tip"
-                                        onChange={formik.handleChange}
+                                        onChange={(name, value) => handleDropdownChange(name, value)}
                                     />
-                                    {formik.errors.tip && formik.touched.tip && (
-                                        <span className='error'>{formik.errors.tip}</span>
-                                    )}
                                 </div>
                             </Col>
                             <Col xs={12} lg={8} xl={9} className='part-machine-container'>
@@ -717,9 +684,70 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
                                 ))}
                             </Col>
                         </div>
+                        <div className='p-form2-row8'>
+                            <p className='title-item'>متعلقات خودرو</p>
+                            <div className='belongings-wrapper'>
+                                <Col xs={12} md={6} xl={5}>
+                                    <div className='belongings'>
+                                        <span className='title-item-form'>متعلقات بدنه</span>
+                                        <div className='belongings-item-container belongings-body'>
+                                            {allAccessories && allAccessories[0]?.children.map(item => (
+                                                <Col xs={12} md={6} key={item.id}>
+                                                    <InputCheckBox
+                                                        value={item.id}
+                                                        text={item.name}
+                                                        onChange={() => handleAccessoryChange(item.id)}
+                                                        checked={form2.accessories.includes(item.id)}
+                                                    />
+                                                </Col>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col xs={12} md={6} xl={5}>
+                                    <div className='belongings'>
+                                        <span className='title-item-form'>متعلقات داخلی</span>
+                                        <div className='belongings-item-container belongings-interior'>
+                                            {allAccessories && allAccessories[1]?.children.map(item => (
+                                                <Col xs={12} md={6} key={item.id}>
+                                                    <InputCheckBox
+                                                        value={item.id}
+                                                        text={item.name}
+                                                        onChange={() => handleAccessoryChange(item.id)}
+                                                        checked={form2.accessories.includes(item.id)}
+                                                    />
+                                                </Col>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col className='mt-4 mt-lg-0' xs={12} md={4} xl={2}>
+                                    <div className='belongings belongings-input d-flex flex-column'>
+                                        <span className='other-belongs-title'>سایر متعلقات</span>
+                                        <input
+                                            type="text"
+                                            className='input-belongings'
+                                            name="other_accessories"
+                                            value={form2.customer_secend_form.other_accessories}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </Col>
+                            </div>
+                            <div className='mt-4 mt-md-5'>
+                                <InputCheckBox
+                                    text={"همه موارد"}
+                                    value={"همه موارد"}
+                                    checked={selectedAll}
+                                    onChange={handleSelectAll}
+                                />
+                            </div>
+                        </div>
                         <div className='p-form-actions'>
-                            <EditBtn onClick={prevTab} />
-                            <ConfirmBtn type="submit" />
+                            <div className='p-form-actions'>
+                                <EditBtn />
+                                <ConfirmBtn type="submit" />
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -733,85 +761,102 @@ export default function Pform2({ nextTab, prevTab, setContent }) {
 
 
 
-// متعلقات خودرو//
-{/* <div className='p-form2-row8'>
-                            <p className='title-item'>متعلقات خودرو</p>
-                            <div className='belongings-wrapper'>
-                                <Col xs={12} md={6} xl={4} >
-                                    <div className='belongings'>
-                                        <span className='title-item-form '>متعلقات بدنه</span>
-                                        <div className='belongings-item-container belongings1'>
-                                            <Col xs={12} sm={6}>
-                                                {
-                                                    ["رکاب راست وچپ",
-                                                        "گارد عقب وجلو",
-                                                        "رینگ اسپرت",
-                                                        "پروژکتور",
-                                                        "آنتن",
-                                                        "پلاک جلو",
-                                                        "پلاک عقب"].map(item => (
-                                                            <InputCheckBox
-                                                                key={item}
-                                                                value={item}
-                                                                onChange={() => chnageCheckboxBodyAccessories(item)}
-                                                            
-                                                            />
-                                                        ))
-                                                }
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Col>
-                                <Col xs={12} md={6} xl={5}>
-                                    <div className='belongings'>
-                                        <span className='title-item-form '>متعلقات داخلی</span>
-                                        <div className='belongings-item-container belonging2'>
-                                            <Col xs={12} sm={4} md={6}>
-                                                {
-                                                    [
-                                                        "پخش صوت",
-                                                        "کفپوش",
-                                                        "آچار چرخ",
-                                                        "مثلث خطر",
-                                                        "چرخ زاپاس",
-                                                        "جاسیگاری",
-                                                        "دزدگیر",
-                                                        "فندک",
-                                                        "قالپاق",
-                                                        "فلش",
-                                                        "جک",
-                                                        "زه خودرو"
-                                                    ].map(item => (
-                                                        <InputCheckBox
-                                                            key={item}
-                                                            value={item}
-                                                            onChange={() => chnageCheckboxInteriorAccessories(item)}
-                                                        // checked={formik.values.Car_accessories.Interior_accessories.includes(item)}
-                                                        />
-                                                    ))
-                                                }
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Col >
-                                <Col className='mt-4 mt-md-0' xs={12} md={4} xl={3} >
-                                    <div className='belongings belongings-input d-flex flex-column'>
-                                        <span className='title-item-form '>سایر متعلقات</span>
-                                        <input
-                                            type="text"
-                                            className='input-belongings'
-                                            name="customer_secend_form.other_accessories}"
-                                            value={formik.values.customer_secend_form.other_accessories}
-                                            onChange={formik.handleChange}
-                                        />
-                                    </div>
-                                </Col>
-                            </div>
-                            <div className='mt-4 mt-md-5'>
-                                <InputCheckBox
-                                    value={"همه موارد"}
-                                    checked={selectAll}
-                                    onChange={handleSelectAll}
-                                />
-                            </div>
-                        </div>  */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// console.log(dataForm.customer_form_two?.accessories)
+// console.log(formik.values.accessories)
+// console.log(allAccessories[0]?.children)
+// console.log(allAccessories[1]?.children)
+
+
+
+
+
+
+
+
+
+
+
+
+// const formik = useFormik({
+//     initialValues: {
+//         customer_secend_form: {
+//             customer: coustomer ? coustomer : idForm,
+//             material: editMode && dataForm ? dataForm.customer_form_two.material : "",
+//             color: editMode && dataForm ? dataForm.customer_form_two.color : "",
+//             chassis_number: editMode && dataForm ? dataForm.customer_form_two.chassis_number : "",
+//             car_operation: editMode && dataForm ? dataForm.customer_form_two.car_operation : "",
+//             license_plate_number: editMode && dataForm ? dataForm.customer_form_two.license_plate_number : "",
+//             amount_fuel: editMode && dataForm ? dataForm.customer_form_two.amount_fuel : "",
+//             amount_cng: editMode && dataForm ? dataForm.customer_form_two.amount_cng : "",
+//             number_punctured_tires: editMode && dataForm ? dataForm.customer_form_two.number_punctured_tires : "",
+//             tire_wear_rate: editMode && dataForm ? dataForm.customer_form_two.tire_wear_rate : "",
+//             condition_spare_tire: editMode && dataForm ? dataForm.customer_form_two.condition_spare_tire : "",
+//             erosion_rate: editMode && dataForm ? dataForm.customer_form_two.erosion_rate : "",
+//             car_cleanliness: editMode && dataForm ? dataForm.customer_form_two.car_cleanliness : 0,
+//             other_car: dataForm?.customer_form_two?.other_car,
+//             other_color: dataForm ? dataForm.customer_form_two.other_color : '',
+//             front_car_image: editMode && dataForm ? dataForm.customer_form_two.front_car_image : "",
+//             front_car_text: editMode && dataForm ? dataForm.customer_form_two.front_car_text : "",
+//             behind_car_image: editMode && dataForm ? dataForm.customer_form_two.behind_car_image : "",
+//             behind_car_text: editMode && dataForm ? dataForm.customer_form_two.behind_car_text : "",
+//             right_side_image: editMode && dataForm ? dataForm.customer_form_two.right_side_image : "",
+//             right_side_text: editMode && dataForm ? dataForm.customer_form_two.right_side_text : "",
+//             left_side_image: editMode && dataForm ? dataForm.customer_form_two.left_side_image : "",
+//             left_side_text: editMode && dataForm ? dataForm.customer_form_two.left_side_text : "",
+//             car_km_image: editMode && dataForm ? dataForm.customer_form_two.car_km_image : "",
+//             car_km_text: editMode && dataForm ? dataForm.customer_form_two.car_km_text : "",
+//             engine_door_open_image: editMode && dataForm ? dataForm.customer_form_two.engine_door_open_image : "",
+//             engine_door_open_text: editMode && dataForm ? dataForm.customer_form_two.engine_door_open_text : "",
+//             other_accessories: editMode && dataForm ? dataForm.customer_form_two.other_accessories : ""
+//         },
+//         fill_form: editMode && dataForm ? dataForm.customer_form_two.fill_form : [],
+//         accessories: editMode && dataForm?.customer_form_two ? dataForm.customer_form_two.accessories : []
+//     },
+//     validationSchema,
+//     onSubmit: async (values) => {
+//         setLoading(true);
+//         try {
+//             let response;
+//             if (editMode && dataForm.customer_form_two.id) {
+//                 response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, values);
+//             } else {
+//                 response = await axios.post(`${apiUrl}/app/fill-customer-and-parts/`, values);
+//             }
+
+//             if (response.status === 201 || response.status === 200) {
+//                 nextTab();
+//             }
+//             setLoading(false);
+//         } catch (error) {
+//             console.error('Error submitting form:', error);
+//             setLoading(false);
+//         }
+//     },
+// });

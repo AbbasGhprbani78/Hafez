@@ -1,4 +1,4 @@
-@import url('../../Styles/Main.css');
+
 
 .signup-page {
     min-height: 100vh;
@@ -114,6 +114,7 @@
     font-size: clamp(.8rem, .9vw, 1rem) !important;
     color: var(--color-17);
     font-weight: normal;
+    margin-top: 5px;
 }
 
 

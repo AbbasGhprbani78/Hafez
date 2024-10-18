@@ -9,10 +9,11 @@ import {
     faLayerGroup,
     faBoxArchive,
     faChartPie,
-    faRightToBracket
+    faRightToBracket,
+    faListCheck
 }
-
     from '@fortawesome/free-solid-svg-icons';
+
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { MyContext } from '../../../context/context';
@@ -72,6 +73,12 @@ export default function SideBar() {
                         <FontAwesomeIcon icon={faBoxArchive} />
                     </div>
                     <p className="sidebar-item-text">انبار</p>
+                </NavLink>
+                <NavLink to={"/draft"} className="sidebar-item navlink">
+                    <div className="icon-sidebar-wrapper">
+                        <FontAwesomeIcon icon={faListCheck} />
+                    </div>
+                    <p className="sidebar-item-text">فرم های ناتمام</p>
                 </NavLink>
                 <li className="sidebar-item navlink logout-sidebar" onClick={logoutHandler}>
                     <div className="icon-sidebar-wrapper">

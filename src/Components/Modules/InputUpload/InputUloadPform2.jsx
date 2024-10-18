@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './InputUpload.css';
+import { useEffect } from 'react';
 
-export default function InputUloadPform2({ label, name, setImgModal, formik }) {
-    const [imageUpload, setImageUpload] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState("");
-
-    useEffect(() => {
-        return () => {
-            if (previewUrl) {
-                URL.revokeObjectURL(previewUrl);
-            }
-        };
-    }, [previewUrl]);
+export default function InputUloadPform2({
+    label,
+    name,
+    setImgModal,
+    setForm2,
+    src,
+    editMode,
+    setChangeImage
+}) {
+    const [defaultImg, setDefaultImg] = useState("");
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -21,34 +22,44 @@ export default function InputUloadPform2({ label, name, setImgModal, formik }) {
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
-            setImgModal(file);
-            setImageUpload(file);
-            setPreviewUrl(URL.createObjectURL(file));
-            const reader = new FileReader();
-            reader.onload = () => {
-                const base64String = reader.result.split(',')[1];
-                formik.setFieldValue(name, base64String);
-            };
-            reader.readAsDataURL(file);
+            setImgModal(file)
+            setChangeImage(true)
+            setDefaultImg(URL.createObjectURL(file));
+            handleFileUpload(file);
         }
     };
 
     const handleChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
+        if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            setImageUpload(file);
-            setImgModal(file); 
-            setPreviewUrl(URL.createObjectURL(file));
-            const reader = new FileReader();
-            reader.onload = () => {
-                const base64String = reader.result.split(',')[1];
-                formik.setFieldValue(name, base64String); 
-            };
-            reader.readAsDataURL(file);
+            setImgModal(file)
+            setChangeImage(true)
+            setDefaultImg(URL.createObjectURL(file));
+            handleFileUpload(file);
         }
     };
+
+    const handleFileUpload = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setForm2((prevForm) => ({
+                ...prevForm,
+                customer_secend_form: {
+                    ...prevForm.customer_secend_form,
+                    [name]: reader.result,
+                },
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
+
+    useEffect(() => {
+        if (editMode) {
+            setImgModal(src)
+        }
+    }, [src])
 
     return (
         <div className='uploadInput-container'>
@@ -64,15 +75,18 @@ export default function InputUloadPform2({ label, name, setImgModal, formik }) {
                         id={name}
                         className='uploadInput'
                         onChange={handleChange}
+                        accept="image/*"
                     />
                     {
-                        imageUpload ?
+                        defaultImg || src ? (
                             <img
-                                src={previewUrl}
+                                src={defaultImg ? defaultImg : (src ? `${apiUrl}${src}` : "")}
                                 alt="upload-preview"
                                 className='img-input'
-                            /> :
+                            />
+                        ) : (
                             <div className="drag-drop-text">drag and drop<br />or</div>
+                        )
                     }
 
                     <label htmlFor={name} className='label-uploadInput mt-2'>آپلود</label>

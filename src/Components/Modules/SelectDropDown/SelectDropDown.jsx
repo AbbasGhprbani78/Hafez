@@ -1,19 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import './SelectDropDown.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
 
-export default function SelectDropDown({ icon, label, items, name, setother, formik, chnageType, setAllTips }) {
-
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const [options, setOptions] = useState();
-    const [filteredOptions, setFilteredOptions] = useState();
+export default function SelectDropDown({ icon, label, items, name, setother, value, onChange }) {
+    const [options, setOptions] = useState([]);
+    const [filteredOptions, setFilteredOptions] = useState([]);
     const [showOptions, setShowOptions] = useState(false);
-    const [displayedValue, setDisplayedValue] = useState('');
+    const [displayedValue, setDisplayedValue] = useState(value);
     const dropdownRef = useRef(null);
 
+    useEffect(() => {
+        setOptions(items);
+        setFilteredOptions(items);
+    }, [items]);
 
-
+    useEffect(() => {
+        setDisplayedValue(value);
+    }, [value]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -22,32 +25,13 @@ export default function SelectDropDown({ icon, label, items, name, setother, for
         setShowOptions(true);
     };
 
-    const handleOptionClick = async (id, value) => {
-        formik.setFieldValue(name, id);
+    const handleOptionClick = (id, value) => {
         setDisplayedValue(value);
-
-        if (value === 'سایر') {
-            setother(true);
-        } else {
-            setother(false);
-        }
-
+        setother(value === 'سایر');
+        setother(value === 'سایر'); 
+        onChange(name, value); 
         setShowOptions(false);
-
-        if (chnageType) {
-            try {
-                const res = await axios.get(`${apiUrl}/app/parts-detail/${id}`);
-                if (res.status === 200) {
-                    setAllTips(res.data)
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-
     };
-
 
     const handleInputFocus = () => {
         setShowOptions(true);
@@ -65,12 +49,6 @@ export default function SelectDropDown({ icon, label, items, name, setother, for
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
-
-    useEffect(() => {
-        setOptions(items);
-        setFilteredOptions(items);
-    }, [items]);
 
     return (
         <div className='select-car-wrapper' ref={dropdownRef}>
@@ -90,17 +68,13 @@ export default function SelectDropDown({ icon, label, items, name, setother, for
                 {showOptions && (
                     <ul className='list-cars'>
                         {filteredOptions.length > 0 ? (
-                            <>
-                                {filteredOptions.map((item, i) => (
-                                    <li key={i} className='car-item' onClick={() => handleOptionClick(item.value_id, item.value)}>
-                                        {item.value}
-                                    </li>
-                                ))}
-                            </>
+                            filteredOptions.map((item, i) => (
+                                <li key={i} className='car-item' onClick={() => handleOptionClick(item.value_id, item.value)}>
+                                    {item.value}
+                                </li>
+                            ))
                         ) : (
-                            <li className='car-item'>
-                                موردی یافت نشد
-                            </li>
+                            <li className='car-item'>موردی یافت نشد</li>
                         )}
                     </ul>
                 )}

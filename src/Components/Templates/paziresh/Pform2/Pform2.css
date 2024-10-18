@@ -1,4 +1,4 @@
-@import url('../../../../Styles/Main.css');
+
 
 .form2-container {
     width: 93%;
@@ -198,7 +198,7 @@
     flex-wrap: wrap;
     align-items: start;
     justify-content: space-between;
-    margin-top: 1rem;
+    margin-top: 1.7rem;
 }
 
 .input-belongings {
@@ -211,7 +211,7 @@
 }
 
 .belongings-input {
-    width: 70%;
+    width: 100%;
 }
 
 .belongings-item-container {
@@ -223,7 +223,7 @@
 }
 
 .belongings1 {
-    width: 75%;
+    width: 100%;
 }
 
 .belonging2 {
@@ -250,6 +250,12 @@
     margin-top: 4rem;
 }
 
+.other-belongs-title {
+    color: var(--color-1);
+    font-weight: bold;
+    font-size: clamp(.8rem, .9vw, 1rem);
+}
+
 @media (max-width:1587px) {
     .codecar-itemes {
         width: 80%;
@@ -263,9 +269,9 @@
 }
 
 @media (max-width:1346px) {
-    .belongings1 {
+    /* .belongings1 {
         width: 80%;
-    }
+    } */
 }
 
 
@@ -285,12 +291,7 @@
     }
 }
 
-@media (max-width:1200px) {
-    .numbers-tire {
-        display: flex;
-        justify-content: center;
-    }
-}
+@media (max-width:1200px) {}
 
 
 @media (max-width:1191px) {
@@ -388,9 +389,9 @@
         margin-top: 1rem;
     }
 
-    .belongings1 {
+    /* .belongings1 {
         width: 70%;
-    }
+    } */
 
     .p-form2-row3 {
         flex-direction: column;
@@ -450,10 +451,6 @@
 @media (max-width:600px) {
 
     .form2-container {
-        width: 100%;
-    }
-
-    .belongings1 {
         width: 100%;
     }
 

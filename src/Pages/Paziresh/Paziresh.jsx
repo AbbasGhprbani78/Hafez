@@ -12,11 +12,9 @@ export default function Paziresh() {
     const [coustomer, setCoustomer] = useState("")
 
 
-
-
     const handleNextTab = () => {
         if (currentTab === 3) {
-            ///
+            return false
         } else {
             setCurrentTab(prevTab => prevTab + 1);
         }
@@ -30,8 +28,6 @@ export default function Paziresh() {
         }
     }
 
-
-
     return (
         <>
             <div className="content-conatiner">
@@ -43,7 +39,7 @@ export default function Paziresh() {
                         </p>
                     </div>
                     <div className='my-4'>
-                        <ProgressBar setContent={setContent} />
+                        <ProgressBar currentStep={currentTab} />
                         {
                             currentTab === 1 &&
                             <Pform1
@@ -59,6 +55,7 @@ export default function Paziresh() {
                                 nextTab={handleNextTab}
                                 prevTab={handlePrevTab}
                                 setContent={setContent}
+                                coustomer={coustomer}
                             />
 
                         }
@@ -68,6 +65,7 @@ export default function Paziresh() {
                                 nextTab={handleNextTab}
                                 prevTab={handlePrevTab}
                                 setContent={setContent}
+                                coustomer={coustomer}
                             />
 
                         }

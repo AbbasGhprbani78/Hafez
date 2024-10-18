@@ -1,23 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './CodeCar.css'
-export default function CodeCar({ name, value, onChange }) {
+
+export default function CodeCar({ name, value, setFieldValue }) {
     const [inputs, setInputs] = useState(["", "", "", ""]);
-    const finalPlates = inputs.join("")
-    useEffect(() => {
-        onChange(name, finalPlates)
-    }, [inputs])
     const inputRefs = useRef([]);
+
+    // Split the initial license plate value into the separate inputs
+    useEffect(() => {
+        if (value) {
+            const parts = [
+                value.slice(0, 2),  // First two digits
+                value.slice(2, 3),  // One character (e.g. 'ی')
+                value.slice(3, 6),  // Three digits
+                value.slice(6, 8),  // Last two digits
+            ];
+            setInputs(parts);
+        }
+    }, [value]);
+
+    // Update Formik's state on every input change
+    useEffect(() => {
+        const finalPlates = inputs.join("");
+        setFieldValue(finalPlates);  // Use Formik's setFieldValue
+    }, [inputs]);
 
     const validateInput = (index, value) => {
         switch (index) {
             case 0:
-                return /^\d{0,2}$/.test(value);
+                return /^\d{0,2}$/.test(value);  // Two digits
             case 1:
-                return /^[\u0600-\u06FF]?$/.test(value);
+                return /^[\u0600-\u06FF]?$/.test(value);  // Persian letter
             case 2:
-                return /^\d{0,3}$/.test(value);
+                return /^\d{0,3}$/.test(value);  // Three digits
             case 3:
-                return /^\d{0,2}$/.test(value);
+                return /^\d{0,2}$/.test(value);  // Two digits
             default:
                 return true;
         }
@@ -30,6 +46,7 @@ export default function CodeCar({ name, value, onChange }) {
             newInputs[index] = value;
             setInputs(newInputs);
 
+            // Move to the next input when the current one is filled
             if ((index === 0 && value.length === 2) ||
                 (index === 1 && value.length === 1) ||
                 (index === 2 && value.length === 3) ||
@@ -40,10 +57,9 @@ export default function CodeCar({ name, value, onChange }) {
             }
         }
     };
+
     return (
-
-
-        <div className='inputs-wrapper' style={{ direction: "ltr" }}>
+        <div className='inputs-wrapper mb-3' style={{ direction: "ltr" }}>
             <div className='d-flex align-items-center justify-content-between codecar-itemes'>
                 <div className='d-flex flex-column align-items-center'>
                     <input
@@ -87,12 +103,10 @@ export default function CodeCar({ name, value, onChange }) {
                         onChange={(e) => handleInputChange(3, e)}
                         ref={el => inputRefs.current[3] = el}
                     />
-                    <span className='text-carector' >عدد 2 تایی</span>
+                    <span className='text-carector'>عدد 2 تایی</span>
                 </div>
             </div>
             <p className='code-car title-item-form '> شماره پلاک</p>
         </div>
-    )
+    );
 }
-
-

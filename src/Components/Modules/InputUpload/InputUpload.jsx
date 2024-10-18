@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './InputUpload.css';
 
-export default function InputUpload({ label, name, onChange}) {
+export default function InputUpload({ label, name, onChange }) {
 
     const [imageUpload, setImageUpload] = useState(null);
     const [previewUrl, setPreviewUrl] = useState("");
@@ -65,6 +65,7 @@ export default function InputUpload({ label, name, onChange}) {
                         id={name}
                         className='uploadInput'
                         onChange={handleChange}
+                        accept="image/*"
                     />
                     {
                         imageUpload ?

@@ -13,6 +13,8 @@ import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn';
 import EditBtn from '../../../Modules/EditBtn/EditBtn';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik';
+import { useContext } from 'react'
+import { MyContext } from '../../../../context/context';
 import * as Yup from 'yup';
 import axios from 'axios';
 
@@ -56,12 +58,14 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     const postalCodeRegex = /^[0-9]{10}$/;
     const economicCodeRegex = /^[0-9]{12}$/;
     const [services, setServices] = useState([])
+    const [loading, setLoading] = useState(false)
+    const { dataForm, idForm, editMode } = useContext(MyContext)
     setContent("اطلاعات اولیه مشتری :")
 
     const validationSchema = Yup.object({
         owner_first_name: Yup.string()
             .required('نام مالک را وارد کنید'),
-        owner_last_lastname: Yup.string()
+        owner_last_name: Yup.string()
             .required('نام خانوادگی مالک را وارد کنید'),
         phone_number: Yup.string()
             .matches(phoneNumberRegex, 'شماره تماس مالک نامعتبر است')
@@ -71,7 +75,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
             .required('کد ملی مالک را وارد کنید'),
         pyramid_number: Yup.string()
             .required('شماره هرم را وارد کنید'),
-        address: Yup.string()
+        owner_address: Yup.string()
             .required('آدرس را وارد کنید'),
         first_name_bearer: Yup.string()
             .required('نام آورنده را وارد کنید'),
@@ -91,53 +95,61 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     const formik = useFormik({
         initialValues: {
             form_type: 'personal',
-            owner_first_name: '',
-            owner_last_lastname: '',
-            phone_number: '',
-            national_code_owner: '',
-            pyramid_number: '',
-            address: '',
-            first_name_bearer: '',
-            last_name_bearer: '',
-            phone_number_bearer: '',
-            how_make_turn: '',
-            how_to_apply: '',
-            type_of_service: []
+            owner_first_name: editMode && dataForm.customer_form ? dataForm.customer_form.owner_first_name : '',
+            owner_last_name: editMode && dataForm.customer_form ? dataForm.customer_form.owner_last_name : '',
+            phone_number: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number : '',
+            national_code_owner: editMode && dataForm.customer_form ? dataForm.customer_form.national_code_owner : '',
+            pyramid_number: editMode && dataForm.customer_form ? dataForm.customer_form.pyramid_number : '',
+            owner_address: editMode && dataForm.customer_form ? dataForm.customer_form.owner_address : '',
+            first_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.first_name_bearer : '',
+            last_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.last_name_bearer : '',
+            phone_number_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number_bearer : '',
+            how_make_turn: editMode && dataForm.customer_form ? dataForm.customer_form.how_make_turn : '',
+            how_to_apply: editMode && dataForm.customer_form ? dataForm.customer_form.how_to_apply : '',
+            type_of_service: editMode && dataForm.customer_form ? dataForm.customer_form.type_of_service : []
         },
         validationSchema,
         onSubmit: async (values) => {
-            console.log(values)
+            setLoading(true);
             try {
-                const response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
-                if (response.status === 201) {
+                let response;
+                if (editMode) {
+                    response = await axios.put(`${apiUrl}/app/fill-customer-form/${idForm}/`, values);
+                } else {
+                    response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
+                }
+
+                if (response.status === 200 || response.status === 201) {
                     console.log('Form submitted successfully:', response.data);
-                    localStorage.setItem("coustomer_id", response.data.id)
+                    setCoustomer(response.data.id);
                     nextTab();
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);
+            } finally {
+                setLoading(false);
             }
-        },
+        }
     });
 
     const formik2 = useFormik({
         initialValues: {
             form_type: 'corporate',
-            company_name: '',
-            phone_number: '',
-            pyramid_number: '',
-            national_id_corporate: '',
-            economic_code: '',
-            company_phone_number: '',
-            postal_code: '',
-            how_make_turn: '',
-            address: '',
-            how_to_apply: '',
-            first_name_bearer: '',
-            last_name_bearer: '',
-            national_code_bearer: '',
-            phone_number_bearer: '',
-            type_of_service: []
+            company_name: editMode && dataForm.customer_form ? dataForm.customer_form.company_name : '',
+            phone_number: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number : '',
+            pyramid_number: editMode && dataForm.customer_form ? dataForm.customer_form.pyramid_number : '',
+            national_id_corporate: editMode && dataForm.customer_form ? dataForm.customer_form.national_id_corporate : '',
+            economic_code: editMode && dataForm.customer_form ? dataForm.customer_form.economic_code : '',
+            company_phone_number: editMode && dataForm.customer_form ? dataForm.customer_form.company_phone_number : '',
+            postal_code: editMode && dataForm.customer_form ? dataForm.customer_form.postal_code : '',
+            how_make_turn: editMode && dataForm.customer_form ? dataForm.customer_form.how_make_turn : '',
+            address: editMode && dataForm.customer_form ? dataForm.customer_form.address : '',
+            how_to_apply: editMode && dataForm.customer_form ? dataForm.customer_form.how_to_apply : '',
+            first_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.first_name_bearer : '',
+            last_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.last_name_bearer : '',
+            national_code_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.national_code_bearer : '',
+            phone_number_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number_bearer : '',
+            type_of_service: editMode && dataForm.customer_form ? dataForm.customer_form.type_of_service : []
         },
         validationSchema: Yup.object({
             company_name: Yup.string()
@@ -180,19 +192,26 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         }),
 
         onSubmit: async (values) => {
-            console.log(values);
+            setLoading(true);
             try {
-                const response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
-                if (response.status === 201) {
+                let response;
+                if (editMode) {
+                    response = await axios.put(`${apiUrl}/app/update-customer-form/${idForm}/`, values);
+                } else {
+                    response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
+                }
+
+                if (response.status === 200 || response.status === 201) {
                     console.log('Form submitted successfully:', response.data);
-                    localStorage.setItem("coustomer_id",response.data.id)
+                    setCoustomer(response.data.id);
                     nextTab();
                 }
-               
             } catch (error) {
                 console.error('Error submitting form:', error);
+            } finally {
+                setLoading(false);
             }
-        },
+        }
     });
 
     const handleChangetab = (event, newValue) => {
@@ -231,6 +250,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                 const res = await axios.get(`${apiUrl}/app/get-service-type/`);
                 if (res.status === 200) {
                     setServices(res.data)
+                    console.log(res.data)
                 }
             } catch (error) {
                 console.log(error);
@@ -238,6 +258,9 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         };
         getService();
     }, []);
+
+    console.log(formik.values.type_of_service)
+
 
     return (
         <>
@@ -271,13 +294,13 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                             styled={"inputwidth"}
                                             icon={faUser}
                                             placeholder="نام خانوادگی مالک"
-                                            name="owner_last_lastname"
-                                            value={formik.values.owner_last_lastname}
+                                            name="owner_last_name"
+                                            value={formik.values.owner_last_name}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             type="text"
                                         />
-                                        {formik.touched.owner_last_lastname && formik.errors.owner_last_lastname && <span className='error'>{formik.errors.owner_last_lastname}</span>}
+                                        {formik.touched.owner_last_name && formik.errors.owner_last_name && <span className='error'>{formik.errors.owner_last_name}</span>}
                                     </Col>
                                     <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                         <Input
@@ -325,13 +348,13 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                 </div>
                                 <div className='mt-4 p-form1-texte'>
                                     <Texteara
-                                        value={formik.values.address}
+                                        value={formik.values.owner_address}
                                         onChange={formik.handleChange}
-                                        name="address"
+                                        name="owner_address"
                                         onBlur={formik.handleBlur}
                                         styled={"eara1"}
                                     />
-                                    {formik.touched.address && formik.errors.address && <span className='error'>{formik.errors.address}</span>}
+                                    {formik.touched.owner_address && formik.errors.owner_address && <span className='error'>{formik.errors.owner_address}</span>}
                                 </div>
                                 <div className='p-form1-row mt-4'>
                                     <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -394,10 +417,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                         { value: "in person", name: "حضوری" },
                                                         { value: "internet", name: "اینترنتی" }
                                                     ]}
-                                                    onChange={formik.handleChange}
+                                                    onChange={formik.setFieldValue}
                                                     name="how_make_turn"
                                                     defaultValue={formik.values.how_make_turn}
                                                 />
+
                                                 {formik.errors.how_make_turn && formik.touched.how_make_turn && (
                                                     <span className='error'>{formik.errors.how_make_turn}</span>
                                                 )}
@@ -462,7 +486,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                 </div>
                                 <div className='p-form-actions'>
                                     <EditBtn />
-                                    <ConfirmBtn type="submit" />
+                                    <ConfirmBtn type="submit" isSubmitting={loading} />
                                 </div>
                             </div>
                         </form>
@@ -766,7 +790,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                 </div>
                                 <div className='p-form-actions'>
                                     <EditBtn />
-                                    <ConfirmBtn type="submit" />
+                                    <ConfirmBtn type="submit" isSubmitting={formik.isSubmitting} />
                                 </div>
                             </div>
                         </form>
@@ -776,12 +800,5 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         </>
     )
 }
-
-
-
-
-
-// "app/get-service-type"
-
 
 

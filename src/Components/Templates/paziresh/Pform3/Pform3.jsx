@@ -21,6 +21,7 @@ import TableRow from '@mui/material/TableRow';
 import Modal from '../../../Modules/Modal/Modal';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
 
 
 
@@ -56,7 +57,22 @@ function a11yProps(index) {
     };
 }
 
-export default function Pform3({ formData, updateFormData, setContent, nextTab, prevTab }) {
+export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const [value, setValue] = useState(0);
+    const [isRecordingExpert, setIsRecordingExpert] = useState(false);
+    const [isRecordingCustomer, setIsRecordingCustomer] = useState(false);
+    const expertMediaRecorder = useRef(null);
+    const expertMediaStream = useRef(null);
+    const expertChunks = useRef([]);
+    const customerMediaRecorder = useRef(null);
+    const customerMediaStream = useRef(null);
+    const customerChunks = useRef([]);
+    const [showModal, setShowModal] = useState(false)
+    const [selectedStatement, setSelectedStatement] = useState(null);
+    const [loading, setLoading] = useState(false)
+    const columns = ['شرح اظهار', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
+
 
     const [statementData, setStatementData] = useState({
         customerText: '',
@@ -71,33 +87,28 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
 
     const formik = useFormik({
         initialValues: {
-            statements: []
+            form_id: coustomer,
+            form: []
         },
-        onSubmit: (values) => {
-            updateFormData(values);
-            nextTab();
+        onSubmit: async (values) => {
+            console.log(values)
+            try {
+                setLoading(true)
+                const response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
+                if (response.status === 201 || response.status === 200) {
+                    console.log('Form submitted successfully:', response.data);
+                    setLoading(false)
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                setLoading(false)
+            }
         },
     });
 
-    const [value, setValue] = useState(0);
-    const [localData, setLocalData] = useState(formData);
-    const [isRecordingExpert, setIsRecordingExpert] = useState(false);
-    const [isRecordingCustomer, setIsRecordingCustomer] = useState(false);
-    const expertMediaRecorder = useRef(null);
-    const expertMediaStream = useRef(null);
-    const expertChunks = useRef([]);
-    const customerMediaRecorder = useRef(null);
-    const customerMediaStream = useRef(null);
-    const customerChunks = useRef([]);
-    const [showModal, setShowModal] = useState(false)
-    const [selectedStatement, setSelectedStatement] = useState(null);
-    setContent("اظهارات مشتری :");
-    const columns = ['شرح اظهار', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
-
-    const hasAttachments = formik.values.statements.some(
+    const hasAttachments = formik.values.form.some(
         item => item?.customerAudio || item?.customerFile || item?.expertFile || item?.expertAudio
     );
-
 
     if (hasAttachments) {
         columns.push("پیوست ها");
@@ -128,7 +139,6 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
             console.error('Error accessing microphone for expert:', err);
         }
     };
-
 
     const stopRecordingExpert = () => {
         if (expertMediaRecorder.current && expertMediaRecorder.current.state === 'recording') {
@@ -207,20 +217,36 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
     };
 
     const handleEstimatedPriceChange = (e) => {
-        setStatementData((prevState) => ({
-            ...prevState,
-            estimatedPrice: e.target.value
-        }));
+        const value = e.target.value.replace(/,/g, '');
+        if (/^\d*\.?\d*$/.test(value)) {
+
+            setStatementData((prevState) => ({
+                ...prevState,
+                estimatedPrice: value
+            }));
+        }
     };
 
     const handleEstimatedTimeChange = (e) => {
+        const value = e.target.value;
+        formik.setFieldValue('estimatedTime', value);
         setStatementData((prevState) => ({
             ...prevState,
-            estimatedTime: e.target.value
+            estimatedTime: value
         }));
     };
 
-    const addStatement = (e) => {
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    const addStatement = async (e) => {
         e.preventDefault();
         const {
             customerText,
@@ -243,23 +269,20 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
             !estimatedPrice &&
             !estimatedTime
         ) {
-            alert('At least one field must have a value!');
             return;
         }
 
-
         const newStatement = {
             customerText: customerText || '',
-            customerAudio: customerAudio,
-            customerFile: customerFile || null,
+            customerAudio: customerAudio ? await convertToBase64(customerAudio) : null,
+            customerFile: customerFile ? await convertToBase64(customerFile) : null,
             expertText: expertText || '',
-            expertFile: expertFile || null,
-            expertAudio: expertAudio,
+            expertFile: expertFile ? await convertToBase64(expertFile) : null,
+            expertAudio: expertAudio ? await convertToBase64(expertAudio) : null,
             estimatedPrice: estimatedPrice || '',
             estimatedTime: estimatedTime || ''
         };
-
-        formik.setFieldValue("statements", [...formik.values.statements, newStatement]);
+        formik.setFieldValue("form", [...formik.values.form, newStatement]);
 
         setStatementData({
             customerText: '',
@@ -284,93 +307,93 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
     };
 
     const handleDeleteStatement = (indexToDelete) => {
-        const updatedStatements = formik.values.statements.filter((_, index) => index !== indexToDelete);
-        formik.setFieldValue('statements', updatedStatements);
+        const updatedform = formik.values.form.filter((_, index) => index !== indexToDelete);
+        formik.setFieldValue('form', updatedform);
     };
 
 
-    const handleImageChangeCoustomer = (e) => {
+    const handleImageChangeCoustomer = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
-        const updatedStatements = formik.values.statements.map((statement) =>
+        const base64File = await convertToBase64(file)
+        const updatedForm = formik.values.form.map((statement) =>
             statement === selectedStatement
-                ? { ...statement, customerFile: file }
+                ? { ...statement, customerFile: base64File }
                 : statement
         );
-
-        formik.setFieldValue('statements', updatedStatements);
-        setSelectedStatement({ ...selectedStatement, customerFile: file });
+        formik.setFieldValue('form', updatedForm);
+        setSelectedStatement({ ...selectedStatement, customerFile: base64File });
     };
+
 
 
     const handleDeleteImageCoustomer = () => {
-        const updatedStatements = formik.values.statements.map((statement) =>
+        const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
                 ? { ...statement, customerFile: null }
                 : statement
         );
 
-        formik.setFieldValue('statements', updatedStatements);
+        formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, customerFile: null });
     };
 
 
     const handleDeleteAudioCoustomer = () => {
-        const updatedStatements = formik.values.statements.map((statement) =>
+        const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
                 ? { ...statement, customerAudio: null }
                 : statement
         );
 
-        formik.setFieldValue('statements', updatedStatements);
+        formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, customerAudio: null });
     };
-
 
 
     const handleImageChangeExpert = (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const updatedStatements = formik.values.statements.map((statement) =>
+        const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
                 ? { ...statement, expertFile: file }
                 : statement
         );
 
-        formik.setFieldValue('statements', updatedStatements);
+        formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, expertFile: file });
     };
 
 
     const handleDeleteImageExpert = () => {
-        const updatedStatements = formik.values.statements.map((statement) =>
+        const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
                 ? { ...statement, expertFile: null }
                 : statement
         );
 
-        formik.setFieldValue('statements', updatedStatements);
+        formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, expertFile: null });
     };
 
 
     const handleDeleteAudioExpert = () => {
-        const updatedStatements = formik.values.statements.map((statement) =>
+        const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
                 ? { ...statement, expertAudio: null }
                 : statement
         );
 
-        formik.setFieldValue('statements', updatedStatements);
+        formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, expertAudio: null });
     };
 
-
     useEffect(() => {
-        updateFormData(localData);
-    }, [localData]);
+        setContent("اظهارات مشتری :")
+    }, [])
+
+    console.log(formik.values)
 
 
     return (
@@ -395,7 +418,7 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                                 />
                                 {selectedStatement?.customerFile ? (
                                     <img
-                                        src={URL.createObjectURL(selectedStatement.customerFile)}
+                                        src={selectedStatement.customerFile}
                                         alt="Customer statement"
                                         className='img-statmentmodal'
                                     />
@@ -428,7 +451,7 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                                     <audio controls >
                                         <source
                                             type="audio/webm"
-                                            src={URL.createObjectURL(selectedStatement.customerAudio)}
+                                            src={selectedStatement.customerAudio}
                                         />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
@@ -446,7 +469,7 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                                 />
                                 {selectedStatement?.expertFile ? (
                                     <img
-                                        src={URL.createObjectURL(selectedStatement.expertFile)}
+                                        src={selectedStatement.expertFile}
                                         alt="Expert statement"
                                         className='img-statmentmodal'
                                     />
@@ -478,7 +501,7 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                                     <audio controls >
                                         <source
                                             type="audio/webm"
-                                            src={URL.createObjectURL(selectedStatement.expertAudio)}
+                                            src={selectedStatement.expertAudio}
                                         />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
@@ -570,7 +593,6 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                                 )}
                             </div>
                         </div>
-
                         <div className="estimate-wrapper mt-4">
                             <div className="estimate-item">
                                 <div className="estimate-input">
@@ -585,26 +607,27 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                             </div>
                             <div className="mt-3 mt-sm-0 estimate-item">
                                 <div className="estimate-input">
+                                    <label htmlFor="estimated-time">تخمین زمان تعمیر</label>
                                     <Input
-                                        label={'تخمین زمان تعمیر'}
-                                        name={'تخمین زمان تعمیر'}
-                                        placeholder={'تخمین زمان تعمیر'}
+                                        type="datetime-local"
+                                        id="estimated-time"
+                                        name="تخمین زمان تعمیر"
                                         value={statementData.estimatedTime}
                                         onChange={handleEstimatedTimeChange}
+                                        placeholder="تخمین زمان تعمیر"
                                     />
                                 </div>
                             </div>
                         </div>
-
                         <div className="pform3-container-table mt-5" dir="rtl">
                             <button className="add-estimate-btn mb-3" onClick={addStatement}>
                                 افزودن شرح اظهار
                                 <FontAwesomeIcon icon={faPlus} className="plus-btn-2" />
                             </button>
                             {
-                                formik.values.statements.length ?
+                                formik.values.form.length ?
                                     <TableForm columns={columns}>
-                                        {formik.values.statements?.map((item, rowIndex) => (
+                                        {formik.values.form?.map((item, rowIndex) => (
                                             <TableRow
                                                 key={rowIndex}
                                                 sx={{ border: '1px solid #ddd', fontFamily: "iranYekan" }}
@@ -651,7 +674,7 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
                             }
                         </div>
                         <div className="p-form-actions pt-3">
-                            <EditBtn onClick={prevTab} />
+                            <EditBtn onClick={prevTab} isSubmitting={loading} />
                             <ConfirmBtn type="submit" />
                         </div>
                     </div>
@@ -661,6 +684,7 @@ export default function Pform3({ formData, updateFormData, setContent, nextTab, 
 
     );
 }
+
 
 
 

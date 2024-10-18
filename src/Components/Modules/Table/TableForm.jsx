@@ -14,7 +14,11 @@ export default function TableForm({ columns, children }) {
     return (
         <>
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650, border: '1px solid #f2f2f2' }} aria-label="dynamic table">
+                <Table
+                    sx={{ minWidth: 650, border: '1px solid #f2f2f2' }}
+                    aria-label="dynamic table"
+                    // stickyHeader
+                >
                     <TableHead>
                         <TableRow>
                             {columns?.map((column, index) => (

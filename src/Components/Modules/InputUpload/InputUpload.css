@@ -1,4 +1,4 @@
-@import url('../../../Styles/Main.css');
+
 
 .uploadInput-container {
     display: flex;
@@ -57,7 +57,12 @@
 }
 
 @media (max-width:600px) {
+
     .drag-drop-text {
-        width: 90%;
+        width: 100%;
+    }
+
+    .img-input {
+        width: 100%;
     }
 }
