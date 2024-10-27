@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './CarModel.css';
 
 export default function CarModal({
@@ -8,19 +8,14 @@ export default function CarModal({
     modalText,
     setModalText,
     handleSaveText,
-    editMode,
-    chnageImage
 }) {
-
-    console.log(imgImModal)
-    
     const apiUrl = import.meta.env.VITE_API_URL;
-    const imgsrc = imgImModal ? (
-        editMode && !chnageImage ? `${apiUrl}${imgImModal}` :
-            editMode && chnageImage ? URL.createObjectURL(imgImModal) :
-                URL.createObjectURL(imgImModal)
-    ) : '';
 
+    const isBase64 = (str) => {
+        return str.startsWith('data:image/');
+    };
+
+    const imgsrc = imgImModal ? (isBase64(imgImModal) ? imgImModal : `${apiUrl}${imgImModal}`) : ""
 
     return (
         <div className={`carModal-container ${opneModal ? "activeModalCar" : ""}`}>

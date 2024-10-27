@@ -25,11 +25,10 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
         setShowOptions(true);
     };
 
-    const handleOptionClick = (id, value) => {
+    const handleOptionClick = (value, id) => {
         setDisplayedValue(value);
         setother(value === 'سایر');
-        setother(value === 'سایر'); 
-        onChange(name, value); 
+        onChange(name, id);
         setShowOptions(false);
     };
 
@@ -69,7 +68,7 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
                     <ul className='list-cars'>
                         {filteredOptions.length > 0 ? (
                             filteredOptions.map((item, i) => (
-                                <li key={i} className='car-item' onClick={() => handleOptionClick(item.value_id, item.value)}>
+                                <li key={i} className='car-item' onClick={() => handleOptionClick(item.value, item.value_id,)}>
                                     {item.value}
                                 </li>
                             ))

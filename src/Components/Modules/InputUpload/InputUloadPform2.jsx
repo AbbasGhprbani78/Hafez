@@ -5,11 +5,8 @@ import { useEffect } from 'react';
 export default function InputUloadPform2({
     label,
     name,
-    setImgModal,
     setForm2,
     src,
-    editMode,
-    setChangeImage
 }) {
     const [defaultImg, setDefaultImg] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -24,8 +21,6 @@ export default function InputUloadPform2({
         e.stopPropagation();
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
-            setImgModal(file)
-            setChangeImage(true)
             setDefaultImg(URL.createObjectURL(file));
             handleFileUpload(file);
         }
@@ -34,8 +29,6 @@ export default function InputUloadPform2({
     const handleChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            setImgModal(file)
-            setChangeImage(true)
             setDefaultImg(URL.createObjectURL(file));
             handleFileUpload(file);
         }
@@ -55,11 +48,7 @@ export default function InputUloadPform2({
         reader.readAsDataURL(file);
     };
 
-    useEffect(() => {
-        if (editMode) {
-            setImgModal(src)
-        }
-    }, [src])
+
 
     return (
         <div className='uploadInput-container'>

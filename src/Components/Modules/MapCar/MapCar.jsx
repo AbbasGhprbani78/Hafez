@@ -1,15 +1,18 @@
 
 import './MapCar.css';
 
-export default function MapCar({ selectPart, selectParts }) {
+export default function MapCar({ selectPart, selectParts,fillForm }) {
 
     const handleItemClick = (number) => {
         selectPart(number);
     };
 
     const isActive = (number) => {
-        return selectParts.some(part => part.value_number == number);
+        const isPartSelected = selectParts?.some(part => part.value_number == number);
+        const isInFillForm = fillForm?.some(item => item.parts_value_number == number);
+        return isPartSelected || isInFillForm;
     };
+
 
     return (
         <div className="grid-container">

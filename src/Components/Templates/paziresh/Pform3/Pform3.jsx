@@ -22,8 +22,9 @@ import Modal from '../../../Modules/Modal/Modal';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-
-
+import { useContext } from 'react'
+import { MyContext } from '../../../../context/context'
+import { toFarsiNumber } from '../../../../utils/utils';
 
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
@@ -71,7 +72,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const [showModal, setShowModal] = useState(false)
     const [selectedStatement, setSelectedStatement] = useState(null);
     const [loading, setLoading] = useState(false)
-    const columns = ['شرح اظهار', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
+    const columns = ['توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
+    const { dataForm, idForm, editMode } = useContext(MyContext)
 
 
     const [statementData, setStatementData] = useState({
@@ -90,6 +92,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             form_id: coustomer,
             form: []
         },
+
         onSubmit: async (values) => {
             console.log(values)
             try {
@@ -217,14 +220,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     };
 
     const handleEstimatedPriceChange = (e) => {
-        const value = e.target.value.replace(/,/g, '');
-        if (/^\d*\.?\d*$/.test(value)) {
+        const value = e.target.value
+        setStatementData((prevState) => ({
+            ...prevState,
+            estimatedPrice: value
+        }));
 
-            setStatementData((prevState) => ({
-                ...prevState,
-                estimatedPrice: value
-            }));
-        }
     };
 
     const handleEstimatedTimeChange = (e) => {
@@ -235,7 +236,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             estimatedTime: value
         }));
     };
-
 
     const convertToBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -301,6 +301,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setValue(newValue);
     };
 
+
     const handleShowModal = (statement) => {
         setSelectedStatement(statement);
         setShowModal(true);
@@ -325,7 +326,19 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setSelectedStatement({ ...selectedStatement, customerFile: base64File });
     };
 
+    const handleImageChangeExpert = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const base64File = await convertToBase64(file)
+        const updatedform = formik.values.form.map((statement) =>
+            statement === selectedStatement
+                ? { ...statement, expertFile: base64File }
+                : statement
+        );
 
+        formik.setFieldValue('form', updatedform);
+        setSelectedStatement({ ...selectedStatement, expertFile: base64File });
+    };
 
     const handleDeleteImageCoustomer = () => {
         const updatedform = formik.values.form.map((statement) =>
@@ -348,21 +361,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
 
         formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, customerAudio: null });
-    };
-
-
-    const handleImageChangeExpert = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const updatedform = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, expertFile: file }
-                : statement
-        );
-
-        formik.setFieldValue('form', updatedform);
-        setSelectedStatement({ ...selectedStatement, expertFile: file });
     };
 
 
@@ -389,11 +387,18 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setSelectedStatement({ ...selectedStatement, expertAudio: null });
     };
 
+    const isBase64 = (str) => {
+
+        const base64Regex = /^data:image\/[^;]+;base64,|^data:audio\/webm;base64,/;
+        return base64Regex.test(str);
+    };
+
     useEffect(() => {
         setContent("اظهارات مشتری :")
     }, [])
 
-    console.log(formik.values)
+
+    // console.log(formik.values)
 
 
     return (
@@ -408,7 +413,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                         <CustomTab label="مشتری" {...a11yProps(0)} />
                         <CustomTab label="کارشناس" {...a11yProps(1)} />
                     </Tabs>
-                    <TabPanel value={value} index={0} key={0} >
+                    <TabPanel value={value} index={0} key={0}>
                         <div className='wrap-image-modal'>
                             <div className='image-modal-content'>
                                 <FontAwesomeIcon
@@ -418,7 +423,11 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                 />
                                 {selectedStatement?.customerFile ? (
                                     <img
-                                        src={selectedStatement.customerFile}
+                                        src={
+                                            isBase64(selectedStatement.customerFile)
+                                                ? selectedStatement.customerFile
+                                                : `${apiUrl}${selectedStatement.customerFile}`
+                                        }
                                         alt="Customer statement"
                                         className='img-statmentmodal'
                                     />
@@ -448,10 +457,14 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         onClick={handleDeleteAudioCoustomer}
                                         className='trash-audio-modal'
                                     />
-                                    <audio controls >
+                                    <audio controls>
                                         <source
                                             type="audio/webm"
-                                            src={selectedStatement.customerAudio}
+                                            src={
+                                                isBase64(selectedStatement.customerAudio)
+                                                    ? selectedStatement.customerAudio
+                                                    : `${apiUrl}${selectedStatement.customerAudio}`
+                                            }
                                         />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
@@ -459,6 +472,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                             )}
                         </div>
                     </TabPanel>
+                    
                     <TabPanel value={value} index={1} key={1} >
                         <div className='wrap-image-modal'>
                             <div className='image-modal-content'>
@@ -469,8 +483,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                 />
                                 {selectedStatement?.expertFile ? (
                                     <img
-                                        src={selectedStatement.expertFile}
-                                        alt="Expert statement"
+                                        src={
+                                            isBase64(selectedStatement.expertFile)
+                                                ? selectedStatement.expertFile
+                                                : `${apiUrl}${selectedStatement.expertFile}`
+                                        }
+                                        alt="Customer statement"
                                         className='img-statmentmodal'
                                     />
                                 ) : (
@@ -498,10 +516,14 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         onClick={handleDeleteAudioExpert}
                                         className='trash-audio-modal'
                                     />
-                                    <audio controls >
+                                    <audio controls>
                                         <source
                                             type="audio/webm"
-                                            src={selectedStatement.expertAudio}
+                                            src={
+                                                isBase64(selectedStatement.expertAudio)
+                                                    ? selectedStatement.expertAudio
+                                                    : `${apiUrl}${selectedStatement.expertAudio}`
+                                            }
                                         />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
@@ -541,7 +563,13 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                     accept="image/*"
                                                     onChange={handleCustomerFileChange}
                                                 />
-                                                <FontAwesomeIcon icon={faFile} />
+                                                {
+                                                    statementData.customerFile ?
+                                                        <FontAwesomeIcon icon={faFileLines} />
+                                                        :
+                                                        <FontAwesomeIcon icon={faFile} />
+                                                }
+
                                             </label>
                                         </div>
                                     </div>
@@ -580,7 +608,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                     accept="image/*"
                                                     onChange={handleExpertFileChange}
                                                 />
-                                                <FontAwesomeIcon icon={faFile} />
+                                                {
+                                                    statementData.expertFile ?
+                                                        <FontAwesomeIcon icon={faFileLines} />
+                                                        :
+                                                        <FontAwesomeIcon icon={faFile} />
+                                                }
                                             </label>
                                         </div>
                                     </div>
@@ -596,13 +629,21 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                         <div className="estimate-wrapper mt-4">
                             <div className="estimate-item">
                                 <div className="estimate-input">
-                                    <Input
-                                        label={'تخمین قیمت'}
-                                        name={'تخمین قیمت'}
-                                        placeholder={'تخمین قیمت'}
-                                        value={statementData.estimatedPrice}
-                                        onChange={handleEstimatedPriceChange}
-                                    />
+                                    <div className={`input-container`}>
+                                        <label htmlFor={"تخمین قیمت"} className='label-input mb-2'>تخمین قیمت</label>
+                                        <div className="input-content-wrapper">
+                                            <input
+                                                id={"تخمین قیمت"}
+                                                name={"تخمین قیمت"}
+                                                type={"text"}
+                                                placeholder={"تخمین قیمت"}
+                                                value={toFarsiNumber(statementData.estimatedPrice)}
+                                                onChange={handleEstimatedPriceChange}
+                                                className='input-form'
+                                                autoComplete='off'
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="mt-3 mt-sm-0 estimate-item">
@@ -684,7 +725,3 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
 
     );
 }
-
-
-
-

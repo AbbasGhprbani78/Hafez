@@ -7,14 +7,13 @@ export default function PartMachine({ part, onCheckboxChange, onDescriptionChang
         <div className='partmachine-wrapper'>
             <span className='title-partmachine'>{part.name}</span>
             <div className='check-boxes-wrapper'>
-                {part.children.map(belonging => (
+                {part?.children?.map(belonging => (
                     <InputCheckBoxPartMachine
                         key={belonging.name}
                         value={belonging.id}
                         name={belonging.name}
                         onChange={(isChecked) => onCheckboxChange(belonging.id, isChecked, belonging.value_number)}
                         onDescriptionChange={(description) => onDescriptionChange(belonging.id, description)}
-                    
                     />
                 ))}
             </div>

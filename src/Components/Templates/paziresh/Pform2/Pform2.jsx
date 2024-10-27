@@ -17,7 +17,6 @@ import PartMachine from './PartMachine/PartMachine'
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
-import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios'
 
@@ -36,43 +35,43 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const [carParts, setCarPart] = useState([])
     const [machineParts, setMachineParts] = useState([])
     const [allAccessories, setAllAccessories] = useState([])
-    const [chnageImage,setChangeImage]=useState(false)
+    const [chnageImage, setChangeImage] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const [form2, setForm2] = useState(
         {
             customer_secend_form: {
-                customer: coustomer,
-                material: "",
-                other_car: "",
-                chassis_number: "",
-                color: "",
-                other_color: "",
-                car_operation: "",
-                license_plate_number: "",
-                amount_fuel: "",
-                amount_cng: "",
-                tire_wear_rate: "",
-                number_punctured_tires: "",
-                condition_spare_tire: "",
-                erosion_rate: "",
-                car_cleanliness: 0,
-                front_car_image: "",
-                front_car_text: "",
-                behind_car_image: "",
-                behind_car_text: "",
-                right_side_image: "",
-                right_side_text: "",
-                left_side_image: "",
-                left_side_text: "",
-                car_km_image: "",
-                car_km_text: "",
-                engine_door_open_image: "",
-                engine_door_open_text: "",
-                other_accessories: ""
+                customer: editMode ? idForm : coustomer ? coustomer : 8,
+                material: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.material : "",
+                other_car: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_car : "",
+                chassis_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.chassis_number : "",
+                color: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.color : "",
+                other_color: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_color : "",
+                car_operation: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_operation : "",
+                license_plate_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.license_plate_number : "",
+                amount_fuel: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_fuel : "",
+                amount_cng: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_cng : "",
+                tire_wear_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.tire_wear_rate : "",
+                number_punctured_tires: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.number_punctured_tires : "",
+                condition_spare_tire: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.condition_spare_tire : "",
+                erosion_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.erosion_rate : "",
+                car_cleanliness: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_cleanliness : 0,
+                front_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_image : "",
+                front_car_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_text : "",
+                behind_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.behind_car_image : "",
+                behind_car_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.behind_car_text : "",
+                right_side_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.right_side_image : "",
+                right_side_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.right_side_text : "",
+                left_side_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.left_side_image : "",
+                left_side_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.left_side_text : "",
+                car_km_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_km_image : "",
+                car_km_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_km_text : "",
+                engine_door_open_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.engine_door_open_image : "",
+                engine_door_open_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.engine_door_open_text : "",
+                other_accessories: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_accessories : ""
             },
             fill_form: [],
-            accessories: []
+            accessories: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.accessories : []
         }
     )
 
@@ -108,6 +107,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             .min(1, 'حداقل یکی از متعلقات را انتخاب کنید')
             .required('Accessories selection is required'),
     });
+
 
     const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
         setForm2(prevForm => {
@@ -162,6 +162,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     };
 
     const handleInputChange = (e) => {
+
         const { name, value } = e.target;
         setForm2(prevState => ({
             ...prevState,
@@ -171,6 +172,18 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             },
         }));
     };
+
+
+    const handleSelectChange = (name, id) => {
+        setForm2(prevState => ({
+            ...prevState,
+            customer_secend_form: {
+                ...prevState.customer_secend_form,
+                [name]: id
+            }
+        }));
+    };
+
 
     const handleLicensePlateChange = (value) => {
         setForm2((prev) => {
@@ -207,12 +220,32 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }
     };
 
+    useEffect(() => {
+        if (dataForm?.customer_form_two?.fill_form) {
+            const matchedParts = carParts.filter(part =>
+                dataForm.customer_form_two.fill_form.some(item => item.parts_value_number === part.value_number)
+            );
+
+            setMachineParts(matchedParts);
+        }
+    }, [dataForm, carParts]);
+
+
+
+    // console.log(dataForm?.customer_form_two?.fill_form)
+    // console.log(carParts)
+    // console.log(machineParts)
+
+
     const handleOpenModal = (imageField, textField) => {
         const textValue = form2.customer_secend_form[textField];
+        const imageValue = form2.customer_secend_form[imageField];
         setModalText(textValue);
+        setImgModal(imageValue);
         setCurrentTextField(textField);
         setOpenModal(true);
     };
+
 
     const handleSaveText = () => {
         setForm2(prev => ({
@@ -231,7 +264,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         name: item.car_tip
     }));
 
-
     const allAccessoryIds = allAccessories
         ? allAccessories.flatMap(group => group.children.map(item => item.id))
         : [];
@@ -245,13 +277,15 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }
     };
 
-    const selectedAll = form2.accessories.length === allAccessoryIds.length;
 
+    const selectedAll = form2.accessories.length === allAccessoryIds.length;
+    
     const getAllParts = async () => {
         try {
             const res = await axios.get(`${apiUrl}/app/parts-detail/`);
             if (res.status === 200) {
                 setAllTips(res.data.car_tips)
+                // console.log(res.data.car_tips)
                 setAllAccessories(res.data.car_tips[0].car_accessories)
 
             }
@@ -278,6 +312,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         setContent("اطلاعات اولیه خودرو :")
     }, [])
 
+
     useEffect(() => {
         if (dataForm?.customer_form_two?.other_car) {
             setotherCar(true);
@@ -290,9 +325,28 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            let response;
+            if (editMode && dataForm.customer_form_two.id) {
+
+                response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, form2);
+            } else {
+                response = await axios.post(`$${apiUrl}/app/fill-customer-and-parts/`, form2);
+            }
+
+            if (response.status === 201 || response.status === 200) {
+                nextTab();
+            }
+            setLoading(false);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setLoading(false);
+        }
     };
 
-    console.log(form2)
+  
+    // console.log(allTips)
+
     return (
         <>
             <CarModal
@@ -302,8 +356,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                 modalText={modalText}
                 setModalText={setModalText}
                 handleSaveText={handleSaveText}
-                editMode={editMode}
-                chnageImage={chnageImage}
             />
             <div className={`form2-container ${isOpen ? "wide" : ""}`}>
                 <form onSubmit={handleSubmit}>
@@ -317,7 +369,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     name="material"
                                     setother={setotherCar}
                                     value={form2.customer_secend_form.material}
-                                    onChange={handleInputChange}
+                                    onChange={handleSelectChange}
                                 />
                             </Col>
                             {otherCar && (
@@ -353,6 +405,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     name="color"
                                     setother={setotherColor}
                                     value={form2.customer_secend_form.color}
+                                    onChange={handleSelectChange}
                                 />
                             </Col>
                             {
@@ -401,17 +454,16 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                         <InputRadio
                                                             text={`${value}%`}
                                                             value={value}
-                                                            checked={form2.customer_secend_form.amount_fuel === value}
-                                                            onChange={(e) => setForm2(prev => ({
+                                                            checked={form2.customer_secend_form.amount_fuel == value}
+                                                            onChange={() => setForm2(prev => ({
                                                                 ...prev,
                                                                 customer_secend_form: {
                                                                     ...prev.customer_secend_form,
                                                                     amount_fuel: value
                                                                 }
                                                             }))}
-                                                            marginRigh
+                                                            marginRight="input-amount"
                                                         />
-
                                                     </div>
                                                 ))}
                                             </div>
@@ -428,8 +480,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                         <InputRadio
                                                             text={`${value}%`}
                                                             value={value}
-                                                            checked={form2.customer_secend_form.amount_cng === value}
-                                                            onChange={(e) => setForm2(prev => ({
+                                                            checked={form2.customer_secend_form.amount_cng == value}
+                                                            onChange={() => setForm2(prev => ({
                                                                 ...prev,
                                                                 customer_secend_form: {
                                                                     ...prev.customer_secend_form,
@@ -457,8 +509,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                 key={value}
                                                 text={`${value}%`}
                                                 value={value}
-                                                checked={form2.tire_wear_rate === value}
-                                                onChange={(e) => setForm2(prev => ({
+                                                checked={form2.customer_secend_form.tire_wear_rate == value}
+                                                onChange={() => setForm2(prev => ({
                                                     ...prev,
                                                     customer_secend_form: {
                                                         ...prev.customer_secend_form,
@@ -493,8 +545,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             key={value}
                                             text={value === true ? 'دارد' : 'ندارد'}
                                             value={value}
-                                            checked={form2.customer_secend_form.condition_spare_tire === value}
-                                            onChange={(e) => setForm2(prev => ({
+                                            checked={form2.customer_secend_form.condition_spare_tire == value}
+                                            onChange={() => setForm2(prev => ({
                                                 ...prev,
                                                 customer_secend_form: {
                                                     ...prev.customer_secend_form,
@@ -514,12 +566,12 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             key={value}
                                             text={`${value}%`}
                                             value={value}
-                                            checked={form2.customer_secend_form.erosion_rate === value}
+                                            checked={form2.customer_secend_form.erosion_rate == value}
                                             onChange={(e) => setForm2(prev => ({
                                                 ...prev,
                                                 customer_secend_form: {
                                                     ...prev.customer_secend_form,
-                                                    condition_spare_tire: value
+                                                    erosion_rate: value
                                                 }
                                             }))}
                                             marginRight={"input-erosion"}
@@ -546,11 +598,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
                                             name="front_car_image"
-                                            setImgModal={setImgModal}
                                             setForm2={setForm2}
                                             src={form2.customer_secend_form.front_car_image}
-                                            editMode={editMode}
-                                            setChangeImage={setChangeImage}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>جلو ماشین</p>
@@ -565,11 +614,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
                                             name="behind_car_image"
-                                            setImgModal={setImgModal}
                                             setForm2={setForm2}
                                             src={form2.customer_secend_form.behind_car_image}
-                                            setChangeImage={setChangeImage}
-                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>عقب ماشین</p>
@@ -584,11 +630,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
                                             name="right_side_image"
-                                            setImgModal={setImgModal}
                                             setForm2={setForm2}
                                             src={form2.customer_secend_form.right_side_image}
-                                            setChangeImage={setChangeImage}
-                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>سمت راست</p>
@@ -603,11 +646,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
                                             name="left_side_image"
-                                            setImgModal={setImgModal}
                                             setForm2={setForm2}
                                             src={form2.customer_secend_form.left_side_image}
-                                            setChangeImage={setChangeImage}
-                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>سمت چپ</p>
@@ -622,11 +662,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
                                             name="car_km_image"
-                                            setImgModal={setImgModal}
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.left_side_image}
-                                            setChangeImage={setChangeImage}
-                                            editMode={editMode}
+                                            src={form2.customer_secend_form.car_km_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>کیلومتر ماشین</p>
@@ -641,11 +678,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
                                             name="engine_door_open_image"
-                                            setImgModal={setImgModal}
                                             setForm2={setForm2}
                                             src={form2.customer_secend_form.engine_door_open_image}
-                                            setChangeImage={setChangeImage}
-                                            editMode={editMode}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>درب موتور باز</p>
@@ -662,6 +696,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <MapCar
                                         selectPart={selectPart}
                                         selectParts={machineParts}
+                                        fillForm={dataForm?.customer_form_two?.fill_form}
                                     />
                                     <DropDown
                                         styled="dropwidth3"
@@ -757,106 +792,3 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     )
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// console.log(dataForm.customer_form_two?.accessories)
-// console.log(formik.values.accessories)
-// console.log(allAccessories[0]?.children)
-// console.log(allAccessories[1]?.children)
-
-
-
-
-
-
-
-
-
-
-
-
-// const formik = useFormik({
-//     initialValues: {
-//         customer_secend_form: {
-//             customer: coustomer ? coustomer : idForm,
-//             material: editMode && dataForm ? dataForm.customer_form_two.material : "",
-//             color: editMode && dataForm ? dataForm.customer_form_two.color : "",
-//             chassis_number: editMode && dataForm ? dataForm.customer_form_two.chassis_number : "",
-//             car_operation: editMode && dataForm ? dataForm.customer_form_two.car_operation : "",
-//             license_plate_number: editMode && dataForm ? dataForm.customer_form_two.license_plate_number : "",
-//             amount_fuel: editMode && dataForm ? dataForm.customer_form_two.amount_fuel : "",
-//             amount_cng: editMode && dataForm ? dataForm.customer_form_two.amount_cng : "",
-//             number_punctured_tires: editMode && dataForm ? dataForm.customer_form_two.number_punctured_tires : "",
-//             tire_wear_rate: editMode && dataForm ? dataForm.customer_form_two.tire_wear_rate : "",
-//             condition_spare_tire: editMode && dataForm ? dataForm.customer_form_two.condition_spare_tire : "",
-//             erosion_rate: editMode && dataForm ? dataForm.customer_form_two.erosion_rate : "",
-//             car_cleanliness: editMode && dataForm ? dataForm.customer_form_two.car_cleanliness : 0,
-//             other_car: dataForm?.customer_form_two?.other_car,
-//             other_color: dataForm ? dataForm.customer_form_two.other_color : '',
-//             front_car_image: editMode && dataForm ? dataForm.customer_form_two.front_car_image : "",
-//             front_car_text: editMode && dataForm ? dataForm.customer_form_two.front_car_text : "",
-//             behind_car_image: editMode && dataForm ? dataForm.customer_form_two.behind_car_image : "",
-//             behind_car_text: editMode && dataForm ? dataForm.customer_form_two.behind_car_text : "",
-//             right_side_image: editMode && dataForm ? dataForm.customer_form_two.right_side_image : "",
-//             right_side_text: editMode && dataForm ? dataForm.customer_form_two.right_side_text : "",
-//             left_side_image: editMode && dataForm ? dataForm.customer_form_two.left_side_image : "",
-//             left_side_text: editMode && dataForm ? dataForm.customer_form_two.left_side_text : "",
-//             car_km_image: editMode && dataForm ? dataForm.customer_form_two.car_km_image : "",
-//             car_km_text: editMode && dataForm ? dataForm.customer_form_two.car_km_text : "",
-//             engine_door_open_image: editMode && dataForm ? dataForm.customer_form_two.engine_door_open_image : "",
-//             engine_door_open_text: editMode && dataForm ? dataForm.customer_form_two.engine_door_open_text : "",
-//             other_accessories: editMode && dataForm ? dataForm.customer_form_two.other_accessories : ""
-//         },
-//         fill_form: editMode && dataForm ? dataForm.customer_form_two.fill_form : [],
-//         accessories: editMode && dataForm?.customer_form_two ? dataForm.customer_form_two.accessories : []
-//     },
-//     validationSchema,
-//     onSubmit: async (values) => {
-//         setLoading(true);
-//         try {
-//             let response;
-//             if (editMode && dataForm.customer_form_two.id) {
-//                 response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, values);
-//             } else {
-//                 response = await axios.post(`${apiUrl}/app/fill-customer-and-parts/`, values);
-//             }
-
-//             if (response.status === 201 || response.status === 200) {
-//                 nextTab();
-//             }
-//             setLoading(false);
-//         } catch (error) {
-//             console.error('Error submitting form:', error);
-//             setLoading(false);
-//         }
-//     },
-// });

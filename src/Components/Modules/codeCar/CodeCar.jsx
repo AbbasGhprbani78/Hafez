@@ -61,7 +61,8 @@ export default function CodeCar({ name, value, setFieldValue }) {
     return (
         <div className='inputs-wrapper mb-3' style={{ direction: "ltr" }}>
             <div className='d-flex align-items-center justify-content-between codecar-itemes'>
-                <div className='d-flex flex-column align-items-center'>
+
+                <div className='d-flex flex-column align-items-center' style={{ marginRight: "5px" }}>
                     <input
                         className='input-carector'
                         type="text"
@@ -72,7 +73,7 @@ export default function CodeCar({ name, value, setFieldValue }) {
                     <span className='text-carector'>عدد 2 تایی</span>
                 </div>
 
-                <div className='d-flex flex-column align-items-center'>
+                <div className='d-flex flex-column align-items-center' style={{ marginRight: "5px" }}>
                     <input
                         className='input-carector'
                         type="text"
@@ -83,7 +84,7 @@ export default function CodeCar({ name, value, setFieldValue }) {
                     <span className='text-carector'>حرف</span>
                 </div>
 
-                <div className='d-flex flex-column align-items-center'>
+                <div className='d-flex flex-column align-items-center' style={{ marginRight: "5px" }}>
                     <input
                         className='input-carector'
                         type="text"
@@ -94,7 +95,7 @@ export default function CodeCar({ name, value, setFieldValue }) {
                     <span className='text-carector'>عدد 3 تایی</span>
                 </div>
 
-                <div className='d-flex flex-column align-items-center'>
+                <div className='d-flex flex-column align-items-center' style={{ marginRight: "5px" }}>
                     <input
                         className='input-carector'
                         type="text"
