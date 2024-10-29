@@ -19,6 +19,7 @@ import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
 import * as Yup from 'yup';
 import axios from 'axios'
+import InputCheckBoxAccessories from '../../../Modules/InputChekBox/InputCheckBoxAccessories'
 
 export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -35,7 +36,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const [carParts, setCarPart] = useState([])
     const [machineParts, setMachineParts] = useState([])
     const [allAccessories, setAllAccessories] = useState([])
-    const [chnageImage, setChangeImage] = useState(false)
+    const [checkAll, setCheckAll] = useState(false);
     const [loading, setLoading] = useState(false)
 
     const [form2, setForm2] = useState(
@@ -71,7 +72,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                 other_accessories: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_accessories : ""
             },
             fill_form: [],
-            accessories: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.accessories : []
+            accessories: []
         }
     )
 
@@ -101,13 +102,15 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                 .required('تعداد لاستیک پنچر را وارد کنید'),
             condition_spare_tire: Yup.string().required('وضعیت لاستیک زاپاس را انتخاب کنید'),
             erosion_rate: Yup.number().required('میزان فرسایش را انتخاب کنید'),
-
         }),
+        fill_form: Yup.array()
+            .min(1, 'حداقل یکی از موارد بخشها را انتخاب کنید')
+            .required('Fill form selection is required'),
+
         accessories: Yup.array()
             .min(1, 'حداقل یکی از متعلقات را انتخاب کنید')
             .required('Accessories selection is required'),
     });
-
 
     const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
         setForm2(prevForm => {
@@ -145,11 +148,47 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         });
     };
 
+    const onCheckboxChangeAccessory = (belongingId, isChecked) => {
+        setForm2(prevForm => {
+            const updatedForm = [...prevForm.accessories];
+
+            if (isChecked) {
+                updatedForm.push({ parts: belongingId, description: '' });
+            } else {
+                const index = updatedForm.findIndex(item => item.parts === belongingId);
+                if (index !== -1) {
+                    updatedForm.splice(index, 1);
+                }
+            }
+            return {
+                ...prevForm,
+                accessories: updatedForm
+            };
+        });
+    }
+
+    const onDescriptionChangeAccessory = (belongingId, newDescription) => {
+        setForm2(prevForm => {
+            const updatedForm = prevForm.accessories.map(item => {
+                if (item.parts === belongingId) {
+                    return { ...item, description: newDescription };
+                }
+                return item;
+            });
+
+            return {
+                ...prevForm,
+                accessories: updatedForm
+            };
+        });
+    }
+
     const handleDropdownChange = (name, value) => {
         const mainTip = allTips.filter(item => item.car_tip_id == value)
         setCarPart(mainTip[0]?.body_condition);
     };
 
+    //
     const handleAccessoryChange = (id) => {
         setForm2(prev => {
             const { accessories } = prev;
@@ -160,6 +199,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             }
         });
     };
+    //
 
     const handleInputChange = (e) => {
 
@@ -173,7 +213,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }));
     };
 
-
     const handleSelectChange = (name, id) => {
         setForm2(prevState => ({
             ...prevState,
@@ -183,7 +222,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             }
         }));
     };
-
 
     const handleLicensePlateChange = (value) => {
         setForm2((prev) => {
@@ -204,7 +242,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             const updatedParts = machineParts;
             const isAlreadySelected = updatedParts.some(part => part.value_number == mainpart.value_number);
             const newParts = isAlreadySelected
-                ? updatedParts.filter(part => part.value_number !== mainpart.value_number)
+                ? updatedParts.filter(part => part.value_number != mainpart.value_number)
                 : [...updatedParts, mainpart];
 
             setMachineParts(newParts)
@@ -220,23 +258,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }
     };
 
-    useEffect(() => {
-        if (dataForm?.customer_form_two?.fill_form) {
-            const matchedParts = carParts.filter(part =>
-                dataForm.customer_form_two.fill_form.some(item => item.parts_value_number === part.value_number)
-            );
-
-            setMachineParts(matchedParts);
-        }
-    }, [dataForm, carParts]);
-
-
-
-    // console.log(dataForm?.customer_form_two?.fill_form)
-    // console.log(carParts)
-    // console.log(machineParts)
-
-
     const handleOpenModal = (imageField, textField) => {
         const textValue = form2.customer_secend_form[textField];
         const imageValue = form2.customer_secend_form[imageField];
@@ -245,7 +266,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         setCurrentTextField(textField);
         setOpenModal(true);
     };
-
 
     const handleSaveText = () => {
         setForm2(prev => ({
@@ -264,30 +284,30 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         name: item.car_tip
     }));
 
-    const allAccessoryIds = allAccessories
-        ? allAccessories.flatMap(group => group.children.map(item => item.id))
-        : [];
+    const handleCheckAll = (isChecked) => {
+        setCheckAll(isChecked);
+        if (isChecked) {
+            const bodyAccessories = allAccessories[0]?.children.map(item => ({ parts: item.id, description: '' })) || [];
+            const interiorAccessories = allAccessories[1]?.children.map(item => ({ parts: item.id, description: '' })) || [];
 
-
-    const handleSelectAll = () => {
-        if (form2.accessories.length === allAccessoryIds.length) {
-            setForm2(prev => ({ ...prev, accessories: [] }));
+            setForm2(prevForm => ({
+                ...prevForm,
+                accessories: [...bodyAccessories, ...interiorAccessories]
+            }));
         } else {
-            setForm2(prev => ({ ...prev, accessories: allAccessoryIds }));
+            setForm2(prevForm => ({
+                ...prevForm,
+                accessories: []
+            }));
         }
     };
 
-
-    const selectedAll = form2.accessories.length === allAccessoryIds.length;
-    
     const getAllParts = async () => {
         try {
             const res = await axios.get(`${apiUrl}/app/parts-detail/`);
             if (res.status === 200) {
                 setAllTips(res.data.car_tips)
-                // console.log(res.data.car_tips)
                 setAllAccessories(res.data.car_tips[0].car_accessories)
-
             }
         } catch (error) {
             console.log(error);
@@ -323,6 +343,41 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     }, [dataForm]);
 
 
+    useEffect(() => {
+        if (dataForm?.customer_form_two?.fill_form) {
+            const matchedParts = carParts.filter(part =>
+                dataForm.customer_form_two.fill_form.some(item => item.parts_value_number === part.value_number)
+            );
+
+            setMachineParts(matchedParts);
+            const newFillForm = dataForm.customer_form_two.fill_form.map(item => ({
+                parts: item.parts_id || "",
+                description: item.descriptions || "",
+                value_number: item.parts_value_number || ""
+            }));
+
+            setForm2(prevForm2 => ({
+                ...prevForm2,
+                fill_form: newFillForm
+            }));
+        }
+    }, [dataForm, carParts]);
+
+
+    useEffect(() => {
+        if (dataForm?.customer_form_two?.accessories_form) {
+            const newFillForm = dataForm.customer_form_two.accessories_form.map(item => ({
+                parts: item.parts_id || "",
+                description: item.descriptions || "",
+            }));
+            setForm2(prevForm2 => ({
+                ...prevForm2,
+                accessories: newFillForm
+            }));
+        }
+    }, [dataForm,allAccessories])
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -331,7 +386,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
                 response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, form2);
             } else {
-                response = await axios.post(`$${apiUrl}/app/fill-customer-and-parts/`, form2);
+                response = await axios.post(`${apiUrl}/app/fill-customer-and-parts/`, form2);
             }
 
             if (response.status === 201 || response.status === 200) {
@@ -344,8 +399,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }
     };
 
-  
-    // console.log(allTips)
+    console.log(form2.accessories)
 
     return (
         <>
@@ -714,6 +768,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             part={part}
                                             onCheckboxChange={handleCheckboxChange}
                                             onDescriptionChange={handleDescriptionChange}
+                                            fillForm={form2.fill_form}
                                         />
                                     </Col>
                                 ))}
@@ -726,13 +781,16 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     <div className='belongings'>
                                         <span className='title-item-form'>متعلقات بدنه</span>
                                         <div className='belongings-item-container belongings-body'>
-                                            {allAccessories && allAccessories[0]?.children.map(item => (
+                                            {allAccessories[0]?.children.map(item => (
                                                 <Col xs={12} md={6} key={item.id}>
-                                                    <InputCheckBox
+                                                    <InputCheckBoxAccessories
                                                         value={item.id}
-                                                        text={item.name}
-                                                        onChange={() => handleAccessoryChange(item.id)}
-                                                        checked={form2.accessories.includes(item.id)}
+                                                        onChange={(isChecked) => onCheckboxChangeAccessory(item.id, isChecked)}
+                                                        onDescriptionChange={(description) => onDescriptionChangeAccessory(item.id, description)}
+                                                        name={item.name}
+                                                        checked={checkAll}
+                                                        accessoriesFill={form2.accessories}
+                                                        allAccessories={allAccessories}
                                                     />
                                                 </Col>
                                             ))}
@@ -745,11 +803,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <div className='belongings-item-container belongings-interior'>
                                             {allAccessories && allAccessories[1]?.children.map(item => (
                                                 <Col xs={12} md={6} key={item.id}>
-                                                    <InputCheckBox
+                                                    <InputCheckBoxAccessories
                                                         value={item.id}
-                                                        text={item.name}
-                                                        onChange={() => handleAccessoryChange(item.id)}
-                                                        checked={form2.accessories.includes(item.id)}
+                                                        onChange={(isChecked) => onCheckboxChangeAccessory(item.id, isChecked)}
+                                                        onDescriptionChange={(description) => onDescriptionChangeAccessory(item.id, description)}
+                                                        name={item.name}
+                                                        checked={checkAll}
+                                                        accessoriesFill={form2.accessories}
+                                                        allAccessories={allAccessories}
                                                     />
                                                 </Col>
                                             ))}
@@ -771,10 +832,10 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                             </div>
                             <div className='mt-4 mt-md-5'>
                                 <InputCheckBox
-                                    text={"همه موارد"}
-                                    value={"همه موارد"}
-                                    checked={selectedAll}
-                                    onChange={handleSelectAll}
+                                    text="همه موارد"
+                                    value="همه موارد"
+                                    checked={checkAll}
+                                    onChange={(e) => handleCheckAll(e.target.checked)}
                                 />
                             </div>
                         </div>

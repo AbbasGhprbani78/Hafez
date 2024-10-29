@@ -9,8 +9,7 @@ export default function MapCar({ selectPart, selectParts,fillForm }) {
 
     const isActive = (number) => {
         const isPartSelected = selectParts?.some(part => part.value_number == number);
-        const isInFillForm = fillForm?.some(item => item.parts_value_number == number);
-        return isPartSelected || isInFillForm;
+        return isPartSelected 
     };
 
 

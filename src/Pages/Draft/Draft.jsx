@@ -5,6 +5,7 @@ import { MyContext } from '../../context/context'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+
 export default function Draft() {
     const apiUrl = import.meta.env.VITE_API_URL;
     const { setDataForm, setIdForm, setEditMode } = useContext(MyContext)
@@ -13,10 +14,8 @@ export default function Draft() {
 
     const getAllDataForm = async (id) => {
         try {
-
             const res = await axios.get(`${apiUrl}/app/get-form/${id}`)
             if (res.status === 200) {
-                console.log(res.data)
                 setDataForm(res.data)
                 setEditMode(true)
                 navigate("/paziresh")
@@ -25,7 +24,6 @@ export default function Draft() {
             console.log(error)
         }
     }
-
 
     const gotoUnfinishedHandler = (id) => {
         setIdForm(id)
@@ -37,7 +35,6 @@ export default function Draft() {
             try {
                 const res = await axios.get(`${apiUrl}/app/pending-forms/`)
                 if (res.status === 200) {
-                    console.log(res.data)
                     setUnfinishedForms(res.data.forms)
                 }
             } catch (error) {
@@ -47,7 +44,7 @@ export default function Draft() {
         getAllunfinishedForm()
     }, [])
 
-
+    
     return (
         <div>
             {

@@ -9,14 +9,11 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
     const [displayedValue, setDisplayedValue] = useState(value);
     const dropdownRef = useRef(null);
 
+
     useEffect(() => {
         setOptions(items);
         setFilteredOptions(items);
     }, [items]);
-
-    useEffect(() => {
-        setDisplayedValue(value);
-    }, [value]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -26,6 +23,7 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
     };
 
     const handleOptionClick = (value, id) => {
+        console.log(value,id)
         setDisplayedValue(value);
         setother(value === 'سایر');
         onChange(name, id);
@@ -41,6 +39,8 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
             setShowOptions(false);
         }
     };
+
+    // console.log(displayedValue)
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);

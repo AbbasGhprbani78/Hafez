@@ -1,25 +1,36 @@
-import { useEffect, useState } from 'react'
-import './InputCheckBox.css';
+import { useState, useEffect } from 'react';
 
-export default function InputCheckBoxPartMachine({ value, onChange, onDescriptionChange, name, fillForm }) {
-    const [checked, setChecked] = useState(false);
+export default function InputCheckBoxAccessories({
+    value,
+    onChange,
+    onDescriptionChange,
+    name,
+    checked,
+    accessoriesFill,
+    allAccessories
+}) {
+
+    const [isChecked, setIsChecked] = useState(checked);
     const [description, setDescription] = useState('');
 
-    
     useEffect(() => {
-        const matchingItem = fillForm?.find(item => item.parts == value);
-        if (matchingItem) {
-            setChecked(true);
-            setDescription(matchingItem.description || '');
+        const accessoriesItem = accessoriesFill?.find(item => item.parts == value);
+        if (accessoriesItem) {
+            setIsChecked(true);
+            setDescription(accessoriesItem.description || '');
             onChange(true);
-            onDescriptionChange(matchingItem.description || '');
+            onDescriptionChange(accessoriesItem.description || '');
         }
-    }, []);
+    }, [allAccessories]);
+
+    useEffect(() => {
+        setIsChecked(checked);
+    }, [checked]);
 
 
     const handleChange = (event) => {
         const isChecked = event.target.checked;
-        setChecked(isChecked);
+        setIsChecked(isChecked);
         onChange(isChecked);
         if (!isChecked) {
             setDescription('');
@@ -41,12 +52,11 @@ export default function InputCheckBoxPartMachine({ value, onChange, onDescriptio
                     className='check-input'
                     value={value}
                     onChange={handleChange}
-                    checked={checked}
+                    checked={isChecked}
                 />
-
                 <label className='label-check'>{name}</label>
             </div>
-            {checked && (
+            {isChecked && (
                 <div className='wrap-checkbox-dec'>
                     <textarea
                         className='wrap-checkbox textarea'
@@ -59,3 +69,14 @@ export default function InputCheckBoxPartMachine({ value, onChange, onDescriptio
         </>
     );
 }
+
+
+// useEffect(() => {
+//     if (selectedAll !== checked) {
+//         setChecked(selectedAll);
+//         if (!selectedAll) {
+//             setDescription('');
+//             onDescriptionChange('');
+//         }
+//     }
+// }, [selectedAll, checked, onDescriptionChange]);

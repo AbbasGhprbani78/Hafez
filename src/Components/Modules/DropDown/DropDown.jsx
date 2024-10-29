@@ -9,9 +9,9 @@ export default function DropDown({ lable, styled, items, onChange, name }) {
 
     useEffect(() => {
         if (items && items.length > 0) {
-            onChange(name, items[0]?.value); 
+            onChange(name, items[0]?.value);
         }
-    }, [items, name, onChange]);
+    }, [items]);
 
     return (
         <div className={`dropdown-container ${styled}`}>
