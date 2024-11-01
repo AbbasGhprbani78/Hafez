@@ -19,6 +19,7 @@ const Input = ({ name, label, icon, placeholder, type, styleInput, value, onChan
                     onChange={onChange}
                     className='input-form'
                     autoComplete='off'
+                    maxLength={40}
                 />
                 {icon && <FontAwesomeIcon icon={icon} className='icon-input' />}
             </div>

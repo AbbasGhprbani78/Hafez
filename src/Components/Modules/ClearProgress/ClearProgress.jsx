@@ -1,5 +1,6 @@
 import React from 'react';
 import './ClearProgress.css';
+import { toFarsiNumber } from '../../../utils/helper';
 
 export default function ClearProgress({ name, value, onChange }) {
   
@@ -16,12 +17,13 @@ export default function ClearProgress({ name, value, onChange }) {
                 name={name}
             />
             <div className="numbers">
-                <span className="number">0%</span>
-                <span className="number">25%</span>
-                <span className="number">50%</span>
-                <span className="number">75%</span>
-                <span className="number">100%</span>
+                <span className="number">{toFarsiNumber(0)}%</span>
+                <span className="number">{toFarsiNumber(25)}%</span>
+                <span className="number">{toFarsiNumber(50)}%</span>
+                <span className="number">{toFarsiNumber(75)}%</span>
+                <span className="number">{toFarsiNumber(100)}%</span>
             </div>
+
             <div className="symbols">
                 <span className="symbol"></span>
                 <span className="symbol"></span>

@@ -11,6 +11,7 @@ import axios from 'axios'
 import { IP } from '../../App'
 import TypeActivity from './TypeActivity/TypeActivity'
 import { Link, useNavigate } from 'react-router-dom'
+import { toFarsiNumber, toEnglishNumber } from '../../utils/helper'
 
 export default function Login() {
     const navigate = useNavigate()
@@ -31,8 +32,9 @@ export default function Login() {
                             <Formik
                                 validate={(values) => {
                                     const errors = {};
-                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                                    const phoneRegex = /^\d{10,15}$/;
+                                    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                                    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+
 
                                     if (!values.login_field) {
                                         errors.login_field = "وارد کردن ایمیل یا شماره تلفن اجباری میباشد";
@@ -85,10 +87,15 @@ export default function Login() {
                                                     icon={faUser}
                                                     placeholder="ایمیل / شماره تماس"
                                                     type="text"
-                                                    value={values.login_field}
-                                                    onChange={handleChange}
+                                                    value={toFarsiNumber(values.login_field)}
+                                                    onChange={(e) => handleChange({
+                                                        target: {
+                                                            name: 'login_field',
+                                                            value: toEnglishNumber(e.target.value)
+                                                        }
+                                                    })}
                                                 />
-                                                {errors.login_field && touched.login_field && <span className='error'>{errors.login_field}</span>}
+                                                {errors.login_field && touched.login_field && <p className='error mt-2'>{errors.login_field}</p>}
                                             </div>
                                             <div>
                                                 <Input
@@ -97,10 +104,15 @@ export default function Login() {
                                                     icon={faKey}
                                                     placeholder="رمز عبور"
                                                     type="text"
-                                                    value={values.password}
-                                                    onChange={handleChange}
+                                                    value={toFarsiNumber(values.password)}
+                                                    onChange={(e) => handleChange({
+                                                        target: {
+                                                            name: "password",
+                                                            value: toEnglishNumber(e.target.value)
+                                                        }
+                                                    })}
                                                 />
-                                                {errors.password && touched.password && <span className='error'>{errors.password}</span>}
+                                                {errors.password && touched.password && <p className='error mt-2'>{errors.password}</p>}
                                             </div>
                                         </div>
                                         <div className="signin-btn-wrapper">

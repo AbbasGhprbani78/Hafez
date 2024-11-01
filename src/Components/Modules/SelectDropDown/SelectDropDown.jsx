@@ -23,7 +23,6 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
     };
 
     const handleOptionClick = (value, id) => {
-        console.log(value,id)
         setDisplayedValue(value);
         setother(value === 'سایر');
         onChange(name, id);

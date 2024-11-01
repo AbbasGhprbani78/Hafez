@@ -17,6 +17,7 @@ export default function Input2({ icon, placeholder, name, value, onChange }) {
                 className="input2-form"
                 placeholder={placeholder}
                 autoComplete='off'
+                maxLength={40}
             />
             <FontAwesomeIcon icon={icon} className='icon-input' />
         </div>

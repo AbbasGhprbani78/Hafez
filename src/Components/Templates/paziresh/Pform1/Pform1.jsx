@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik';
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context';
+import { toFarsiNumber, toEnglishNumber } from '../../../../utils/helper';
 import * as Yup from 'yup';
 import axios from 'axios';
 
@@ -54,9 +55,10 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [value, setValue] = useState(0);
     const phoneNumberRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-    const nationalIdRegex = /^[0-9]{10}$/
+    const nationalIdRegex = /^[0-9]{10}$/;
     const postalCodeRegex = /^[0-9]{10}$/;
     const economicCodeRegex = /^[0-9]{12}$/;
+
     const [services, setServices] = useState([])
     const [loading, setLoading] = useState(false)
     const { dataForm, idForm, editMode } = useContext(MyContext)
@@ -250,7 +252,6 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                 const res = await axios.get(`${apiUrl}/app/get-service-type/`);
                 if (res.status === 200) {
                     setServices(res.data)
-                    console.log(res.data)
                 }
             } catch (error) {
                 console.log(error);
@@ -259,7 +260,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         getService();
     }, []);
 
-    console.log(formik.values.type_of_service)
+   
 
 
     return (
@@ -309,8 +310,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                             icon={faPhone}
                                             placeholder="شماره تماس مالک"
                                             name="phone_number"
-                                            value={formik.values.phone_number}
-                                            onChange={formik.handleChange}
+                                            value={toFarsiNumber(formik.values.phone_number)}
+                                            onChange={(e) => {
+                                                const englishNumber = toEnglishNumber(e.target.value);
+                                                formik.setFieldValue('phone_number', englishNumber);
+                                            }}
                                             onBlur={formik.handleBlur}
                                             type="text"
                                         />
@@ -325,8 +329,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                             icon={faAddressCard}
                                             placeholder="کد ملی مالک"
                                             name="national_code_owner"
-                                            value={formik.values.national_code_owner}
-                                            onChange={formik.handleChange}
+                                            value={toFarsiNumber(formik.values.national_code_owner)}
+                                            onChange={(e) => {
+                                                const englishNumber = toEnglishNumber(e.target.value);
+                                                formik.setFieldValue('national_code_owner', englishNumber);
+                                            }}
                                             onBlur={formik.handleBlur}
                                             type="text"
                                         />
@@ -339,8 +346,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                             icon={faHashtag}
                                             placeholder="شماره هرم"
                                             name="pyramid_number"
-                                            value={formik.values.pyramid_number}
-                                            onChange={formik.handleChange}
+                                            value={toFarsiNumber(formik.values.pyramid_number)}
+                                            onChange={(e) => {
+                                                const englishNumber = toEnglishNumber(e.target.value);
+                                                formik.setFieldValue('pyramid_number', englishNumber);
+                                            }}
                                             onBlur={formik.handleBlur}
                                             type="text" />
                                         {formik.touched.pyramid_number && formik.errors.pyramid_number && <span className='error'>{formik.errors.pyramid_number}</span>}
@@ -392,12 +402,16 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                             label="شماره تماس آورنده"
                                             styled={"inputwidth"}
                                             icon={faPhone}
-                                            value={formik.values.phone_number_bearer}
+                                            value={toFarsiNumber(formik.values.phone_number_bearer)}
                                             placeholder="شماره تماس آورنده"
                                             name="phone_number_bearer"
-                                            onChange={formik.handleChange}
+                                            onChange={(e) => {
+                                                const englishNumber = toEnglishNumber(e.target.value);
+                                                formik.setFieldValue('phone_number_bearer', englishNumber);
+                                            }}
                                             type="text"
                                         />
+
                                         {formik.errors.phone_number_bearer && formik.touched.phone_number_bearer && (
                                             <span className='error'>{formik.errors.phone_number_bearer}</span>
                                         )}
@@ -518,13 +532,17 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     label="شماره تماس"
                                                     styled={"inputwidth2"}
                                                     icon={faPhone}
-                                                    value={formik2.values.phone_number}
-                                                    placeholder={"شماره تماس"}
+                                                    value={toFarsiNumber(formik2.values.phone_number)}
+                                                    placeholder="شماره تماس"
                                                     name="phone_number"
-                                                    onChange={formik2.handleChange}
+                                                    onChange={(e) => {
+                                                        const englishNumber = toEnglishNumber(e.target.value);
+                                                        formik2.setFieldValue('phone_number', englishNumber);
+                                                    }}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
                                                 />
+
                                                 {formik2.errors.phone_number && formik2.touched.phone_number && (
                                                     <span className='error'>{formik2.errors.phone_number}</span>
                                                 )}
@@ -537,10 +555,13 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                 label="شماره هرم"
                                                 styled={"inputwidth2"}
                                                 icon={faUser}
-                                                value={formik2.values.pyramid_number}
                                                 placeholder="شماره هرم"
                                                 name="pyramid_number"
-                                                onChange={formik2.handleChange}
+                                                value={toFarsiNumber(formik2.values.pyramid_number)}
+                                                onChange={(e) => {
+                                                    const englishNumber = toEnglishNumber(e.target.value);
+                                                    formik2.setFieldValue('pyramid_number', englishNumber);
+                                                }}
                                                 onBlur={formik2.handleBlur}
                                                 type="text"
                                             />
@@ -558,10 +579,13 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     label="شناسه ملی شرکت"
                                                     styled={"inputwidth2"}
                                                     icon={faAddressCard}
-                                                    value={formik2.values.national_id_corporate}
                                                     placeholder={"شناسه ملی شرکت"}
                                                     name="national_id_corporate"
-                                                    onChange={formik2.handleChange}
+                                                    value={toFarsiNumber(formik2.values.national_id_corporate)}
+                                                    onChange={(e) => {
+                                                        const englishNumber = toEnglishNumber(e.target.value);
+                                                        formik2.setFieldValue('national_id_corporate', englishNumber);
+                                                    }}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
                                                 />
@@ -574,13 +598,17 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     label="کد اقتصادی"
                                                     styled={"inputwidth2"}
                                                     icon={faHashtag}
-                                                    value={formik2.values.economic_code}
-                                                    placeholder={"کد اقتصادی"}
+                                                    value={toFarsiNumber(formik2.values.economic_code)}
+                                                    placeholder="کد اقتصادی"
                                                     name="economic_code"
-                                                    onChange={formik2.handleChange}
+                                                    onChange={(e) => {
+                                                        const englishNumber = toEnglishNumber(e.target.value);
+                                                        formik2.setFieldValue('economic_code', englishNumber);
+                                                    }}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
                                                 />
+
                                                 {formik2.errors.economic_code && formik2.touched.economic_code && (
                                                     <span className='error'>{formik2.errors.economic_code}</span>
                                                 )}
@@ -593,10 +621,13 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                 label="شماره تماس"
                                                 styled={"inputwidth2"}
                                                 icon={faUser}
-                                                value={formik2.values.company_phone_number}
                                                 placeholder="شماره تماس شرکت"
                                                 name="company_phone_number"
-                                                onChange={formik2.handleChange}
+                                                value={toFarsiNumber(formik2.values.company_phone_number)}
+                                                onChange={(e) => {
+                                                    const englishNumber = toEnglishNumber(e.target.value);
+                                                    formik2.setFieldValue('company_phone_number', englishNumber);
+                                                }}
                                                 onBlur={formik2.handleBlur}
                                                 type="text"
                                             />
@@ -613,13 +644,17 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                 label="کدپستی"
                                                 styled={"inputwidth2"}
                                                 icon={faEnvelope}
-                                                value={formik2.values.postal_code}
-                                                placeholder={"کدپستی"}
+                                                value={toFarsiNumber(formik2.values.postal_code)}
+                                                placeholder="کدپستی"
                                                 name="postal_code"
-                                                onChange={formik2.handleChange}
+                                                onChange={(e) => {
+                                                    const englishNumber = toEnglishNumber(e.target.value);
+                                                    formik2.setFieldValue('postal_code', englishNumber);
+                                                }}
                                                 onBlur={formik2.handleBlur}
                                                 type="text"
                                             />
+
                                             {formik2.errors.postal_code && formik2.touched.postal_code && (
                                                 <span className='error'>{formik2.errors.postal_code}</span>
                                             )}
@@ -692,10 +727,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     checked={formik2.values.how_to_apply === 'return'}
                                                 />
                                             </div>
-                                            {formik2.errors.how_to_apply && formik2.touched.how_to_apply && (
-                                                <span className='error'>{formik2.errors.how_to_apply}</span>
-                                            )}
+                                            
                                         </div>
+                                        {formik2.errors.how_to_apply && formik2.touched.how_to_apply && (
+                                            <span className='error'>{formik2.errors.how_to_apply}</span>
+                                        )}
                                     </Col>
                                 </div>
                                 <div className='p-form1-contant-tab2-botton'>
@@ -722,15 +758,15 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     label="نام خانوادگی آورنده"
                                                     styled={"inputwidth2"}
                                                     icon={faUser}
-                                                    value={formik2.values.last_name_bearer}
                                                     placeholder={"نام خانوادگی آورنده"}
                                                     name="last_name_bearer"
+                                                    value={formik2.values.last_name_bearer}
                                                     onChange={formik2.handleChange}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
                                                 />
-                                                {formik2.errors.last_name_beare && formik2.touched.last_name_beare && (
-                                                    <span className='error'>{formik2.errors.last_name_beare}</span>
+                                                {formik2.errors.last_name_bearer && formik2.touched.last_name_bearer && (
+                                                    <span className='error'>{formik2.errors.last_name_bearer}</span>
                                                 )}
                                             </Col>
                                         </div>
@@ -740,10 +776,13 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     label="کد ملی آورنده"
                                                     styled={"inputwidth2"}
                                                     icon={faAddressCard}
-                                                    value={formik2.values.national_code_bearer}
                                                     placeholder={"کد ملی آورنده"}
                                                     name="national_code_bearer"
-                                                    onChange={formik2.handleChange}
+                                                    value={toFarsiNumber(formik2.values.national_code_bearer)} 
+                                                    onChange={(e) => {
+                                                        const englishNumber = toEnglishNumber(e.target.value);
+                                                        formik2.setFieldValue('national_code_bearer', englishNumber);
+                                                    }}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
                                                 />
@@ -756,13 +795,17 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     label="شماره تماس آورنده"
                                                     styled={"inputwidth2"}
                                                     icon={faPhone}
-                                                    value={formik2.values.phone_number_bearer}
-                                                    placeholder={"شماره تماس آورنده"}
+                                                    placeholder="شماره تماس آورنده"
                                                     name="phone_number_bearer"
-                                                    onChange={formik2.handleChange}
+                                                    value={toFarsiNumber(formik2.values.phone_number_bearer)} 
+                                                    onChange={(e) => {
+                                                        const englishNumber = toEnglishNumber(e.target.value); 
+                                                        formik2.setFieldValue('phone_number_bearer', englishNumber); 
+                                                    }}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
                                                 />
+
                                                 {formik2.errors.phone_number_bearer && formik2.touched.phone_number_bearer && (
                                                     <span className='error'>{formik2.errors.phone_number_bearer}</span>
                                                 )}

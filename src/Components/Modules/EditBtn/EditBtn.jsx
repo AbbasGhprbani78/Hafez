@@ -6,7 +6,7 @@ import { faPen } from '@fortawesome/free-solid-svg-icons';
 export default function EditBtn({ onClick }) {
     return (
         <button className={`btn-edit`} onClick={onClick}>
-            ویرایش
+            قبل
             <FontAwesomeIcon icon={faPen} className={`penicon`} />
         </button>
     )

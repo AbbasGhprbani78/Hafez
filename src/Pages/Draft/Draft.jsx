@@ -18,6 +18,7 @@ export default function Draft() {
             if (res.status === 200) {
                 setDataForm(res.data)
                 setEditMode(true)
+                // console.log(res.data)
                 navigate("/paziresh")
             }
         } catch (error) {

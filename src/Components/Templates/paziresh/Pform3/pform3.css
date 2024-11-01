@@ -98,6 +98,8 @@
 
 .estimate-input {
     width: 50%;
+    display: flex;
+    flex-direction: column;
 }
 
 .pform3-container-table {

@@ -16,6 +16,7 @@ import { IP } from '../../../App'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { toEnglishNumber, toFarsiNumber } from '../../../utils/helper'
 
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
@@ -55,11 +56,11 @@ export default function TypeActivity() {
     const navigate = useNavigate()
     const [value, setValue] = useState(0);
     const [isPermition, setIsPermition] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const customErrorMessages = {
         signed_right: "وضعیت حق امضا را مشخص کنید.",
         applicants_position_in_company: "وارد کردن سمت درخواست اجباری میباشد",
-        signed_right: "وارد کردن وضعیت حق امضا اجباری میباشد",
         company_national_id: "وارد کردن شناسه ملی شرکت اجباری میباشد",
         phone_number: "وارد کردن شماره تماس شرکت اجباری میباشد",
         address: "وارد کردن آدرس شرکت اجباری میباشد",
@@ -80,7 +81,6 @@ export default function TypeActivity() {
         company_national_id: /^\d{11}$/,
         postal_code: /^\d{10}$/
     };
-
 
     const [dataFormCompany, setDataFormCompany] = useState({
         applicants_position_in_company: "",
@@ -112,10 +112,9 @@ export default function TypeActivity() {
 
     const [errors, setErrors] = useState({
         dataFormCompany: {},
-        firstSignature: [],
-        addSignature: []
+        firstSignature: [{}],
+        addSignature: [{}]
     });
-
 
 
     const handleChange = (event, newValue) => {
@@ -139,6 +138,7 @@ export default function TypeActivity() {
             phone_number: "",
         }]);
     }
+
     const handlerAddinputssignatureTrue = () => {
         setFirstSignature([...firstSignature, {
             owner_first_signature: "",
@@ -151,10 +151,10 @@ export default function TypeActivity() {
         let isValid = true;
         let newErrors = {};
         for (const [key, value] of Object.entries(data)) {
-            if (key === 'signed_right' && value === "") { // Add check for signed_right specifically
+            if (key === 'signed_right' && value === "") {
                 newErrors[key] = customErrorMessages[key] || `لطفا فیلد ${key.replace('_', ' ')} را پر کنید.`;
                 isValid = false;
-            } else if (!value) {
+            } else if (key !== 'signed_right' && !value) {
                 newErrors[key] = customErrorMessages[key] || `لطفا فیلد ${key.replace('_', ' ')} را پر کنید.`;
                 isValid = false;
             } else if (regexPatterns[key] && !regexPatterns[key].test(value)) {
@@ -222,12 +222,12 @@ export default function TypeActivity() {
     };
 
 
-    const sendDataHandler = (e) => {
+    const sendDataHandler = async (e) => {
         e.preventDefault();
         let isValid = validateDataFormCompany(dataFormCompany);
-        if (dataFormCompany.signed_right === "true") {
+        if (dataFormCompany.signed_right === true) {
             isValid = validateFirstSignature(firstSignature) && isValid;
-        } else if (dataFormCompany.signed_right === "false") {
+        } else if (dataFormCompany.signed_right === false) {
             isValid = validateAddSignature(addSignature) && isValid;
         }
 
@@ -240,8 +240,20 @@ export default function TypeActivity() {
                 updatedDataFormCompany = { ...dataFormCompany, addSignature };
                 delete updatedDataFormCompany.firstSignature;
             }
+
             setDataFormCompany(updatedDataFormCompany);
-            console.log(dataFormCompany);
+            setLoading(true)
+
+            try {
+                const response = await axios.post(`sfssgfdg`, updatedDataFormCompany);
+                if (response.status === 200) {
+                    console.log(response.data);
+                    setLoading(false)
+                }
+            } catch (error) {
+                console.log(error);
+                setLoading(false)
+            }
         }
     };
 
@@ -333,14 +345,13 @@ export default function TypeActivity() {
                                             })
                                             if (response.status === 201) {
                                                 setSubmitting(false)
-                                                console.log(response.data)
+                                                localStorage.setItem("level", "two")
                                                 navigate("/")
                                             }
                                         } catch (error) {
                                             console.log(error)
                                             if (error.response.status === 401) {
-                                                localStorage.removeItem('access')
-                                                localStorage.removeItem('refresh')
+                                                localStorage.clear()
                                                 window.location.href = "/login"
                                             }
                                             toast.error(error.response.data.message, {
@@ -366,7 +377,7 @@ export default function TypeActivity() {
                                                                 onChange={handleChange}
                                                                 value={values.first_name}
                                                             />
-                                                            {errors.first_name && touched.first_name && <span className='error'>{errors.first_name}</span>}
+                                                            {errors.first_name && touched.first_name && <p className='error mt-2'>{errors.first_name}</p>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <Input
@@ -378,7 +389,7 @@ export default function TypeActivity() {
                                                                 value={values.last_name}
                                                                 onChange={handleChange}
                                                             />
-                                                            {errors.last_name && touched.last_name && <span className='error'>{errors.last_name}</span>}
+                                                            {errors.last_name && touched.last_name && <p className='error mt-2'>{errors.last_name}</p>}
                                                         </div>
                                                     </div>
                                                     <div className="signin-basic-info-wrapper margin-buttom">
@@ -389,10 +400,15 @@ export default function TypeActivity() {
                                                                 placeholder=" کد ملی صاحب فعالیت"
                                                                 type="text"
                                                                 name={"national_code"}
-                                                                onChange={handleChange}
-                                                                value={values.national_code}
+                                                                onChange={(e) => handleChange({
+                                                                    target: {
+                                                                        name: "national_code",
+                                                                        value: toEnglishNumber(e.target.value)
+                                                                    }
+                                                                })}
+                                                                value={toFarsiNumber(values.national_code)}
                                                             />
-                                                            {errors.national_code && touched.national_code && <span className='error'>{errors.national_code}</span>}
+                                                            {errors.national_code && touched.national_code && <p className='error mt-2'>{errors.national_code}</p>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <Input
@@ -401,10 +417,15 @@ export default function TypeActivity() {
                                                                 placeholder="شماره تماس متقاضی"
                                                                 type="text"
                                                                 name={"applicant_phone_number"}
-                                                                onChange={handleChange}
-                                                                value={values.applicant_phone_number}
+                                                                onChange={(e) => handleChange({
+                                                                    target: {
+                                                                        name: "applicant_phone_number",
+                                                                        value: toEnglishNumber(e.target.value)
+                                                                    }
+                                                                })}
+                                                                value={toFarsiNumber(values.applicant_phone_number)}
                                                             />
-                                                            {errors.applicant_phone_number && touched.applicant_phone_number && <span className='error'>{errors.applicant_phone_number}</span>}
+                                                            {errors.applicant_phone_number && touched.applicant_phone_number && <p className='error mt-2'>{errors.applicant_phone_number}</p>}
                                                         </div>
                                                     </div>
                                                     <div className="signin-element-form-wrapper margin-buttom">
@@ -417,7 +438,7 @@ export default function TypeActivity() {
                                                             onChange={handleChange}
                                                             value={values.address}
                                                         />
-                                                        {errors.address && touched.address && <span className='error'>{errors.address}</span>}
+                                                        {errors.address && touched.address && <p className='error mt-2'>{errors.address}</p>}
                                                     </div>
                                                     <div className="signin-basic-info-wrapper margin-buttom">
                                                         <div className='input-item-wrapper'>
@@ -427,22 +448,32 @@ export default function TypeActivity() {
                                                                 placeholder="کدپستی محل فعالیت"
                                                                 type="text"
                                                                 name={"postal_code"}
-                                                                onChange={handleChange}
-                                                                value={values.postal_code}
+                                                                onChange={(e) => handleChange({
+                                                                    target: {
+                                                                        name: "postal_code",
+                                                                        value: toEnglishNumber(e.target.value)
+                                                                    }
+                                                                })}
+                                                                value={toFarsiNumber(values.postal_code)}
                                                             />
-                                                            {errors.postal_code && touched.postal_code && <span className='error'>{errors.postal_code}</span>}
+                                                            {errors.postal_code && touched.postal_code && <p className='error mt-2'>{errors.postal_code}</p>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <Input
                                                                 name="work_place_number"
-                                                                label="شماره تماس"
+                                                                label="شماره تماس محل فعالیت"
                                                                 icon={faPhone}
                                                                 placeholder="شماره تماس محل فعالیت"
                                                                 type="text"
-                                                                onChange={handleChange}
-                                                                value={values.work_place_number}
+                                                                onChange={(e) => handleChange({
+                                                                    target: {
+                                                                        name: "work_place_number",
+                                                                        value: toEnglishNumber(e.target.value)
+                                                                    }
+                                                                })}
+                                                                value={toFarsiNumber(values.work_place_number)}
                                                             />
-                                                            {errors.work_place_number && touched.work_place_number && <span className='error'>{errors.work_place_number}</span>}
+                                                            {errors.work_place_number && touched.work_place_number && <p className='error mt-2'>{errors.work_place_number}</p>}
                                                         </div>
                                                     </div>
                                                     <div className="signin-basic-info-wrapper margin-buttom">
@@ -452,7 +483,7 @@ export default function TypeActivity() {
                                                                 name="business_license_image"
                                                                 onChange={(file) => setFieldValue('business_license_image', file)}
                                                             />
-                                                            {errors.business_license_image && touched.business_license_image && <span className='error'>{errors.business_license_image}</span>}
+                                                            {errors.business_license_image && touched.business_license_image && <p className='error mt-2'>{errors.business_license_image}</p>}
                                                         </div>
                                                         <div className='input-item-wrapper'>
                                                             <InputUpload
@@ -460,7 +491,7 @@ export default function TypeActivity() {
                                                                 name="national_card_image"
                                                                 onChange={(file) => setFieldValue('national_card_image', file)}
                                                             />
-                                                            {errors.national_card_image && touched.national_card_image && <span className='error'>{errors.national_card_image}</span>}
+                                                            {errors.national_card_image && touched.national_card_image && <p className='error mt-2'>{errors.national_card_image}</p>}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -494,7 +525,7 @@ export default function TypeActivity() {
                                                         value={dataFormCompany.applicants_position_in_company}
                                                     />
                                                     {errors.dataFormCompany.applicants_position_in_company && (
-                                                        <span className="error">{errors.dataFormCompany.applicants_position_in_company}</span>
+                                                        <p className="error mt-2">{errors.dataFormCompany.applicants_position_in_company}</p>
                                                     )}
                                                 </div>
 
@@ -508,7 +539,7 @@ export default function TypeActivity() {
                                                             checked={dataFormCompany.signed_right === true}
                                                             onChange={() => {
                                                                 setDataFormCompany({ ...dataFormCompany, signed_right: true });
-                                                                setIsPermition("true");
+                                                                setIsPermition(true);
                                                                 setAddSignature([
                                                                     {
                                                                         full_name: "",
@@ -521,12 +552,13 @@ export default function TypeActivity() {
                                                         />
                                                         <InputRadio
                                                             text="ندارم"
+                                                            marginRight={"marginRight"}
                                                             name="signed_right"
                                                             value={false}
                                                             checked={dataFormCompany.signed_right === false}
                                                             onChange={() => {
                                                                 setDataFormCompany({ ...dataFormCompany, signed_right: false });
-                                                                setIsPermition("false");
+                                                                setIsPermition(false);
                                                                 setFirstSignature([
                                                                     {
                                                                         owner_first_signature: "",
@@ -537,10 +569,10 @@ export default function TypeActivity() {
                                                         />
                                                     </div>
                                                     {errors.dataFormCompany.signed_right && (
-                                                        <span className="error">{errors.dataFormCompany.signed_right}</span>
+                                                        <p className="error mt-2">{errors.dataFormCompany.signed_right}</p>
                                                     )}
                                                 </div>
-                                                {isPermition === "true" ? (
+                                                {isPermition ? (
                                                     <>
                                                         {firstSignature.map((input, index) => (
                                                             <div className='signature-true-wrapper' key={index}>
@@ -560,7 +592,7 @@ export default function TypeActivity() {
                                                                         value={input.owner_first_signature}
                                                                     />
                                                                     {errors.firstSignature[index]?.owner_first_signature && (
-                                                                        <span className="error">{errors.firstSignature[index].owner_first_signature}</span>
+                                                                        <p className="error mt-2">{errors.firstSignature[index].owner_first_signature}</p>
                                                                     )}
                                                                 </div>
                                                                 <div className='signin-element-form-wrapper margin-buttom'>
@@ -570,35 +602,35 @@ export default function TypeActivity() {
                                                                         name="national_code"
                                                                         onChange={(e) => {
                                                                             const newFirstSignature = [...firstSignature];
-                                                                            newFirstSignature[index].national_code = e.target.value;
+                                                                            newFirstSignature[index].national_code = toEnglishNumber(e.target.value);
                                                                             setFirstSignature(newFirstSignature);
+
                                                                             const newErrors = [...errors.firstSignature];
                                                                             if (newErrors[index]) newErrors[index].national_code = '';
                                                                             setErrors((prevErrors) => ({ ...prevErrors, firstSignature: newErrors }));
                                                                         }}
-                                                                        value={input.national_code}
+                                                                        value={toFarsiNumber(input.national_code)}
                                                                     />
                                                                     {errors.firstSignature[index]?.national_code && (
-                                                                        <span className="error">{errors.firstSignature[index].national_code}</span>
+                                                                        <p className="error mt-2">{errors.firstSignature[index].national_code}</p>
                                                                     )}
                                                                 </div>
                                                             </div>
                                                         ))}
                                                         <p className="add-signature-title" onClick={handlerAddinputssignatureTrue}>
                                                             <>
-                                                                <span className='d-flex align-items-center'>
+                                                                <p className='d-flex align-items-center'>
                                                                     <FontAwesomeIcon icon={faPlus} className='mx-2' />
                                                                     افزودن صاحب امضا جدید
-                                                                </span>
+                                                                </p>
                                                             </>
                                                         </p>
                                                     </>
                                                 ) : (
-                                                    isPermition === "false" && (
+                                                    isPermition === false && (
                                                         <>
                                                             {addSignature.map((input, index) => (
                                                                 <div className='signature-false-wrapper' key={index}>
-                                                                    <p className="mb-2 mt-4 info-owner-text">اطلاعات صاحب امضا جدید</p>
                                                                     <div className='signin-element-form-wrapper margin-buttom'>
                                                                         <Input2
                                                                             icon={faUser}
@@ -615,7 +647,7 @@ export default function TypeActivity() {
                                                                             }}
                                                                         />
                                                                         {errors.addSignature[index]?.full_name && (
-                                                                            <span className="error">{errors.addSignature[index].full_name}</span>
+                                                                            <p className="error mt-2">{errors.addSignature[index].full_name}</p>
                                                                         )}
                                                                     </div>
                                                                     <div className='signin-element-form-wrapper margin-buttom'>
@@ -634,7 +666,7 @@ export default function TypeActivity() {
                                                                             }}
                                                                         />
                                                                         {errors.addSignature[index]?.position_incompany && (
-                                                                            <span className="error">{errors.addSignature[index].position_incompany}</span>
+                                                                            <p className="error mt-2">{errors.addSignature[index].position_incompany}</p>
                                                                         )}
                                                                     </div>
                                                                     <div className='signin-element-form-wrapper margin-buttom'>
@@ -642,10 +674,10 @@ export default function TypeActivity() {
                                                                             icon={faAddressCard}
                                                                             placeholder="کد ملی"
                                                                             name="national_code"
-                                                                            value={input.national_code}
+                                                                            value={toFarsiNumber(input.national_code)}
                                                                             onChange={(e) => {
                                                                                 const newAddSignature = [...addSignature];
-                                                                                newAddSignature[index].national_code = e.target.value;
+                                                                                newAddSignature[index].national_code = toEnglishNumber(e.target.value);
                                                                                 setAddSignature(newAddSignature);
                                                                                 const newErrors = [...errors.addSignature];
                                                                                 if (newErrors[index]) newErrors[index].national_code = '';
@@ -653,7 +685,7 @@ export default function TypeActivity() {
                                                                             }}
                                                                         />
                                                                         {errors.addSignature[index]?.national_code && (
-                                                                            <span className="error">{errors.addSignature[index].national_code}</span>
+                                                                            <p className="error mt-2">{errors.addSignature[index].national_code}</p>
                                                                         )}
                                                                     </div>
                                                                     <div className='signin-element-form-wrapper margin-buttom'>
@@ -661,10 +693,10 @@ export default function TypeActivity() {
                                                                             icon={faPhone}
                                                                             placeholder="شماره موبایل"
                                                                             name="phone_number"
-                                                                            value={input.phone_number}
+                                                                            value={toFarsiNumber(input.phone_number)}
                                                                             onChange={(e) => {
                                                                                 const newAddSignature = [...addSignature];
-                                                                                newAddSignature[index].phone_number = e.target.value;
+                                                                                newAddSignature[index].phone_number = toEnglishNumber(e.target.value);
                                                                                 setAddSignature(newAddSignature);
                                                                                 const newErrors = [...errors.addSignature];
                                                                                 if (newErrors[index]) newErrors[index].phone_number = '';
@@ -672,17 +704,17 @@ export default function TypeActivity() {
                                                                             }}
                                                                         />
                                                                         {errors.addSignature[index]?.phone_number && (
-                                                                            <span className="error">{errors.addSignature[index].phone_number}</span>
+                                                                            <p className="error mt-2">{errors.addSignature[index].phone_number}</p>
                                                                         )}
                                                                     </div>
                                                                 </div>
                                                             ))}
                                                             <p className="add-signature-title" onClick={handlerAddinputssignatureFalse}>
                                                                 <>
-                                                                    <span className='d-flex align-items-center'>
+                                                                    <p className='d-flex align-items-center'>
                                                                         <FontAwesomeIcon icon={faPlus} className='mx-2' />
                                                                         افزودن صاحب امضا جدید
-                                                                    </span>
+                                                                    </p>
                                                                 </>
                                                             </p>
                                                         </>
@@ -699,36 +731,36 @@ export default function TypeActivity() {
                                                             type="text"
                                                             name="company_national_id"
                                                             onChange={(e) => {
-                                                                setDataFormCompany({ ...dataFormCompany, company_national_id: e.target.value });
+                                                                setDataFormCompany({ ...dataFormCompany, company_national_id: toEnglishNumber(e.target.value) });
                                                                 setErrors((prevErrors) => ({
                                                                     ...prevErrors,
                                                                     dataFormCompany: { ...prevErrors.dataFormCompany, company_national_id: '' }
                                                                 }));
                                                             }}
-                                                            value={dataFormCompany.company_national_id}
+                                                            value={toFarsiNumber(dataFormCompany.company_national_id)}
                                                         />
                                                         {errors.dataFormCompany.company_national_id && (
-                                                            <span className="error">{errors.dataFormCompany.company_national_id}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.company_national_id}</p>
                                                         )}
                                                     </div>
                                                     <div className='input-item-wrapper'>
                                                         <Input
-                                                            label="شماره تماس"
+                                                            label="شماره تماس شرکت"
                                                             name="phone_number"
                                                             icon={faPhone}
                                                             placeholder="شماره تماس شرکت"
                                                             type="text"
                                                             onChange={(e) => {
-                                                                setDataFormCompany({ ...dataFormCompany, phone_number: e.target.value });
+                                                                setDataFormCompany({ ...dataFormCompany, phone_number: toEnglishNumber(e.target.value) });
                                                                 setErrors((prevErrors) => ({
                                                                     ...prevErrors,
                                                                     dataFormCompany: { ...prevErrors.dataFormCompany, phone_number: '' }
                                                                 }));
                                                             }}
-                                                            value={dataFormCompany.phone_number}
+                                                            value={toFarsiNumber(dataFormCompany.phone_number)}
                                                         />
                                                         {errors.dataFormCompany.phone_number && (
-                                                            <span className="error">{errors.dataFormCompany.phone_number}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.phone_number}</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -750,7 +782,7 @@ export default function TypeActivity() {
                                                             value={dataFormCompany.address}
                                                         />
                                                         {errors.dataFormCompany.address && (
-                                                            <span className="error">{errors.dataFormCompany.address}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.address}</p>
                                                         )}
                                                     </div>
                                                     <div className='input-item-wrapper'>
@@ -761,48 +793,48 @@ export default function TypeActivity() {
                                                             placeholder="کدپستی شرکت"
                                                             type="text"
                                                             onChange={(e) => {
-                                                                setDataFormCompany({ ...dataFormCompany, postal_code: e.target.value });
+                                                                setDataFormCompany({ ...dataFormCompany, postal_code: toEnglishNumber(e.target.value) });
                                                                 setErrors((prevErrors) => ({
                                                                     ...prevErrors,
                                                                     dataFormCompany: { ...prevErrors.dataFormCompany, postal_code: '' }
                                                                 }));
                                                             }}
-                                                            value={dataFormCompany.postal_code}
+                                                            value={toFarsiNumber(dataFormCompany.postal_code)}
                                                         />
                                                         {errors.dataFormCompany.postal_code && (
-                                                            <span className="error">{errors.dataFormCompany.postal_code}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.postal_code}</p>
                                                         )}
                                                     </div>
                                                 </div>
-                                                <div className="signin-basic-info-wrapper margin-buttom mt-4">
+                                                <div className="signin-basic-info-wrapper margin-buttom mt-5">
                                                     <div className='input-item-wrapper2'>
                                                         <InputUpload
                                                             label={"تصویر اساسنامه شرکت"}
                                                             name="company_statute_image"
-                                                            onChange={(name, file) => handleFileChange(name, file)}
+                                                            onChange={(file) => handleFileChange("company_statute_image", file)}
                                                         />
                                                         {errors.dataFormCompany.company_statute_image && (
-                                                            <span className="error">{errors.dataFormCompany.company_statute_image}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.company_statute_image}</p>
                                                         )}
                                                     </div>
                                                     <div className='input-item-wrapper2'>
                                                         <InputUpload
                                                             label={"تصویر آخرین آگهی تغییرات"}
                                                             name="last_ad_changes_image"
-                                                            onChange={(name, file) => handleFileChange(name, file)}
+                                                            onChange={(file) => handleFileChange("last_ad_changes_image", file)}
                                                         />
                                                         {errors.dataFormCompany.last_ad_changes_image && (
-                                                            <span className="error">{errors.dataFormCompany.last_ad_changes_image}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.last_ad_changes_image}</p>
                                                         )}
                                                     </div>
                                                     <div className='input-item-wrapper2'>
                                                         <InputUpload
                                                             label={"تصویر لوگو شرکت"}
                                                             name="company_image"
-                                                            onChange={(name, file) => handleFileChange(name, file)}
+                                                            onChange={(file) => handleFileChange("company_image", file)}
                                                         />
                                                         {errors.dataFormCompany.company_image && (
-                                                            <span className="error">{errors.dataFormCompany.company_image}</span>
+                                                            <p className="error mt-2">{errors.dataFormCompany.company_image}</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -810,7 +842,7 @@ export default function TypeActivity() {
                                         </div>
                                     </div>
                                     <div className="signin-btn-wrapper">
-                                        <Button1 type="submit" onClick={sendDataHandler} />
+                                        <Button1 type="submit" isSubmitting={loading} onClick={sendDataHandler} />
                                     </div>
                                 </form>
                             </TabPanel>
@@ -823,33 +855,4 @@ export default function TypeActivity() {
     )
 }
 
-
-
-
-
-
-
-
-// const dataFormCompanyChange = (e) => {
-//     const { name, value } = e.target;
-//     setDataFormCompany(prevState => ({
-//         ...prevState,
-//         [name]: value
-//     }));
-// };
-
-
-// const addSignatureChange = (e, index) => {
-//     const { name, value } = e.target;
-//     const newInputs = [...addSignature];
-//     newInputs[index][name] = value;
-//     setAddSignature(newInputs);
-// }
-
-// const handleFirstSignatureChange = (e, index) => {
-//     const { name, value } = e.target;
-//     const newInputs = [...firstSignature];
-//     newInputs[index][name] = value;
-//     setFirstSignature(newInputs);
-// }
 

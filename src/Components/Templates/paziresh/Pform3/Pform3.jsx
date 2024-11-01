@@ -10,7 +10,6 @@ import {
     faPen,
     faTrash
 } from '@fortawesome/free-solid-svg-icons';
-import Input from '../../../Modules/Input/Input';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import EditBtn from '../../../Modules/EditBtn/EditBtn';
 import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn';
@@ -24,7 +23,11 @@ import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
-import { toFarsiNumber } from '../../../../utils/utils';
+import { toFarsiNumber, toEnglishNumber } from '../../../../utils/helper';
+import DatePicker from 'react-multi-date-picker';
+import persian from "react-date-object/calendars/persian"
+import persian_fa from "react-date-object/locales/persian_fa"
+import TimePicker from 'react-multi-date-picker/plugins/time_picker';
 
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
@@ -73,6 +76,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const [selectedStatement, setSelectedStatement] = useState(null);
     const [loading, setLoading] = useState(false)
     const columns = ['توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
+    const [dateValue, setDateValue] = useState("")
     const { dataForm, idForm, editMode } = useContext(MyContext)
 
 
@@ -87,17 +91,29 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         estimatedTime: ''
     });
 
+    const [errors, setErrors] = useState({
+        customerText: '',
+        expertText: '',
+        estimatedPrice: '',
+        estimatedTime: ''
+    });
+
     const formik = useFormik({
+        
         initialValues: {
-            form_id: coustomer,
+            form_id: editMode ? idForm : coustomer,
             form: []
         },
-
         onSubmit: async (values) => {
-            console.log(values)
+            setLoading(true)
             try {
-                setLoading(true)
-                const response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
+                let response;
+                if (editMode) {
+                    response = await axios.put(`${apiUrl}/app/fill-customer-third-form`, values);
+                } else {
+
+                    response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
+                }
                 if (response.status === 201 || response.status === 200) {
                     console.log('Form submitted successfully:', response.data);
                     setLoading(false)
@@ -105,6 +121,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             } catch (error) {
                 console.error('Error submitting form:', error);
                 setLoading(false)
+            } finally {
+                setLoading(false);
             }
         },
     });
@@ -219,22 +237,28 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         }));
     };
 
+    function formatWithThousandSeparators(number) {
+        return number.replace(/[^\d]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
     const handleEstimatedPriceChange = (e) => {
-        const value = e.target.value
+        const englishNumber = toEnglishNumber(e.target.value.replace(/,/g, ''));
         setStatementData((prevState) => ({
             ...prevState,
-            estimatedPrice: value
+            estimatedPrice: englishNumber
         }));
-
     };
 
-    const handleEstimatedTimeChange = (e) => {
-        const value = e.target.value;
-        formik.setFieldValue('estimatedTime', value);
-        setStatementData((prevState) => ({
-            ...prevState,
-            estimatedTime: value
-        }));
+    const handleEstimatedTimeChange = (value) => {
+        if (value && typeof value.toDate === "function") {
+            const gregorianDate = value.toDate();
+            const formattedDate = gregorianDate.toLocaleString("en-GB", { hour12: false });
+            formik.setFieldValue("estimatedTime", formattedDate);
+            setStatementData((prevState) => ({
+                ...prevState,
+                estimatedTime: formattedDate,
+            }));
+        }
     };
 
     const convertToBase64 = (file) => {
@@ -248,27 +272,38 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
 
     const addStatement = async (e) => {
         e.preventDefault();
-        const {
-            customerText,
+
+        const { customerText,
             customerAudio,
             customerFile,
             expertText,
             expertFile,
             expertAudio,
             estimatedPrice,
-            estimatedTime
-        } = statementData;
+            estimatedTime } = statementData;
 
-        if (
-            !customerText &&
-            !customerAudio &&
-            !customerFile &&
-            !expertText &&
-            !expertFile &&
-            !expertAudio &&
-            !estimatedPrice &&
-            !estimatedTime
-        ) {
+        let formIsValid = true;
+        const newErrors = {};
+
+        if (!customerText) {
+            newErrors.customerText = "وارد کردن اظهارات مشتری الزامیست";
+            formIsValid = false;
+        }
+        if (!expertText) {
+            newErrors.expertText = "وارد کردن اظهارات کارشناس الزامیست";
+            formIsValid = false;
+        }
+        if (!estimatedPrice) {
+            newErrors.estimatedPrice = "تعیین تخیمن قیمت الزامیست";
+            formIsValid = false;
+        }
+        if (!estimatedTime) {
+            newErrors.estimatedTime = "تعیین تخمین زمان تعمیر الزامیست";
+            formIsValid = false;
+        }
+
+        if (!formIsValid) {
+            setErrors(newErrors);
             return;
         }
 
@@ -280,8 +315,10 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             expertFile: expertFile ? await convertToBase64(expertFile) : null,
             expertAudio: expertAudio ? await convertToBase64(expertAudio) : null,
             estimatedPrice: estimatedPrice || '',
-            estimatedTime: estimatedTime || ''
+            estimatedTime: estimatedTime || '',
+            declaration_code: ""
         };
+
         formik.setFieldValue("form", [...formik.values.form, newStatement]);
 
         setStatementData({
@@ -294,13 +331,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             estimatedPrice: '',
             estimatedTime: ''
         });
+        setErrors({});
     };
-
 
     const handleChangetab = (event, newValue) => {
         setValue(newValue);
     };
-
 
     const handleShowModal = (statement) => {
         setSelectedStatement(statement);
@@ -311,7 +347,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         const updatedform = formik.values.form.filter((_, index) => index !== indexToDelete);
         formik.setFieldValue('form', updatedform);
     };
-
 
     const handleImageChangeCoustomer = async (e) => {
         const file = e.target.files[0];
@@ -351,7 +386,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setSelectedStatement({ ...selectedStatement, customerFile: null });
     };
 
-
     const handleDeleteAudioCoustomer = () => {
         const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
@@ -363,7 +397,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setSelectedStatement({ ...selectedStatement, customerAudio: null });
     };
 
-
     const handleDeleteImageExpert = () => {
         const updatedform = formik.values.form.map((statement) =>
             statement === selectedStatement
@@ -374,7 +407,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         formik.setFieldValue('form', updatedform);
         setSelectedStatement({ ...selectedStatement, expertFile: null });
     };
-
 
     const handleDeleteAudioExpert = () => {
         const updatedform = formik.values.form.map((statement) =>
@@ -397,9 +429,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setContent("اظهارات مشتری :")
     }, [])
 
+    useEffect(() => {
+        handleEstimatedTimeChange(dateValue)
+    }, [dateValue])
 
-    // console.log(formik.values)
 
+    console.log(statementData.estimatedPrice)
 
     return (
         <>
@@ -472,7 +507,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                             )}
                         </div>
                     </TabPanel>
-                    
+
                     <TabPanel value={value} index={1} key={1} >
                         <div className='wrap-image-modal'>
                             <div className='image-modal-content'>
@@ -569,7 +604,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                         :
                                                         <FontAwesomeIcon icon={faFile} />
                                                 }
-
                                             </label>
                                         </div>
                                     </div>
@@ -580,6 +614,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
                                 )}
+                                {errors.customerText && <p className='error mt-2'>{errors.customerText}</p>}
                             </div>
 
                             <div className="statements-left">
@@ -624,6 +659,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
                                 )}
+                                {errors.expertText && <p className='error mt-2'>{errors.expertText}</p>}
                             </div>
                         </div>
                         <div className="estimate-wrapper mt-4">
@@ -637,29 +673,43 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                 name={"تخمین قیمت"}
                                                 type={"text"}
                                                 placeholder={"تخمین قیمت"}
-                                                value={toFarsiNumber(statementData.estimatedPrice)}
+                                                value={toFarsiNumber(formatWithThousandSeparators(statementData.estimatedPrice))}
                                                 onChange={handleEstimatedPriceChange}
                                                 className='input-form'
                                                 autoComplete='off'
+                                                maxLength={30}
                                             />
                                         </div>
                                     </div>
                                 </div>
+                                {errors.estimatedPrice && <p  className='error mt-2'>{errors.estimatedPrice}</p>}
                             </div>
                             <div className="mt-3 mt-sm-0 estimate-item">
                                 <div className="estimate-input">
-                                    <label htmlFor="estimated-time">تخمین زمان تعمیر</label>
-                                    <Input
-                                        type="datetime-local"
-                                        id="estimated-time"
-                                        name="تخمین زمان تعمیر"
-                                        value={statementData.estimatedTime}
-                                        onChange={handleEstimatedTimeChange}
-                                        placeholder="تخمین زمان تعمیر"
-                                    />
+                                    <label htmlFor="estimated-time" className='label-input mb-2'>تخمین زمان تعمیر</label>
+                                    <div className="input-content-wrapper">
+                                        <DatePicker
+                                            calendar={persian}
+                                            locale={persian_fa}
+                                            calendarPosition="bottom-right"
+                                            value={dateValue}
+                                            onChange={setDateValue}
+                                            format="YYYY/MM/DD HH:mm"
+                                            style={{
+                                                border: "none",
+                                                background: "transparent",
+                                                outline: "none"
+                                            }}
+                                            plugins={[
+                                                <TimePicker position="bottom" />,
+                                            ]}
+                                        />
+                                    </div>
                                 </div>
+                                {errors.estimatedTime && <p className='error mt-2'>{errors.estimatedTime}</p>}
                             </div>
                         </div>
+
                         <div className="pform3-container-table mt-5" dir="rtl">
                             <button className="add-estimate-btn mb-3" onClick={addStatement}>
                                 افزودن شرح اظهار
@@ -725,3 +775,5 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
 
     );
 }
+
+

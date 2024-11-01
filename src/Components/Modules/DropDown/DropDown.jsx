@@ -11,7 +11,7 @@ export default function DropDown({ lable, styled, items, onChange, name }) {
         if (items && items.length > 0) {
             onChange(name, items[0]?.value);
         }
-    }, [items]);
+    }, [items[0]?.value]);
 
     return (
         <div className={`dropdown-container ${styled}`}>

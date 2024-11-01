@@ -17,9 +17,10 @@ import PartMachine from './PartMachine/PartMachine'
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
-import * as Yup from 'yup';
 import axios from 'axios'
 import InputCheckBoxAccessories from '../../../Modules/InputChekBox/InputCheckBoxAccessories'
+import { validateFields } from '../../../../utils/ValidationForm2'
+import { toFarsiNumber, toEnglishNumber } from '../../../../utils/helper'
 
 export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -37,12 +38,13 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const [machineParts, setMachineParts] = useState([])
     const [allAccessories, setAllAccessories] = useState([])
     const [checkAll, setCheckAll] = useState(false);
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false)
 
     const [form2, setForm2] = useState(
         {
             customer_secend_form: {
-                customer: editMode ? idForm : coustomer ? coustomer : 8,
+                customer: editMode ? idForm : coustomer,
                 material: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.material : "",
                 other_car: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_car : "",
                 chassis_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.chassis_number : "",
@@ -54,7 +56,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                 amount_cng: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_cng : "",
                 tire_wear_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.tire_wear_rate : "",
                 number_punctured_tires: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.number_punctured_tires : "",
-                condition_spare_tire: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.condition_spare_tire : "",
+                condition_spare_tire: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.condition_spare_tire : false,
                 erosion_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.erosion_rate : "",
                 car_cleanliness: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_cleanliness : 0,
                 front_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_image : "",
@@ -76,45 +78,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }
     )
 
-    const validationSchema = Yup.object({
-        customer_secend_form: Yup.object({
-            material: Yup.string().required('نوع خودرو را وارد کنید'),
-            color: Yup.string().required("رنگ را انتخاب کنید"),
-            chassis_number: Yup.number()
-                .required('شماره شاسی را وارد کنید')
-                .typeError("شماره شاسی صحیح نیست"),
-            ...(otherCar && {
-                other_car: Yup.string().required('لطفاً مقدار "سایر" را وارد کنید'),
-            }),
-            ...(otherColor && {
-                other_color: Yup.string().required('لطفاً مقدار "سایر" را وارد کنید'),
-            }),
-            car_operation: Yup.number()
-                .required('کارکرد خودرو را وارد کنید')
-                .typeError('کارکرد خودرو باید عدد باشد'),
-            license_plate_number: Yup.string().required('شماره پلاک را وارد کنید'),
-            amount_fuel: Yup.number().required('میزان سوخت را انتخاب کنید'),
-            amount_cng: Yup.number().required('میزان CNG را انتخاب کنید'),
-            tire_wear_rate: Yup.number().required('میزان فرسایش لاستیک ها را انتخاب کنید'),
-            number_punctured_tires: Yup.number()
-                .min(0, 'تعداد لاستیک پنچر نمی‌تواند کمتر از 0 باشد')
-                .max(4, 'تعداد لاستیک پنچر نمی‌تواند بیشتر از 4 باشد')
-                .required('تعداد لاستیک پنچر را وارد کنید'),
-            condition_spare_tire: Yup.string().required('وضعیت لاستیک زاپاس را انتخاب کنید'),
-            erosion_rate: Yup.number().required('میزان فرسایش را انتخاب کنید'),
-        }),
-        fill_form: Yup.array()
-            .min(1, 'حداقل یکی از موارد بخشها را انتخاب کنید')
-            .required('Fill form selection is required'),
-
-        accessories: Yup.array()
-            .min(1, 'حداقل یکی از متعلقات را انتخاب کنید')
-            .required('Accessories selection is required'),
-    });
-
     const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
         setForm2(prevForm => {
-            const updatedForm = [...prevForm.fill_form];
+            const updatedForm = Array.isArray(prevForm.fill_form) ? [...prevForm.fill_form] : [];
 
             if (isChecked) {
                 updatedForm.push({ parts: belongingId, description: '', value_number: valuenumber });
@@ -188,27 +154,15 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         setCarPart(mainTip[0]?.body_condition);
     };
 
-    //
-    const handleAccessoryChange = (id) => {
-        setForm2(prev => {
-            const { accessories } = prev;
-            if (accessories.includes(id)) {
-                return { ...prev, accessories: accessories.filter(acc => acc !== id) };
-            } else {
-                return { ...prev, accessories: [...accessories, id] };
-            }
-        });
-    };
-    //
-
     const handleInputChange = (e) => {
-
         const { name, value } = e.target;
+        const englishValue = toEnglishNumber(value);
+
         setForm2(prevState => ({
             ...prevState,
             customer_secend_form: {
                 ...prevState.customer_secend_form,
-                [name]: value,
+                [name]: englishValue,
             },
         }));
     };
@@ -326,12 +280,40 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrors({});
+        const validationErrors = validateFields(form2, otherCar, otherColor);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        try {
+            setLoading(true)
+            let response;
+            if (editMode && dataForm.customer_form_two.id) {
+                response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, form2);
+            } else {
+                response = await axios.post(`${apiUrl}/app/fill-customer-and-parts/`, form2);
+            }
+
+            if (response.status === 201 || response.status === 200) {
+                nextTab();
+            }
+
+            setLoading(false);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         getMaterial()
         getAllParts()
         setContent("اطلاعات اولیه خودرو :")
     }, [])
-
 
     useEffect(() => {
         if (dataForm?.customer_form_two?.other_car) {
@@ -344,23 +326,23 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
 
     useEffect(() => {
-        if (dataForm?.customer_form_two?.fill_form) {
-            const matchedParts = carParts.filter(part =>
-                dataForm.customer_form_two.fill_form.some(item => item.parts_value_number === part.value_number)
-            );
+        const matchedParts = carParts.filter(part =>
+            dataForm?.customer_form_two?.fill_form?.some(item => item.parts_value_number == part.value_number)
+        );
 
-            setMachineParts(matchedParts);
-            const newFillForm = dataForm.customer_form_two.fill_form.map(item => ({
-                parts: item.parts_id || "",
-                description: item.descriptions || "",
-                value_number: item.parts_value_number || ""
-            }));
+        setMachineParts(matchedParts);
 
-            setForm2(prevForm2 => ({
-                ...prevForm2,
-                fill_form: newFillForm
-            }));
-        }
+        const newFillForm = dataForm?.customer_form_two?.fill_form?.map(item => ({
+            parts: item.parts_id || "",
+            description: item.descriptions || "",
+            value_number: item.parts_value_number || ""
+        }));
+
+        setForm2(prevForm2 => ({
+            ...prevForm2,
+            fill_form: newFillForm
+        }));
+
     }, [dataForm, carParts]);
 
 
@@ -375,32 +357,10 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                 accessories: newFillForm
             }));
         }
-    }, [dataForm,allAccessories])
+    }, [dataForm, allAccessories])
 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            let response;
-            if (editMode && dataForm.customer_form_two.id) {
-
-                response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, form2);
-            } else {
-                response = await axios.post(`${apiUrl}/app/fill-customer-and-parts/`, form2);
-            }
-
-            if (response.status === 201 || response.status === 200) {
-                nextTab();
-            }
-            setLoading(false);
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            setLoading(false);
-        }
-    };
-
-    console.log(form2.accessories)
-
+    console.log(dataForm.customer_form_two)
     return (
         <>
             <CarModal
@@ -425,6 +385,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     value={form2.customer_secend_form.material}
                                     onChange={handleSelectChange}
                                 />
+                                {errors.material && <span className='error'>{errors.material}</span>}
                             </Col>
                             {otherCar && (
                                 <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -436,6 +397,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         value={form2.customer_secend_form.other_car}
                                         onChange={handleInputChange}
                                     />
+                                    {errors.other_car && <span className='error'>{errors.other_car}</span>}
                                 </Col>
                             )}
                             <Col className='mb-4 mb-md-0' xs={12} md={4}>
@@ -448,6 +410,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     value={form2.customer_secend_form.chassis_number}
                                     onChange={handleInputChange}
                                 />
+
+                                {errors.chassis_number && <span className='error'>{errors.chassis_number}</span>}
                             </Col>
                         </div>
                         <div className='p-form2-row mt-md-4'>
@@ -461,9 +425,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     value={form2.customer_secend_form.color}
                                     onChange={handleSelectChange}
                                 />
+                                {errors.color && <span className='error'>{errors.color}</span>}
                             </Col>
-                            {
-                                otherColor &&
+                            {otherColor && (
                                 <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                     <Input
                                         label="سایر"
@@ -473,8 +437,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         value={form2.customer_secend_form.other_color}
                                         onChange={handleInputChange}
                                     />
+                                    {errors.other_color && <span className='error'>{errors.other_color}</span>}
                                 </Col>
-                            }
+                            )}
                             <Col className='mb-4 mb-md-0' xs={12} md={4}>
                                 <Input
                                     label="کارکرد خودرو"
@@ -482,11 +447,12 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     placeholder="Km"
                                     icon={faGauge}
                                     name="car_operation"
-                                    value={form2.customer_secend_form.car_operation}
+                                    value={toFarsiNumber(form2.customer_secend_form.car_operation)}
                                     onChange={handleInputChange}
                                 />
-                            </Col>
 
+                                {errors.car_operation && <span className='error'>{errors.car_operation}</span>}
+                            </Col>
                         </div>
                         <div className='p-form2-row2'>
                             <Col xs={12} lg={5}>
@@ -495,6 +461,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     value={form2.customer_secend_form.license_plate_number}
                                     setFieldValue={handleLicensePlateChange}
                                 />
+                                {errors.license_plate_number && <span className='error'>{errors.license_plate_number}</span>}
                             </Col>
                             <Col className='mt-4 mt-lg-0' xs={12} lg={7}>
                                 <div className='amount-wrapper'>
@@ -506,7 +473,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                 {[100, 75, 50, 25].map(value => (
                                                     <div className='radio-fuel-item' key={value}>
                                                         <InputRadio
-                                                            text={`${value}%`}
+                                                            text={`${toFarsiNumber(value)}%`}
                                                             value={value}
                                                             checked={form2.customer_secend_form.amount_fuel == value}
                                                             onChange={() => setForm2(prev => ({
@@ -524,6 +491,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             <span className='f-text'>E</span>
                                         </div>
                                     </div>
+                                    {errors.amount_fuel && <span className='error'>{errors.amount_fuel}</span>}
                                     <div className="amount-cng-wrapper my-4">
                                         <span className='amount-cng-text title-item-form'>میزان CNG</span>
                                         <div className='amount-cng-content'>
@@ -532,7 +500,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                 {[100, 75, 50, 25].map((value) => (
                                                     <div className='radio-fuel-item' key={value}>
                                                         <InputRadio
-                                                            text={`${value}%`}
+                                                            text={`${toFarsiNumber(value)}%`}
                                                             value={value}
                                                             checked={form2.customer_secend_form.amount_cng == value}
                                                             onChange={() => setForm2(prev => ({
@@ -550,6 +518,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             <span className='f-text'>E</span>
                                         </div>
                                     </div>
+                                    {errors.amount_cng && <span className='error'>{errors.amount_cng}</span>}
                                 </div>
                             </Col>
                         </div>
@@ -561,7 +530,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         {[90, 70, 50, 30, 10].map((value) => (
                                             <InputRadio
                                                 key={value}
-                                                text={`${value}%`}
+                                                text={`${toFarsiNumber(value)}%`}
                                                 value={value}
                                                 checked={form2.customer_secend_form.tire_wear_rate == value}
                                                 onChange={() => setForm2(prev => ({
@@ -576,17 +545,23 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         ))}
                                     </div>
                                 </div>
+                                {errors.tire_wear_rate && <span className='error'>{errors.tire_wear_rate}</span>}
                             </Col>
                             <Col xs={12} md={5} lg={7}>
                                 <div className='numbers-tire'>
                                     <Input
                                         label={"تعداد لاستیک پنچر"}
                                         styled={"inputtire"}
-                                        placeholder="از 0 تا 4"
+                                        placeholder="از ۰ تا ۴"
                                         name="number_punctured_tires"
-                                        value={form2.customer_secend_form.number_punctured_tires}
-                                        onChange={handleInputChange}
+                                        value={toFarsiNumber(form2.customer_secend_form.number_punctured_tires)}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            const englishNumber = toEnglishNumber(value);
+                                            handleInputChange(e, englishNumber);
+                                        }}
                                     />
+                                    {errors.number_punctured_tires && <span className='error'>{errors.number_punctured_tires}</span>}
                                 </div>
                             </Col>
                         </div>
@@ -597,7 +572,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     {[true, false].map((value) => (
                                         <InputRadio
                                             key={value}
-                                            text={value === true ? 'دارد' : 'ندارد'}
+                                            text={value == true ? 'دارد' : 'ندارد'}
                                             value={value}
                                             checked={form2.customer_secend_form.condition_spare_tire == value}
                                             onChange={() => setForm2(prev => ({
@@ -611,6 +586,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         />
                                     ))}
                                 </div>
+                                {errors.condition_spare_tire && <span className='error'>{errors.condition_spare_tire}</span>}
                             </div>
                             <div className="erosion-rate-wrapper">
                                 <p className="title-item-form">میزان فرسایش</p>
@@ -618,10 +594,10 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     {[90, 70, 50, 30, 10].map((value) => (
                                         <InputRadio
                                             key={value}
-                                            text={`${value}%`}
+                                            text={`${toFarsiNumber(value)}%`}
                                             value={value}
                                             checked={form2.customer_secend_form.erosion_rate == value}
-                                            onChange={(e) => setForm2(prev => ({
+                                            onChange={() => setForm2(prev => ({
                                                 ...prev,
                                                 customer_secend_form: {
                                                     ...prev.customer_secend_form,
@@ -632,6 +608,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         />
                                     ))}
                                 </div>
+                                {errors.erosion_rate && <span className='error'>{errors.erosion_rate}</span>}
                             </div>
                         </div>
                         <div className="p-form2-row5">
@@ -774,6 +751,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 ))}
                             </Col>
                         </div>
+                        {errors.fill_form && <p className='error mt-2'>{errors.fill_form}</p>}
                         <div className='p-form2-row8'>
                             <p className='title-item'>متعلقات خودرو</p>
                             <div className='belongings-wrapper'>
@@ -839,17 +817,17 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 />
                             </div>
                         </div>
+                        {errors.accessories && <span className='error'>{errors.accessories}</span>}
                         <div className='p-form-actions'>
                             <div className='p-form-actions'>
                                 <EditBtn />
-                                <ConfirmBtn type="submit" />
+                                <ConfirmBtn type="submit" isSubmitting={loading} />
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
         </>
-
     )
 }
 

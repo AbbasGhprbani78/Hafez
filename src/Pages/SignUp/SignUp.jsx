@@ -10,6 +10,7 @@ import { IP } from '../../App';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { toEnglishNumber, toFarsiNumber } from '../../utils/helper';
 export default function SignUp() {
 
     const navigate = useNavigate()
@@ -42,17 +43,17 @@ export default function SignUp() {
 
                                 if (values.email === "") {
                                     errors.email = "وارد کردن ایمیل اجباری میباشد";
-                                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+                                } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.email)) {
                                     errors.email = "ایمیل وارد شده معتبر نیست";
                                 }
 
                                 if (values.phone_number === "") {
                                     errors.phone_number = "وارد کردن شماره اجباری میباشد";
-                                } else if (!/^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}?\)?[-.\s]?)?(\d{1,4}[-.\s]?){1,3}\d{1,4}$/.test(values.phone_number)) {
+                                } else if (!/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(values.phone_number)) {
                                     errors.phone_number = "شماره وارد شده معتبر نیست";
                                 }
                                 if (values.password === "") {
-                                    errors.phone_number = "وارد کردن پسورد اجباری میباشد";
+                                    errors.password = "وارد کردن پسورد اجباری میباشد";
                                 }
                                 return errors;
                             }}
@@ -64,7 +65,7 @@ export default function SignUp() {
                                 phone_number: "",
                                 password: ""
                             }}
-                            
+
                             onSubmit={async (values, { setSubmitting }) => {
                                 try {
                                     const response = await axios.post(`${IP}/user/signup/`, values)
@@ -96,7 +97,7 @@ export default function SignUp() {
                                                         value={values.first_name}
                                                         onChange={handleChange}
                                                     />
-                                                    {errors.first_name && touched.first_name && <span className='error'>{errors.first_name}</span>}
+                                                    {errors.first_name && touched.first_name && <p className='error mt-2'>{errors.first_name}</p>}
                                                 </div>
                                                 <div className='input-item-wrapper'>
                                                     <Input
@@ -108,7 +109,7 @@ export default function SignUp() {
                                                         value={values.last_name}
                                                         onChange={handleChange}
                                                     />
-                                                    {errors.last_name && touched.last_name && <span className='error'>{errors.last_name}</span>}
+                                                    {errors.last_name && touched.last_name && <p className='error mt-2'>{errors.last_name}</p>}
                                                 </div>
                                             </div>
                                             <div className="signin-element-form-wrapper margin-buttom">
@@ -117,11 +118,16 @@ export default function SignUp() {
                                                     label="ایمیل"
                                                     icon={faEnvelope}
                                                     placeholder="ایمیل"
-                                                    type="email"
-                                                    value={values.email}
-                                                    onChange={handleChange}
+                                                    type="text"
+                                                    value={toFarsiNumber(values.email)}
+                                                    onChange={(e) => handleChange({
+                                                        target: {
+                                                            name: 'email',
+                                                            value: toEnglishNumber(e.target.value)
+                                                        }
+                                                    })}
                                                 />
-                                                {errors.email && touched.email && <span className='error'>{errors.email}</span>}
+                                                {errors.email && touched.email && <p className='error mt-2'>{errors.email}</p>}
                                             </div>
                                             <div className="signin-phone-wrapper margin-buttom">
                                                 <Input
@@ -130,10 +136,15 @@ export default function SignUp() {
                                                     icon={faPhone}
                                                     placeholder="شماره تماس"
                                                     type="text"
-                                                    value={values.phone_number}
-                                                    onChange={handleChange}
+                                                    value={toFarsiNumber(values.phone_number)}
+                                                    onChange={(e) => handleChange({
+                                                        target: {
+                                                            name: 'phone_number',
+                                                            value: toEnglishNumber(e.target.value)
+                                                        }
+                                                    })}
                                                 />
-                                                {errors.phone_number && touched.phone_number && <span className='error'>{errors.phone_number}</span>}
+                                                {errors.phone_number && touched.phone_number && <p className='error mt-2'>{errors.phone_number}</p>}
                                             </div>
                                             <div className="signin-phone-wrapper margin-buttom">
                                                 <Input
@@ -142,10 +153,15 @@ export default function SignUp() {
                                                     icon={faKey}
                                                     placeholder="رمز عبور"
                                                     type="text"
-                                                    value={values.password}
-                                                    onChange={handleChange}
+                                                    value={toFarsiNumber(values.password)}
+                                                    onChange={(e) => handleChange({
+                                                        target: {
+                                                            name: "password",
+                                                            value: toEnglishNumber(e.target.value)
+                                                        }
+                                                    })}
                                                 />
-                                                {errors.password && touched.password && <span className='error'>{errors.password}</span>}
+                                                {errors.password && touched.password && <p className='error mt-2'>{errors.password}</p>}
                                             </div>
                                         </div>
                                     </div>
@@ -159,8 +175,6 @@ export default function SignUp() {
                 </div>
                 <ToastContainer />
             </div>
-
-
         </>
     );
 }

@@ -26,6 +26,9 @@
 .input-form {
     all: unset;
     width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
 }
 
 .icon-input {
