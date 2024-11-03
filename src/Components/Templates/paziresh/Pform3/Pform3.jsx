@@ -99,24 +99,24 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     });
 
     const formik = useFormik({
-        
+
         initialValues: {
             form_id: editMode ? idForm : coustomer,
-            form: []
+            form: editMode ? dataForm.customer_form_three : []
         },
         onSubmit: async (values) => {
             setLoading(true)
             try {
                 let response;
-                if (editMode) {
-                    response = await axios.put(`${apiUrl}/app/fill-customer-third-form`, values);
+                if (editMode && dataForm.customer_form_three.id) {
+                    response = await axios.put(`${apiUrl}/app/fill-customer-third-form/`, values);
                 } else {
-
                     response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
                 }
                 if (response.status === 201 || response.status === 200) {
                     console.log('Form submitted successfully:', response.data);
                     setLoading(false)
+                    nextTab();
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);
@@ -281,6 +281,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             expertAudio,
             estimatedPrice,
             estimatedTime } = statementData;
+        console.log(estimatedTime)
 
         let formIsValid = true;
         const newErrors = {};
@@ -331,6 +332,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             estimatedPrice: '',
             estimatedTime: ''
         });
+        setDateValue("")
         setErrors({});
     };
 
@@ -425,6 +427,21 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         return base64Regex.test(str);
     };
 
+
+    const selectRow = (item) => {
+        console.log(item)
+        statementData.customerText = item.customerText
+        statementData.customerAudio = item.customerAudio
+        statementData.customerFile = item.customerFile
+        statementData.expertText = item.expertText
+        statementData.expertAudio = item.expertAudio
+        statementData.expertFile = item.expertFile
+        statementData.estimatedPrice = item.estimatedPrice
+        statementData.estimatedPrice = item.estimatedPrice
+
+        console.log(statementData)
+    }
+
     useEffect(() => {
         setContent("اظهارات مشتری :")
     }, [])
@@ -434,7 +451,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     }, [dateValue])
 
 
-    console.log(statementData.estimatedPrice)
+    console.log(dataForm.customer_form_three);
 
     return (
         <>
@@ -682,7 +699,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         </div>
                                     </div>
                                 </div>
-                                {errors.estimatedPrice && <p  className='error mt-2'>{errors.estimatedPrice}</p>}
+                                {errors.estimatedPrice && <p className='error mt-2'>{errors.estimatedPrice}</p>}
                             </div>
                             <div className="mt-3 mt-sm-0 estimate-item">
                                 <div className="estimate-input">
@@ -721,8 +738,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         {formik.values.form?.map((item, rowIndex) => (
                                             <TableRow
                                                 key={rowIndex}
-                                                sx={{ border: '1px solid #ddd', fontFamily: "iranYekan" }}
+                                                sx={{ border: '1px solid #ddd', fontFamily: "iranYekan", cursor: "pointer" }}
                                                 className='statment-row-table'
+                                                onClick={() => selectRow(item)}
                                             >
                                                 <TableCell sx={{ borderRight: '1px solid #ddd' }}>
                                                     {item.customerText}
@@ -765,8 +783,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                             }
                         </div>
                         <div className="p-form-actions pt-3">
-                            <EditBtn onClick={prevTab} isSubmitting={loading} />
-                            <ConfirmBtn type="submit" />
+                            <EditBtn onClick={prevTab} />
+                            <ConfirmBtn type="submit" isSubmitting={loading} />
                         </div>
                     </div>
                 </form >
@@ -775,5 +793,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
 
     );
 }
+
 
 

@@ -5,15 +5,16 @@ import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 import Pform2 from '../../Components/Templates/paziresh/Pform2/Pform2'
 import Pform3 from '../../Components/Templates/paziresh/Pform3/Pform3'
 import './Paziresh.css'
+import Pform4 from '../../Components/Templates/paziresh/Pform4/Pform4'
 
 export default function Paziresh() {
     const [content, setContent] = useState("اطلاعات اولیه مشتری :")
-    const [currentTab, setCurrentTab] = useState(2);
+    const [currentTab, setCurrentTab] = useState(3);
     const [coustomer, setCoustomer] = useState("")
 
 
     const handleNextTab = () => {
-        if (currentTab === 3) {
+        if (currentTab === 4) {
             return false
         } else {
             setCurrentTab(prevTab => prevTab + 1);
@@ -68,6 +69,10 @@ export default function Paziresh() {
                                 coustomer={coustomer}
                             />
 
+                        }
+                        {
+                            currentTab===4&&
+                            <Pform4 prevTab={handlePrevTab} />
                         }
 
                     </div>

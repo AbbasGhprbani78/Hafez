@@ -1,9 +1,3 @@
-:root {
-    --line-border-fill: #3498db;
-    --line-border-empty: #383838;
-}
-
-
 .pragress-wrapper {
     text-align: center;
     margin-left: 31px;
@@ -59,7 +53,8 @@
 
 .circle.active {
     border-color: var(--color-3);
-    color: var(--color-3);
+    color: #fff;
+    background-color: var(--color-3);
 }
 
 .btn {
@@ -86,6 +81,7 @@
     padding-top: 10px;
     font-size: .9rem;
     width: max-content;
+    color: var(--color-3);
 }
 
 
@@ -95,7 +91,11 @@
     }
 
     .pragress-Container {
-        width: 250px;
+        width: 95%;
         margin: 0 auto 30px auto;
+    }
+
+    .item-prog-text {
+        font-size: .8rem;
     }
 }

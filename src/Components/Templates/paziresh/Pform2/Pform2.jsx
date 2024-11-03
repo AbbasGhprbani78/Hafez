@@ -79,11 +79,15 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     )
 
     const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
+        console.log("hello")
         setForm2(prevForm => {
             const updatedForm = Array.isArray(prevForm.fill_form) ? [...prevForm.fill_form] : [];
 
             if (isChecked) {
-                updatedForm.push({ parts: belongingId, description: '', value_number: valuenumber });
+                const exists = updatedForm.some(item => item.parts === belongingId);
+                if (!exists) {
+                    updatedForm.push({ parts: belongingId, description: '', value_number: valuenumber });
+                }
             } else {
                 const index = updatedForm.findIndex(item => item.parts === belongingId);
                 if (index !== -1) {
@@ -117,10 +121,11 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const onCheckboxChangeAccessory = (belongingId, isChecked) => {
         setForm2(prevForm => {
             const updatedForm = [...prevForm.accessories];
+            const exists = updatedForm.some(item => item.parts === belongingId);
 
-            if (isChecked) {
+            if (isChecked && !exists) {
                 updatedForm.push({ parts: belongingId, description: '' });
-            } else {
+            } else if (!isChecked) {
                 const index = updatedForm.findIndex(item => item.parts === belongingId);
                 if (index !== -1) {
                     updatedForm.splice(index, 1);
@@ -131,7 +136,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                 accessories: updatedForm
             };
         });
-    }
+    };
 
     const onDescriptionChangeAccessory = (belongingId, newDescription) => {
         setForm2(prevForm => {
@@ -168,6 +173,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     };
 
     const handleSelectChange = (name, id) => {
+        console.log(name, id)
         setForm2(prevState => ({
             ...prevState,
             customer_secend_form: {
@@ -193,24 +199,33 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     const selectPart = (number) => {
         const mainpart = carParts.find(part => part.value_number == number);
         if (mainpart) {
-            const updatedParts = machineParts;
-            const isAlreadySelected = updatedParts.some(part => part.value_number == mainpart.value_number);
-            const newParts = isAlreadySelected
-                ? updatedParts.filter(part => part.value_number != mainpart.value_number)
-                : [...updatedParts, mainpart];
+            setMachineParts(prevParts => {
+                const isAlreadySelected = prevParts.some(part => part.value_number == mainpart.value_number);
+                const newParts = isAlreadySelected
+                    ? prevParts.filter(part => part.value_number != mainpart.value_number)
+                    : [...prevParts, mainpart];
 
-            setMachineParts(newParts)
-            const updatedFillForm = form2.fill_form;
+                setForm2(prevForm => {
+                    const updatedFillForm = prevForm.fill_form;
+                    if (isAlreadySelected) {
+                        const newFillForm = updatedFillForm.filter(item => Number(item.value_number) !== number);
+                        return {
+                            ...prevForm,
+                            fill_form: newFillForm
+                        };
+                    } else {
+                        return {
+                            ...prevForm,
+                            fill_form: [...updatedFillForm, { parts: mainpart.parts, description: '', value_number: number }]
+                        };
+                    }
+                });
 
-            if (isAlreadySelected) {
-                const newFillForm = updatedFillForm.filter(item => Number(item.value_number) !== number);
-                setForm2(prevForm => ({
-                    ...prevForm,
-                    fill_form: newFillForm
-                }));
-            }
+                return newParts;
+            });
         }
     };
+
 
     const handleOpenModal = (imageField, textField) => {
         const textValue = form2.customer_secend_form[textField];
@@ -288,12 +303,27 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             setErrors(validationErrors);
             return;
         }
+        let sanitizedForm = { ...form2 };
+        const imageFields = [
+            'front_car_image',
+            'behind_car_image',
+            'right_side_image',
+            'left_side_image',
+            'car_km_image',
+            'engine_door_open_image'
+        ];
+
+        imageFields.forEach(field => {
+            if (sanitizedForm.customer_secend_form[field]?.startsWith('/media')) {
+                delete sanitizedForm.customer_secend_form[field];
+            }
+        });
 
         try {
-            setLoading(true)
+            setLoading(true);
             let response;
             if (editMode && dataForm.customer_form_two.id) {
-                response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${idForm}`, form2);
+                response = await axios.put(`${apiUrl}/app/fill-customer-and-parts/${dataForm.customer_form_two.id}`, sanitizedForm);
             } else {
                 response = await axios.post(`${apiUrl}/app/fill-customer-and-parts/`, form2);
             }
@@ -308,6 +338,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         getMaterial()
@@ -326,6 +357,17 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
 
     useEffect(() => {
+        if (dataForm?.customer_form_two?.accessories_form) {
+            const newFillForm = dataForm.customer_form_two.accessories_form.map(item => ({
+                parts: item.parts_id || "",
+                description: item.descriptions || "",
+            }));
+            setForm2(prevForm2 => ({
+                ...prevForm2,
+                accessories: newFillForm
+            }));
+        }
+
         const matchedParts = carParts.filter(part =>
             dataForm?.customer_form_two?.fill_form?.some(item => item.parts_value_number == part.value_number)
         );
@@ -343,24 +385,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             fill_form: newFillForm
         }));
 
-    }, [dataForm, carParts]);
+    }, [dataForm, carParts])
 
-
-    useEffect(() => {
-        if (dataForm?.customer_form_two?.accessories_form) {
-            const newFillForm = dataForm.customer_form_two.accessories_form.map(item => ({
-                parts: item.parts_id || "",
-                description: item.descriptions || "",
-            }));
-            setForm2(prevForm2 => ({
-                ...prevForm2,
-                accessories: newFillForm
-            }));
-        }
-    }, [dataForm, allAccessories])
-
-
-    console.log(dataForm.customer_form_two)
     return (
         <>
             <CarModal
@@ -382,8 +408,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     items={allCar}
                                     name="material"
                                     setother={setotherCar}
-                                    value={form2.customer_secend_form.material}
+                                    value={form2.customer_secend_form?.material}
                                     onChange={handleSelectChange}
+                                    material={dataForm.customer_form_two?.material}
                                 />
                                 {errors.material && <span className='error'>{errors.material}</span>}
                             </Col>
@@ -422,8 +449,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     items={allColor}
                                     name="color"
                                     setother={setotherColor}
-                                    value={form2.customer_secend_form.color}
+                                    value={form2.customer_secend_form?.color}
                                     onChange={handleSelectChange}
+                                    material={dataForm.customer_form_two?.color}
                                 />
                                 {errors.color && <span className='error'>{errors.color}</span>}
                             </Col>

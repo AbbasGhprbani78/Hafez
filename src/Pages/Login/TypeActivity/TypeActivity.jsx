@@ -221,7 +221,6 @@ export default function TypeActivity() {
         return isValid;
     };
 
-
     const sendDataHandler = async (e) => {
         e.preventDefault();
         let isValid = validateDataFormCompany(dataFormCompany);
@@ -244,15 +243,30 @@ export default function TypeActivity() {
             setDataFormCompany(updatedDataFormCompany);
             setLoading(true)
 
+            const access = localStorage.getItem("access")
+            const headers = {
+                Authorization: `Bearer ${access}`
+            };
             try {
-                const response = await axios.post(`sfssgfdg`, updatedDataFormCompany);
-                if (response.status === 200) {
-                    console.log(response.data);
+                const response = await axios.post(`${IP}/user/continuation-signup/`, updatedDataFormCompany, {
+                    headers
+                })
+                
+                if (response.status === 201) {
                     setLoading(false)
+                    localStorage.setItem("level", "two")
+                    navigate("/")
                 }
             } catch (error) {
-                console.log(error);
-                setLoading(false)
+                console.log(error)
+                if (error.response.status === 401) {
+                    localStorage.clear()
+                    window.location.href = "/login"
+                }
+                toast.error(error.response.data.message, {
+                    position: "top-left"
+                })
+                setLoading(false);
             }
         }
     };

@@ -116,7 +116,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
             try {
                 let response;
                 if (editMode) {
-                    response = await axios.put(`${apiUrl}/app/fill-customer-form/${idForm}/`, values);
+                    response = await axios.put(`${apiUrl}/app/fill-customer-form/${idForm}`, values);
                 } else {
                     response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
                 }

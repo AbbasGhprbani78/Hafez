@@ -2,18 +2,25 @@ import { useState, useRef, useEffect } from 'react';
 import './SelectDropDown.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function SelectDropDown({ icon, label, items, name, setother, value, onChange }) {
+export default function SelectDropDown({ icon, label, items, name, setother, value, onChange, material }) {
     const [options, setOptions] = useState([]);
     const [filteredOptions, setFilteredOptions] = useState([]);
     const [showOptions, setShowOptions] = useState(false);
     const [displayedValue, setDisplayedValue] = useState(value);
     const dropdownRef = useRef(null);
 
-
     useEffect(() => {
         setOptions(items);
         setFilteredOptions(items);
-    }, [items]);
+
+        // Check if 'material' exists and match it with the appropriate item
+        if (material) {
+            const matchedItem = items.find(item => item.value_id === material);
+            if (matchedItem) {
+                setDisplayedValue(matchedItem.value);
+            }
+        }
+    }, [items, material]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -38,8 +45,6 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
             setShowOptions(false);
         }
     };
-
-    // console.log(displayedValue)
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -67,7 +72,7 @@ export default function SelectDropDown({ icon, label, items, name, setother, val
                     <ul className='list-cars'>
                         {filteredOptions.length > 0 ? (
                             filteredOptions.map((item, i) => (
-                                <li key={i} className='car-item' onClick={() => handleOptionClick(item.value, item.value_id,)}>
+                                <li key={i} className='car-item' onClick={() => handleOptionClick(item.value, item.value_id)}>
                                     {item.value}
                                 </li>
                             ))
