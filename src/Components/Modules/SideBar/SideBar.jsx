@@ -50,7 +50,7 @@ export default function SideBar() {
                     </div>
                     <p className="sidebar-item-text">پذیرش</p>
                 </NavLink>
-                <NavLink to={"/t"} className="sidebar-item navlink">
+                <NavLink to={"/allform"} className="sidebar-item navlink">
                     <div className="icon-sidebar-wrapper">
                         <FontAwesomeIcon icon={faScrewdriverWrench} />
                     </div>

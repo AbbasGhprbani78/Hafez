@@ -11,6 +11,7 @@ export default function DropDown({ lable, styled, items, onChange, name }) {
         if (items && items.length > 0) {
             onChange(name, items[0]?.value);
         }
+        
     }, [items[0]?.value]);
 
     return (

@@ -18,7 +18,6 @@ export default function Draft() {
             if (res.status === 200) {
                 setDataForm(res.data)
                 setEditMode(true)
-                console.log(res.data)
                 navigate("/paziresh")
             }
         } catch (error) {
@@ -37,6 +36,7 @@ export default function Draft() {
                 const res = await axios.get(`${apiUrl}/app/pending-forms/`)
                 if (res.status === 200) {
                     setUnfinishedForms(res.data.forms)
+                    console.log(res.data)
                 }
             } catch (error) {
                 console.log(error)
@@ -45,7 +45,7 @@ export default function Draft() {
         getAllunfinishedForm()
     }, [])
 
-    
+
     return (
         <div>
             {

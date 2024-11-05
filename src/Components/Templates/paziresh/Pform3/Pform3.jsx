@@ -8,7 +8,8 @@ import {
     faFileLines, faXmark,
     faImage,
     faPen,
-    faTrash
+    faTrash,
+    faPenToSquare
 } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import EditBtn from '../../../Modules/EditBtn/EditBtn';
@@ -75,31 +76,33 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const [showModal, setShowModal] = useState(false)
     const [selectedStatement, setSelectedStatement] = useState(null);
     const [loading, setLoading] = useState(false)
-    const columns = ['توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
     const [dateValue, setDateValue] = useState("")
     const { dataForm, idForm, editMode } = useContext(MyContext)
-
-
-    const [statementData, setStatementData] = useState({
-        customerText: '',
-        customerAudio: null,
-        customerFile: null,
-        expertText: '',
-        expertFile: null,
-        expertAudio: null,
-        estimatedPrice: '',
-        estimatedTime: ''
-    });
+    const columns = editMode
+        ? ['کداظهار', 'توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر']
+        : ['توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
 
     const [errors, setErrors] = useState({
-        customerText: '',
-        expertText: '',
-        estimatedPrice: '',
-        estimatedTime: ''
+        customer_statements_text: '',
+        expert_statements_text: '',
+        price_estimate: '',
+        estimated_repair_time: ''
     });
 
-    const formik = useFormik({
+    const [statementData, setStatementData] = useState({
+        customer_statements_text: '',
+        customer_statements_voice: null,
+        customer_statements_file: null,
+        expert_statements_text: '',
+        expert_statements_file: null,
+        expert_statements_voice: null,
+        price_estimate: '',
+        estimated_repair_time: '',
+        declaration_code: ""
+    });
 
+
+    const formik = useFormik({
         initialValues: {
             form_id: editMode ? idForm : coustomer,
             form: editMode ? dataForm.customer_form_three : []
@@ -108,10 +111,10 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
             setLoading(true)
             try {
                 let response;
-                if (editMode && dataForm.customer_form_three.id) {
+                if (editMode) {
                     response = await axios.put(`${apiUrl}/app/fill-customer-third-form/`, values);
                 } else {
-                    response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
+                    response = await axios.post(`http://5.9.108.174:9500/app/fill-customer-third-form/`, values);
                 }
                 if (response.status === 201 || response.status === 200) {
                     console.log('Form submitted successfully:', response.data);
@@ -128,7 +131,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     });
 
     const hasAttachments = formik.values.form.some(
-        item => item?.customerAudio || item?.customerFile || item?.expertFile || item?.expertAudio
+        item => item?.customer_statements_voice || item?.customer_statements_file || item?.expert_statements_file || item?.expert_statements_voice
     );
 
     if (hasAttachments) {
@@ -149,7 +152,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                 const blob = new Blob(expertChunks.current, { type: 'audio/webm' });
                 setStatementData((prevState) => ({
                     ...prevState,
-                    expertAudio: blob
+                    expert_statements_voice: blob
                 }));
                 expertChunks.current = [];
             };
@@ -185,7 +188,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                 const blob = new Blob(customerChunks.current, { type: 'audio/webm' });
                 setStatementData((prevState) => ({
                     ...prevState,
-                    customerAudio: blob
+                    customer_statements_voice: blob
                 }));
                 customerChunks.current = [];
             };
@@ -207,33 +210,33 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setIsRecordingCustomer(false);
     };
 
-    const handleCustomerTextChange = (e) => {
+    const handlecustomer_statements_textChange = (e) => {
         setStatementData((prevState) => ({
             ...prevState,
-            customerText: e.target.value
+            customer_statements_text: e.target.value
         }));
     };
 
-    const handleExpertTextChange = (e) => {
+    const handleexpert_statements_textChange = (e) => {
         setStatementData((prevState) => ({
             ...prevState,
-            expertText: e.target.value
+            expert_statements_text: e.target.value
         }));
     };
 
-    const handleCustomerFileChange = (e) => {
+    const handlecustomer_statements_fileChange = (e) => {
         const file = e.target.files[0];
         setStatementData((prevState) => ({
             ...prevState,
-            customerFile: file
+            customer_statements_file: file
         }));
     };
 
-    const handleExpertFileChange = (e) => {
+    const handleexpert_statements_fileChange = (e) => {
         const file = e.target.files[0];
         setStatementData((prevState) => ({
             ...prevState,
-            expertFile: file
+            expert_statements_file: file
         }));
     };
 
@@ -241,22 +244,22 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         return number.replace(/[^\d]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    const handleEstimatedPriceChange = (e) => {
+    const handleprice_estimateChange = (e) => {
         const englishNumber = toEnglishNumber(e.target.value.replace(/,/g, ''));
         setStatementData((prevState) => ({
             ...prevState,
-            estimatedPrice: englishNumber
+            price_estimate: englishNumber
         }));
     };
 
-    const handleEstimatedTimeChange = (value) => {
+    const handleestimated_repair_timeChange = (value) => {
         if (value && typeof value.toDate === "function") {
             const gregorianDate = value.toDate();
             const formattedDate = gregorianDate.toLocaleString("en-GB", { hour12: false });
-            formik.setFieldValue("estimatedTime", formattedDate);
+            formik.setFieldValue("estimated_repair_time", formattedDate);
             setStatementData((prevState) => ({
                 ...prevState,
-                estimatedTime: formattedDate,
+                estimated_repair_time: formattedDate,
             }));
         }
     };
@@ -273,33 +276,35 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const addStatement = async (e) => {
         e.preventDefault();
 
-        const { customerText,
-            customerAudio,
-            customerFile,
-            expertText,
-            expertFile,
-            expertAudio,
-            estimatedPrice,
-            estimatedTime } = statementData;
-        console.log(estimatedTime)
+        const {
+            customer_statements_text,
+            customer_statements_voice,
+            customer_statements_file,
+            expert_statements_text,
+            expert_statements_file,
+            expert_statements_voice,
+            price_estimate,
+            estimated_repair_time,
+            declaration_code
+        } = statementData;
 
         let formIsValid = true;
         const newErrors = {};
 
-        if (!customerText) {
-            newErrors.customerText = "وارد کردن اظهارات مشتری الزامیست";
+        if (!customer_statements_text) {
+            newErrors.customer_statements_text = "وارد کردن اظهارات مشتری الزامیست";
             formIsValid = false;
         }
-        if (!expertText) {
-            newErrors.expertText = "وارد کردن اظهارات کارشناس الزامیست";
+        if (!expert_statements_text) {
+            newErrors.expert_statements_text = "وارد کردن اظهارات کارشناس الزامیست";
             formIsValid = false;
         }
-        if (!estimatedPrice) {
-            newErrors.estimatedPrice = "تعیین تخیمن قیمت الزامیست";
+        if (!price_estimate) {
+            newErrors.price_estimate = "تعیین تخیمن قیمت الزامیست";
             formIsValid = false;
         }
-        if (!estimatedTime) {
-            newErrors.estimatedTime = "تعیین تخمین زمان تعمیر الزامیست";
+        if (!estimated_repair_time) {
+            newErrors.estimated_repair_time = "تعیین تخمین زمان تعمیر الزامیست";
             formIsValid = false;
         }
 
@@ -309,30 +314,58 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         }
 
         const newStatement = {
-            customerText: customerText || '',
-            customerAudio: customerAudio ? await convertToBase64(customerAudio) : null,
-            customerFile: customerFile ? await convertToBase64(customerFile) : null,
-            expertText: expertText || '',
-            expertFile: expertFile ? await convertToBase64(expertFile) : null,
-            expertAudio: expertAudio ? await convertToBase64(expertAudio) : null,
-            estimatedPrice: estimatedPrice || '',
-            estimatedTime: estimatedTime || '',
-            declaration_code: ""
+            customer_statements_text: customer_statements_text || '',
+            customer_statements_voice: customer_statements_voice ? await convertToBase64(customer_statements_voice) : null,
+            customer_statements_file: customer_statements_file ? await convertToBase64(customer_statements_file) : null,
+            expert_statements_text: expert_statements_text || '',
+            expert_statements_file: expert_statements_file ? await convertToBase64(expert_statements_file) : null,
+            expert_statements_voice: expert_statements_voice ? await convertToBase64(expert_statements_voice) : null,
+            price_estimate: price_estimate || '',
+            estimated_repair_time: dateValue ? new Date(dateValue).toISOString() : '',
+            declaration_code: declaration_code
         };
 
-        formik.setFieldValue("form", [...formik.values.form, newStatement]);
+        if (editMode) {
+            const existingIndex = formik.values.form.findIndex(item => item.declaration_code === declaration_code);
+            if (existingIndex !== -1) {
+                const updatedStatement = {
+                    ...formik.values.form[existingIndex],
+                    customer_statements_text: newStatement.customer_statements_text,
+                    expert_statements_text: newStatement.expert_statements_text,
+                    price_estimate: newStatement.price_estimate,
+                    estimated_repair_time: newStatement.estimated_repair_time,
+                    declaration_code: newStatement.declaration_code,
+                    ...(newStatement.customer_statements_voice && { customer_statements_voice: newStatement.customer_statements_voice }),
+                    ...(newStatement.customer_statements_file && { customer_statements_file: newStatement.customer_statements_file }),
+                    ...(newStatement.expert_statements_file && { expert_statements_file: newStatement.expert_statements_file }),
+                    ...(newStatement.expert_statements_voice && { expert_statements_voice: newStatement.expert_statements_voice }),
+                };
+
+                formik.setFieldValue("form", [
+                    ...formik.values.form.slice(0, existingIndex),
+                    updatedStatement, 
+                    ...formik.values.form.slice(existingIndex + 1)
+                ]);
+            } else {
+                formik.setFieldValue("form", [...formik.values.form, newStatement]);
+            }
+        } else {
+
+            formik.setFieldValue("form", [...formik.values.form, newStatement]);
+        }
 
         setStatementData({
-            customerText: '',
-            customerAudio: null,
-            customerFile: null,
-            expertText: '',
-            expertFile: null,
-            expertAudio: null,
-            estimatedPrice: '',
-            estimatedTime: ''
+            customer_statements_text: '',
+            customer_statements_voice: null,
+            customer_statements_file: null,
+            expert_statements_text: '',
+            expert_statements_file: null,
+            expert_statements_voice: null,
+            price_estimate: '',
+            estimated_repair_time: '',
+            declaration_code: ''
         });
-        setDateValue("")
+        setDateValue("");
         setErrors({});
     };
 
@@ -353,72 +386,88 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const handleImageChangeCoustomer = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const base64File = await convertToBase64(file)
+
+        const base64File = await convertToBase64(file);
+
+        // Check if selectedStatement is defined and has a unique identifier
+        if (!selectedStatement) return;
+
         const updatedForm = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, customerFile: base64File }
+            statement.declaration_code === selectedStatement.declaration_code
+                ? { ...statement, customer_statements_file: base64File }
                 : statement
         );
+
         formik.setFieldValue('form', updatedForm);
-        setSelectedStatement({ ...selectedStatement, customerFile: base64File });
+
+        setSelectedStatement((prev) => ({
+            ...prev,
+            customer_statements_file: base64File
+        }));
     };
 
     const handleImageChangeExpert = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const base64File = await convertToBase64(file)
-        const updatedform = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, expertFile: base64File }
+
+        const base64File = await convertToBase64(file);
+        if (!selectedStatement) return;
+
+        const updatedForm = formik.values.form.map((statement) =>
+            statement.declaration_code === selectedStatement.declaration_code
+                ? { ...statement, expert_statements_file: base64File }
                 : statement
         );
 
-        formik.setFieldValue('form', updatedform);
-        setSelectedStatement({ ...selectedStatement, expertFile: base64File });
+        formik.setFieldValue('form', updatedForm);
+        setSelectedStatement((prev) => ({
+            ...prev,
+            expert_statements_file: base64File
+        }));
     };
 
     const handleDeleteImageCoustomer = () => {
-        const updatedform = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, customerFile: null }
+        const updatedForm = formik.values.form.map((statement) =>
+            statement.declaration_code === selectedStatement.declaration_code
+                ? { ...statement, customer_statements_file: null }
                 : statement
         );
 
-        formik.setFieldValue('form', updatedform);
-        setSelectedStatement({ ...selectedStatement, customerFile: null });
+        formik.setFieldValue('form', updatedForm);
+        setSelectedStatement({ ...selectedStatement, customer_statements_file: null });
     };
 
     const handleDeleteAudioCoustomer = () => {
-        const updatedform = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, customerAudio: null }
+        const updatedForm = formik.values.form.map((statement) =>
+            statement.declaration_code === selectedStatement.declaration_code
+                ? { ...statement, customer_statements_voice: null }
                 : statement
         );
 
-        formik.setFieldValue('form', updatedform);
-        setSelectedStatement({ ...selectedStatement, customerAudio: null });
+        formik.setFieldValue('form', updatedForm);
+        setSelectedStatement({ ...selectedStatement, customer_statements_voice: null });
     };
 
     const handleDeleteImageExpert = () => {
-        const updatedform = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, expertFile: null }
+        const updatedForm = formik.values.form.map((statement) =>
+            statement.declaration_code === selectedStatement.declaration_code
+                ? { ...statement, expert_statements_file: null }
                 : statement
         );
 
-        formik.setFieldValue('form', updatedform);
-        setSelectedStatement({ ...selectedStatement, expertFile: null });
+        formik.setFieldValue('form', updatedForm);
+        setSelectedStatement({ ...selectedStatement, expert_statements_file: null });
     };
 
     const handleDeleteAudioExpert = () => {
-        const updatedform = formik.values.form.map((statement) =>
-            statement === selectedStatement
-                ? { ...statement, expertAudio: null }
+        const updatedForm = formik.values.form.map((statement) =>
+            statement.declaration_code === selectedStatement.declaration_code
+                ? { ...statement, expert_statements_voice: null }
                 : statement
         );
 
-        formik.setFieldValue('form', updatedform);
-        setSelectedStatement({ ...selectedStatement, expertAudio: null });
+        formik.setFieldValue('form', updatedForm);
+        setSelectedStatement({ ...selectedStatement, expert_statements_voice: null });
     };
 
     const isBase64 = (str) => {
@@ -427,31 +476,45 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         return base64Regex.test(str);
     };
 
-
     const selectRow = (item) => {
-        console.log(item)
-        statementData.customerText = item.customerText
-        statementData.customerAudio = item.customerAudio
-        statementData.customerFile = item.customerFile
-        statementData.expertText = item.expertText
-        statementData.expertAudio = item.expertAudio
-        statementData.expertFile = item.expertFile
-        statementData.estimatedPrice = item.estimatedPrice
-        statementData.estimatedPrice = item.estimatedPrice
+        const parsedDate = item.estimated_repair_time ? new Date(item.estimated_repair_time) : '';
+        setStatementData({
+            customer_statements_text: item.customer_statements_text,
+            expert_statements_text: item.expert_statements_text,
+            price_estimate: item.price_estimate,
+            estimated_repair_time: item.estimated_repair_time,
+            declaration_code: item.declaration_code
+        });
 
-        console.log(statementData)
+        setDateValue(parsedDate);
+    };
+
+
+    const deleteMainStatement = async (code) => {
+        try {
+            const body = {
+                declaration_code: code
+            }
+            const response = await axios.delete(`${apiUrl}/app/fill-customer-third-form/`, body)
+            if (response.status === 200) {
+                console.log(response.data)
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
+
 
     useEffect(() => {
         setContent("اظهارات مشتری :")
     }, [])
 
     useEffect(() => {
-        handleEstimatedTimeChange(dateValue)
+        handleestimated_repair_timeChange(dateValue)
     }, [dateValue])
 
-
-    console.log(dataForm.customer_form_three);
+ console.log(formik.values)
+   
 
     return (
         <>
@@ -473,12 +536,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                     className='delete-img-modal'
                                     onClick={handleDeleteImageCoustomer}
                                 />
-                                {selectedStatement?.customerFile ? (
+                                {selectedStatement?.customer_statements_file ? (
                                     <img
                                         src={
-                                            isBase64(selectedStatement.customerFile)
-                                                ? selectedStatement.customerFile
-                                                : `${apiUrl}${selectedStatement.customerFile}`
+                                            isBase64(selectedStatement.customer_statements_file)
+                                                ? selectedStatement.customer_statements_file
+                                                : `${apiUrl}${selectedStatement.customer_statements_file}`
                                         }
                                         alt="Customer statement"
                                         className='img-statmentmodal'
@@ -502,7 +565,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                 <FontAwesomeIcon icon={faPen} className='mx-2' />
                             </label>
 
-                            {selectedStatement?.customerAudio && (
+                            {selectedStatement?.customer_statements_voice && (
                                 <div className='d-flex mt-4 align-items-center'>
                                     <FontAwesomeIcon
                                         icon={faTrash}
@@ -513,9 +576,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         <source
                                             type="audio/webm"
                                             src={
-                                                isBase64(selectedStatement.customerAudio)
-                                                    ? selectedStatement.customerAudio
-                                                    : `${apiUrl}${selectedStatement.customerAudio}`
+                                                isBase64(selectedStatement.customer_statements_voice)
+                                                    ? selectedStatement.customer_statements_voice
+                                                    : `${apiUrl}${selectedStatement.customer_statements_voice}`
                                             }
                                         />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
@@ -533,12 +596,12 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                     className='delete-img-modal'
                                     onClick={handleDeleteImageExpert}
                                 />
-                                {selectedStatement?.expertFile ? (
+                                {selectedStatement?.expert_statements_file ? (
                                     <img
                                         src={
-                                            isBase64(selectedStatement.expertFile)
-                                                ? selectedStatement.expertFile
-                                                : `${apiUrl}${selectedStatement.expertFile}`
+                                            isBase64(selectedStatement.expert_statements_file)
+                                                ? selectedStatement.expert_statements_file
+                                                : `${apiUrl}${selectedStatement.expert_statements_file}`
                                         }
                                         alt="Customer statement"
                                         className='img-statmentmodal'
@@ -561,7 +624,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                 <FontAwesomeIcon icon={faPen} className='mx-2' />
                             </label>
 
-                            {selectedStatement?.expertAudio && (
+                            {selectedStatement?.expert_statements_voice && (
                                 <div className='d-flex mt-4 align-items-center'>
                                     <FontAwesomeIcon
                                         icon={faTrash}
@@ -572,9 +635,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         <source
                                             type="audio/webm"
                                             src={
-                                                isBase64(selectedStatement.expertAudio)
-                                                    ? selectedStatement.expertAudio
-                                                    : `${apiUrl}${selectedStatement.expertAudio}`
+                                                isBase64(selectedStatement.expert_statements_voice)
+                                                    ? selectedStatement.expert_statements_voice
+                                                    : `${apiUrl}${selectedStatement.expert_statements_voice}`
                                             }
                                         />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
@@ -596,8 +659,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         <textarea
                                             className="statements-text"
                                             placeholder="اظهارات مشتری"
-                                            value={statementData.customerText}
-                                            onChange={handleCustomerTextChange}
+                                            value={statementData.customer_statements_text}
+                                            onChange={handlecustomer_statements_textChange}
                                         ></textarea>
                                         <div className="statements-media">
                                             <div className="media-statements media-voice">
@@ -613,10 +676,10 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                     id="file_customer"
                                                     style={{ display: 'none' }}
                                                     accept="image/*"
-                                                    onChange={handleCustomerFileChange}
+                                                    onChange={handlecustomer_statements_fileChange}
                                                 />
                                                 {
-                                                    statementData.customerFile ?
+                                                    statementData.customer_statements_file ?
                                                         <FontAwesomeIcon icon={faFileLines} />
                                                         :
                                                         <FontAwesomeIcon icon={faFile} />
@@ -625,13 +688,13 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         </div>
                                     </div>
                                 </div>
-                                {statementData.customerAudio && (
+                                {/* {statementData.customer_statements_voice && (
                                     <audio controls className='mt-4'>
-                                        <source src={URL.createObjectURL(statementData.customerAudio)} type="audio/webm" />
+                                        <source src={URL.createObjectURL(statementData.customer_statements_voice)} type="audio/webm" />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
-                                )}
-                                {errors.customerText && <p className='error mt-2'>{errors.customerText}</p>}
+                                )} */}
+                                {errors.customer_statements_text && <p className='error mt-2'>{errors.customer_statements_text}</p>}
                             </div>
 
                             <div className="statements-left">
@@ -641,8 +704,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         <textarea
                                             className="statements-text"
                                             placeholder="اظهارات کارشناس"
-                                            value={statementData.expertText}
-                                            onChange={handleExpertTextChange}
+                                            value={statementData.expert_statements_text}
+                                            onChange={handleexpert_statements_textChange}
                                         ></textarea>
                                         <div className="statements-media">
                                             <div className="media-statements media-voice">
@@ -658,10 +721,10 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                     id="file_statment"
                                                     style={{ display: 'none' }}
                                                     accept="image/*"
-                                                    onChange={handleExpertFileChange}
+                                                    onChange={handleexpert_statements_fileChange}
                                                 />
                                                 {
-                                                    statementData.expertFile ?
+                                                    statementData.expert_statements_file ?
                                                         <FontAwesomeIcon icon={faFileLines} />
                                                         :
                                                         <FontAwesomeIcon icon={faFile} />
@@ -670,13 +733,13 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         </div>
                                     </div>
                                 </div>
-                                {statementData.expertAudio && (
+                                {/* {statementData.expert_statements_voice && (
                                     <audio controls className='mt-4'>
-                                        <source src={URL.createObjectURL(statementData.expertAudio)} type="audio/webm" />
+                                        <source src={URL.createObjectURL(statementData.expert_statements_voice)} type="audio/webm" />
                                         مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
                                     </audio>
-                                )}
-                                {errors.expertText && <p className='error mt-2'>{errors.expertText}</p>}
+                                )} */}
+                                {errors.expert_statements_text && <p className='error mt-2'>{errors.expert_statements_text}</p>}
                             </div>
                         </div>
                         <div className="estimate-wrapper mt-4">
@@ -690,8 +753,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                 name={"تخمین قیمت"}
                                                 type={"text"}
                                                 placeholder={"تخمین قیمت"}
-                                                value={toFarsiNumber(formatWithThousandSeparators(statementData.estimatedPrice))}
-                                                onChange={handleEstimatedPriceChange}
+                                                value={toFarsiNumber(formatWithThousandSeparators(statementData.price_estimate))}
+                                                onChange={handleprice_estimateChange}
                                                 className='input-form'
                                                 autoComplete='off'
                                                 maxLength={30}
@@ -699,7 +762,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         </div>
                                     </div>
                                 </div>
-                                {errors.estimatedPrice && <p className='error mt-2'>{errors.estimatedPrice}</p>}
+                                {errors.price_estimate && <p className='error mt-2'>{errors.price_estimate}</p>}
                             </div>
                             <div className="mt-3 mt-sm-0 estimate-item">
                                 <div className="estimate-input">
@@ -723,10 +786,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                         />
                                     </div>
                                 </div>
-                                {errors.estimatedTime && <p className='error mt-2'>{errors.estimatedTime}</p>}
+                                {errors.estimated_repair_time && <p className='error mt-2'>{errors.estimated_repair_time}</p>}
                             </div>
                         </div>
-
                         <div className="pform3-container-table mt-5" dir="rtl">
                             <button className="add-estimate-btn mb-3" onClick={addStatement}>
                                 افزودن شرح اظهار
@@ -740,45 +802,68 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                 key={rowIndex}
                                                 sx={{ border: '1px solid #ddd', fontFamily: "iranYekan", cursor: "pointer" }}
                                                 className='statment-row-table'
-                                                onClick={() => selectRow(item)}
                                             >
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
-                                                    {item.customerText}
-                                                </TableCell>
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
-                                                    {item.expertText}
-                                                </TableCell>
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
-                                                    {item.estimatedPrice}
-                                                </TableCell>
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
-                                                    {item.estimatedTime}
-                                                </TableCell>
                                                 {
-                                                    (item?.customerAudio || item?.customerFile || item?.expertFile || item?.expertAudio) ?
-                                                        <TableCell
-                                                            sx={{
-                                                                borderRight: '1px solid #ddd',
-                                                                display: "flex",
-                                                                alignItems: "center",
-                                                                justifyContent: "center"
-                                                            }}>
-                                                            <label className="media-statements  mx-1" onClick={() => handleShowModal(item)}>
-                                                                <FontAwesomeIcon icon={faFileLines} />
-                                                            </label>
-                                                        </TableCell>
-                                                        : null
+                                                    editMode &&
+                                                    <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                        {item.declaration_code}
+                                                    </TableCell>
                                                 }
+                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                    {item.customer_statements_text}
+                                                </TableCell>
+                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                    {item.expert_statements_text}
+                                                </TableCell>
+                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                    {Number(item.price_estimate).toLocaleString("fa")}
+                                                </TableCell>
+                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                    {item?.estimated_repair_time ? (
+                                                        new Intl.DateTimeFormat('fa-IR', {
+                                                            dateStyle: 'full',
+                                                            timeStyle: 'short'
+                                                        }).format(new Date(item?.estimated_repair_time))
+                                                    ) : (
+                                                        'N/A'
+                                                    )}
+                                                </TableCell>
+                                                {(item?.customer_statements_voice || item?.customer_statements_file || item?.expert_statements_file || item?.expert_statements_voice) ? (
+                                                    <TableCell
+                                                        sx={{
+                                                            borderRight: '1px solid #ddd',
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center"
+                                                        }}>
+                                                        <label className="media-statements mx-1" onClick={() => handleShowModal(item)}>
+                                                            <FontAwesomeIcon icon={faFileLines} />
+                                                        </label>
+                                                    </TableCell>
+                                                ) : null}
                                                 <div className='wrap-trash-table'>
                                                     <FontAwesomeIcon
                                                         icon={faTrash}
-                                                        onClick={() => handleDeleteStatement(rowIndex)}
+                                                        onClick={() => {
+                                                            if (editMode) {
+                                                                deleteMainStatement(item.declaration_code)
+                                                            } else {
+                                                                handleDeleteStatement(rowIndex)
+                                                            }
+                                                        }}
                                                         className='trash-row-table'
+                                                    />
+                                                </div>
+                                                <div className='wrap-edit-table'>
+                                                    <FontAwesomeIcon icon={faPenToSquare}
+                                                        onClick={() => selectRow(item)}
+                                                        className='edit-row-table'
                                                     />
                                                 </div>
                                             </TableRow>
                                         ))}
-                                    </TableForm> :
+                                    </TableForm>
+                                    :
                                     null
                             }
                         </div>

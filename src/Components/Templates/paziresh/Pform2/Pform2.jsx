@@ -43,36 +43,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
     const [form2, setForm2] = useState(
         {
-            customer_secend_form: {
-                customer: editMode ? idForm : coustomer,
-                material: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.material : "",
-                other_car: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_car : "",
-                chassis_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.chassis_number : "",
-                color: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.color : "",
-                other_color: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_color : "",
-                car_operation: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_operation : "",
-                license_plate_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.license_plate_number : "",
-                amount_fuel: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_fuel : "",
-                amount_cng: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_cng : "",
-                tire_wear_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.tire_wear_rate : "",
-                number_punctured_tires: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.number_punctured_tires : "",
-                condition_spare_tire: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.condition_spare_tire : false,
-                erosion_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.erosion_rate : "",
-                car_cleanliness: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_cleanliness : 0,
-                front_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_image : "",
-                front_car_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_text : "",
-                behind_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.behind_car_image : "",
-                behind_car_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.behind_car_text : "",
-                right_side_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.right_side_image : "",
-                right_side_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.right_side_text : "",
-                left_side_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.left_side_image : "",
-                left_side_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.left_side_text : "",
-                car_km_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_km_image : "",
-                car_km_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_km_text : "",
-                engine_door_open_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.engine_door_open_image : "",
-                engine_door_open_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.engine_door_open_text : "",
-                other_accessories: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_accessories : ""
-            },
+            
             fill_form: [],
             accessories: []
         }
@@ -206,7 +177,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                     : [...prevParts, mainpart];
 
                 setForm2(prevForm => {
-                    const updatedFillForm = prevForm.fill_form;
+                    const updatedFillForm = Array.isArray(prevForm.fill_form) ? prevForm.fill_form : [];
+                    console.log(updatedFillForm)
                     if (isAlreadySelected) {
                         const newFillForm = updatedFillForm.filter(item => Number(item.value_number) !== number);
                         return {
@@ -408,9 +380,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     items={allCar}
                                     name="material"
                                     setother={setotherCar}
-                                    value={form2.customer_secend_form?.material}
+                                    value={form2?.customer_secend_form?.material}
                                     onChange={handleSelectChange}
-                                    material={dataForm.customer_form_two?.material}
+                                    material={dataForm?.customer_form_two?.material}
                                 />
                                 {errors.material && <span className='error'>{errors.material}</span>}
                             </Col>
@@ -421,7 +393,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         styled={"widthinput"}
                                         placeholder="سایر"
                                         name="other_car"
-                                        value={form2.customer_secend_form.other_car}
+                                        value={form2?.customer_secend_form?.other_car}
                                         onChange={handleInputChange}
                                     />
                                     {errors.other_car && <span className='error'>{errors.other_car}</span>}
@@ -434,7 +406,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     placeholder="شماره شاسی"
                                     icon={faHashtag}
                                     name="chassis_number"
-                                    value={form2.customer_secend_form.chassis_number}
+                                    value={form2?.customer_secend_form?.chassis_number}
                                     onChange={handleInputChange}
                                 />
 
@@ -449,9 +421,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     items={allColor}
                                     name="color"
                                     setother={setotherColor}
-                                    value={form2.customer_secend_form?.color}
+                                    value={form2?.customer_secend_form?.color}
                                     onChange={handleSelectChange}
-                                    material={dataForm.customer_form_two?.color}
+                                    material={dataForm?.customer_form_two?.color}
                                 />
                                 {errors.color && <span className='error'>{errors.color}</span>}
                             </Col>
@@ -462,7 +434,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         styled={"widthinput"}
                                         placeholder="سایر"
                                         name="other_color"
-                                        value={form2.customer_secend_form.other_color}
+                                        value={form2?.customer_secend_form?.other_color}
                                         onChange={handleInputChange}
                                     />
                                     {errors.other_color && <span className='error'>{errors.other_color}</span>}
@@ -475,7 +447,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                     placeholder="Km"
                                     icon={faGauge}
                                     name="car_operation"
-                                    value={toFarsiNumber(form2.customer_secend_form.car_operation)}
+                                    value={toFarsiNumber(form2?.customer_secend_form?.car_operation)}
                                     onChange={handleInputChange}
                                 />
 
@@ -486,7 +458,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                             <Col xs={12} lg={5}>
                                 <CodeCar
                                     name="license_plate_number"
-                                    value={form2.customer_secend_form.license_plate_number}
+                                    value={form2?.customer_secend_form?.license_plate_number}
                                     setFieldValue={handleLicensePlateChange}
                                 />
                                 {errors.license_plate_number && <span className='error'>{errors.license_plate_number}</span>}
@@ -503,7 +475,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                         <InputRadio
                                                             text={`${toFarsiNumber(value)}%`}
                                                             value={value}
-                                                            checked={form2.customer_secend_form.amount_fuel == value}
+                                                            checked={form2?.customer_secend_form?.amount_fuel == value}
                                                             onChange={() => setForm2(prev => ({
                                                                 ...prev,
                                                                 customer_secend_form: {
@@ -530,7 +502,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                         <InputRadio
                                                             text={`${toFarsiNumber(value)}%`}
                                                             value={value}
-                                                            checked={form2.customer_secend_form.amount_cng == value}
+                                                            checked={form2?.customer_secend_form?.amount_cng == value}
                                                             onChange={() => setForm2(prev => ({
                                                                 ...prev,
                                                                 customer_secend_form: {
@@ -560,7 +532,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                 key={value}
                                                 text={`${toFarsiNumber(value)}%`}
                                                 value={value}
-                                                checked={form2.customer_secend_form.tire_wear_rate == value}
+                                                checked={form2?.customer_secend_form?.tire_wear_rate == value}
                                                 onChange={() => setForm2(prev => ({
                                                     ...prev,
                                                     customer_secend_form: {
@@ -582,7 +554,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         styled={"inputtire"}
                                         placeholder="از ۰ تا ۴"
                                         name="number_punctured_tires"
-                                        value={toFarsiNumber(form2.customer_secend_form.number_punctured_tires)}
+                                        value={toFarsiNumber(form2?.customer_secend_form?.number_punctured_tires)}
                                         onChange={(e) => {
                                             const value = e.target.value;
                                             const englishNumber = toEnglishNumber(value);
@@ -602,7 +574,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             key={value}
                                             text={value == true ? 'دارد' : 'ندارد'}
                                             value={value}
-                                            checked={form2.customer_secend_form.condition_spare_tire == value}
+                                            checked={form2?.customer_secend_form?.condition_spare_tire == value}
                                             onChange={() => setForm2(prev => ({
                                                 ...prev,
                                                 customer_secend_form: {
@@ -624,7 +596,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             key={value}
                                             text={`${toFarsiNumber(value)}%`}
                                             value={value}
-                                            checked={form2.customer_secend_form.erosion_rate == value}
+                                            checked={form2?.customer_secend_form?.erosion_rate == value}
                                             onChange={() => setForm2(prev => ({
                                                 ...prev,
                                                 customer_secend_form: {
@@ -644,7 +616,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                             <div className='mx-sm-5'>
                                 <ClearProgress
                                     name="car_cleanliness"
-                                    value={form2.customer_secend_form.car_cleanliness}
+                                    value={form2?.customer_secend_form?.car_cleanliness}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -658,14 +630,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <InputUloadPform2
                                             name="front_car_image"
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.front_car_image}
+                                            src={form2?.customer_secend_form?.front_car_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>جلو ماشین</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('front_car_image', 'front_car_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{form2.customer_secend_form.front_car_text}</p>
+                                    <p className='saved-text'>{form2?.customer_secend_form?.front_car_text}</p>
                                 </Col>
 
                                 {/* Behind car */}
@@ -674,14 +646,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <InputUloadPform2
                                             name="behind_car_image"
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.behind_car_image}
+                                            src={form2?.customer_secend_form?.behind_car_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>عقب ماشین</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('behind_car_image', 'behind_car_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{form2.customer_secend_form.behind_car_text}</p>
+                                    <p className='saved-text'>{form2?.customer_secend_form?.behind_car_text}</p>
                                 </Col>
 
                                 {/* Right side */}
@@ -690,14 +662,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <InputUloadPform2
                                             name="right_side_image"
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.right_side_image}
+                                            src={form2?.customer_secend_form?.right_side_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>سمت راست</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('right_side_image', 'right_side_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{form2.customer_secend_form.right_side_text}</p>
+                                    <p className='saved-text'>{form2?.customer_secend_form?.right_side_text}</p>
                                 </Col>
 
                                 {/* Left side */}
@@ -706,14 +678,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <InputUloadPform2
                                             name="left_side_image"
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.left_side_image}
+                                            src={form2?.customer_secend_form?.left_side_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>سمت چپ</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('left_side_image', 'left_side_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{form2.customer_secend_form.left_side_text}</p>
+                                    <p className='saved-text'>{form2?.customer_secend_form?.left_side_text}</p>
                                 </Col>
 
                                 {/* Car kilometers */}
@@ -722,14 +694,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <InputUloadPform2
                                             name="car_km_image"
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.car_km_image}
+                                            src={form2?.customer_secend_form?.car_km_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>کیلومتر ماشین</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('car_km_image', 'car_km_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{form2.customer_secend_form.car_km_text}</p>
+                                    <p className='saved-text'>{form2?.customer_secend_form?.car_km_text}</p>
                                 </Col>
 
                                 {/* Engine door */}
@@ -738,14 +710,14 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                         <InputUloadPform2
                                             name="engine_door_open_image"
                                             setForm2={setForm2}
-                                            src={form2.customer_secend_form.engine_door_open_image}
+                                            src={form2?.customer_secend_form?.engine_door_open_image}
                                         />
                                         <div className='detail-vehicle-condition-item'>
                                             <p className='vehicle-item-text'>درب موتور باز</p>
                                             <p className='viewmore' onClick={() => handleOpenModal('engine_door_open_image', 'engine_door_open_text')}>دیدن بیشتر</p>
                                         </div>
                                     </div>
-                                    <p className='saved-text'>{form2.customer_secend_form.engine_door_open_text}</p>
+                                    <p className='saved-text'>{form2?.customer_secend_form?.engine_door_open_text}</p>
                                 </Col>
                             </div>
                         </div>
@@ -773,7 +745,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             part={part}
                                             onCheckboxChange={handleCheckboxChange}
                                             onDescriptionChange={handleDescriptionChange}
-                                            fillForm={form2.fill_form}
+                                            fillForm={form2?.fill_form}
                                         />
                                     </Col>
                                 ))}
@@ -795,7 +767,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                         onDescriptionChange={(description) => onDescriptionChangeAccessory(item.id, description)}
                                                         name={item.name}
                                                         checked={checkAll}
-                                                        accessoriesFill={form2.accessories}
+                                                        accessoriesFill={form2?.accessories}
                                                         allAccessories={allAccessories}
                                                     />
                                                 </Col>
@@ -815,7 +787,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                                         onDescriptionChange={(description) => onDescriptionChangeAccessory(item.id, description)}
                                                         name={item.name}
                                                         checked={checkAll}
-                                                        accessoriesFill={form2.accessories}
+                                                        accessoriesFill={form2?.accessories}
                                                         allAccessories={allAccessories}
                                                     />
                                                 </Col>
@@ -830,7 +802,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                             type="text"
                                             className='input-belongings'
                                             name="other_accessories"
-                                            value={form2.customer_secend_form.other_accessories}
+                                            value={form2?.customer_secend_form?.other_accessories}
                                             onChange={handleInputChange}
                                         />
                                     </div>
@@ -848,7 +820,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                         {errors.accessories && <span className='error'>{errors.accessories}</span>}
                         <div className='p-form-actions'>
                             <div className='p-form-actions'>
-                                <EditBtn />
+                                <EditBtn onClick={prevTab} />
                                 <ConfirmBtn type="submit" isSubmitting={loading} />
                             </div>
                         </div>

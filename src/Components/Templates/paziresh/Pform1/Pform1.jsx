@@ -260,8 +260,9 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         getService();
     }, []);
 
-   
 
+    console.log(formik2.values)
+    console.log(formik.values)
 
     return (
         <>
@@ -499,7 +500,6 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                     )}
                                 </div>
                                 <div className='p-form-actions'>
-                                    <EditBtn />
                                     <ConfirmBtn type="submit" isSubmitting={loading} />
                                 </div>
                             </div>
@@ -673,7 +673,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                 ]}
                                                 onBlur={formik2.handleBlur}
                                                 name="how_make_turn"
-                                                onChange={formik2.handleChange}
+                                                onChange={formik2.setFieldValue}
                                                 value={formik2.values.how_make_turn}
                                                 defaultValue={formik2.values.how_make_turn}
                                             />
@@ -727,7 +727,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     checked={formik2.values.how_to_apply === 'return'}
                                                 />
                                             </div>
-                                            
+
                                         </div>
                                         {formik2.errors.how_to_apply && formik2.touched.how_to_apply && (
                                             <span className='error'>{formik2.errors.how_to_apply}</span>
@@ -778,7 +778,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     icon={faAddressCard}
                                                     placeholder={"کد ملی آورنده"}
                                                     name="national_code_bearer"
-                                                    value={toFarsiNumber(formik2.values.national_code_bearer)} 
+                                                    value={toFarsiNumber(formik2.values.national_code_bearer)}
                                                     onChange={(e) => {
                                                         const englishNumber = toEnglishNumber(e.target.value);
                                                         formik2.setFieldValue('national_code_bearer', englishNumber);
@@ -797,10 +797,10 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                                     icon={faPhone}
                                                     placeholder="شماره تماس آورنده"
                                                     name="phone_number_bearer"
-                                                    value={toFarsiNumber(formik2.values.phone_number_bearer)} 
+                                                    value={toFarsiNumber(formik2.values.phone_number_bearer)}
                                                     onChange={(e) => {
-                                                        const englishNumber = toEnglishNumber(e.target.value); 
-                                                        formik2.setFieldValue('phone_number_bearer', englishNumber); 
+                                                        const englishNumber = toEnglishNumber(e.target.value);
+                                                        formik2.setFieldValue('phone_number_bearer', englishNumber);
                                                     }}
                                                     onBlur={formik2.handleBlur}
                                                     type="text"
@@ -832,7 +832,6 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                                     )}
                                 </div>
                                 <div className='p-form-actions'>
-                                    <EditBtn />
                                     <ConfirmBtn type="submit" isSubmitting={formik.isSubmitting} />
                                 </div>
                             </div>

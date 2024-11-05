@@ -4,7 +4,7 @@
     border-radius: var(--border-radius-1);
     box-shadow: var(--box-shadow-2);
     padding: 24px;
-   
+
 }
 
 .p-form3-content {
@@ -208,9 +208,9 @@
     position: relative;
 }
 
-.wrap-trash-table {
+.wrap-trash-table,
+.wrap-edit-table {
     position: absolute;
-    right: 5px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
@@ -226,15 +226,33 @@
     transition: all .3s ease;
 }
 
+.wrap-trash-table {
+    right: 5px
+}
+
+.wrap-edit-table {
+    right: 35px;
+}
+
+
 .trash-row-table {
     color: var(--color-17);
+}
 
+.edit-row-table {
+    color: var(--color-6);
 }
 
 .statment-row-table:hover .wrap-trash-table {
     opacity: 1;
     visibility: visible;
 }
+
+.statment-row-table:hover .wrap-edit-table {
+    opacity: 1;
+    visibility: visible;
+}
+
 
 @media (max-width:1130px) {
     .pform3-container {

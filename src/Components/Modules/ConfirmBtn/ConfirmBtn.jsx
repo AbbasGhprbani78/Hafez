@@ -5,7 +5,11 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 export default function ConfirmBtn({ type, isSubmitting }) {
     return (
         <button className={`btn-confirm ${isSubmitting && "disable-btn-form"}`} type={type} disabled={isSubmitting}>
-    تایید
+            {
+                isSubmitting ?
+                    'در حال ارسال' :
+                    'تایید'
+            }
             <FontAwesomeIcon icon={faCheck} className='ckeckicon ' />
         </button>
     )

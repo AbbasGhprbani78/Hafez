@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './AllForm.css';
 import axios from 'axios';
 import { MyContext } from '../../context/context';
@@ -12,19 +12,20 @@ export default function AllForm() {
 
     useEffect(() => {
         const getAllForms = async () => {
+          
             try {
                 const response = await axios.get(`${apiUrl}/app/get-full-forms/`);
                 if (response.status === 200) {
-                    console.log(response.data)
+                    console.log(response.data);
                     setAllForms(response.data);
                 }
             } catch (error) {
                 console.log(error);
-            }
+            } 
         };
-        getAllForms();
-    }, []);
 
+        getAllForms(); 
+    }, []); 
 
     const goToFormHnadler = (id, form) => {
         setEditMode(true)
@@ -39,8 +40,11 @@ export default function AllForm() {
             {
                 allForms.length > 0 &&
                 allForms.map(item => (
-
-                    <p onClick={() => goToFormHnadler(item.customer_form.id, item)}>{item.customer_form.id}</p>
+                    <p
+                        key={item.customer_form.id}
+                        onClick={() => goToFormHnadler(item.customer_form.id, item)}>
+                        {item.customer_form.id}
+                    </p>
                 ))
             }
         </div>
