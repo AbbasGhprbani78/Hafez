@@ -36,7 +36,6 @@ export default function Draft() {
                 const res = await axios.get(`${apiUrl}/app/pending-forms/`)
                 if (res.status === 200) {
                     setUnfinishedForms(res.data.forms)
-                    console.log(res.data)
                 }
             } catch (error) {
                 console.log(error)

@@ -4,7 +4,6 @@ export const validateFields = (form2,otherCar, otherColor) => {
     const chassisNumberPattern = /^[A-HJ-NPR-Z0-9]{17}$/i;
     const number = /^[0-9]+$/;
 
-
     if (!form2.customer_secend_form.material) {
         newErrors.material = 'وارد کردن نوع خودروالزامیست';
     }

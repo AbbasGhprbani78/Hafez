@@ -16,7 +16,6 @@ export default function AllForm() {
             try {
                 const response = await axios.get(`${apiUrl}/app/get-full-forms/`);
                 if (response.status === 200) {
-                    console.log(response.data);
                     setAllForms(response.data);
                 }
             } catch (error) {

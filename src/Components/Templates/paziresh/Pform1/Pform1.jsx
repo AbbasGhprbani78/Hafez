@@ -261,8 +261,8 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     }, []);
 
 
-    console.log(formik2.values)
-    console.log(formik.values)
+    // console.log(formik2.values)
+    // console.log(formik.values)
 
     return (
         <>

@@ -43,19 +43,47 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
     const [form2, setForm2] = useState(
         {
-            
+            customer_secend_form: {
+                customer: editMode ? idForm : coustomer,
+                material: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.material : "",
+                other_car: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_car : "",
+                chassis_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.chassis_number : "",
+                color: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.color : "",
+                other_color: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_color : "",
+                car_operation: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_operation : "",
+                license_plate_number: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.license_plate_number : "",
+                amount_fuel: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_fuel : "",
+                amount_cng: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.amount_cng : "",
+                tire_wear_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.tire_wear_rate : "",
+                number_punctured_tires: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.number_punctured_tires : "",
+                condition_spare_tire: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.condition_spare_tire : false,
+                erosion_rate: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.erosion_rate : "",
+                car_cleanliness: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_cleanliness : 0,
+                front_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_image : "",
+                front_car_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.front_car_text : "",
+                behind_car_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.behind_car_image : "",
+                behind_car_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.behind_car_text : "",
+                right_side_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.right_side_image : "",
+                right_side_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.right_side_text : "",
+                left_side_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.left_side_image : "",
+                left_side_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.left_side_text : "",
+                car_km_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_km_image : "",
+                car_km_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.car_km_text : "",
+                engine_door_open_image: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.engine_door_open_image : "",
+                engine_door_open_text: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.engine_door_open_text : "",
+                other_accessories: editMode && dataForm.customer_form_two ? dataForm.customer_form_two.other_accessories : ""
+            },
             fill_form: [],
             accessories: []
         }
     )
 
     const handleCheckboxChange = (belongingId, isChecked, valuenumber) => {
-        console.log("hello")
         setForm2(prevForm => {
-            const updatedForm = Array.isArray(prevForm.fill_form) ? [...prevForm.fill_form] : [];
+            const updatedForm = Array.isArray(prevForm?.fill_form) ? [...prevForm.fill_form] : [];
 
             if (isChecked) {
-                const exists = updatedForm.some(item => item.parts === belongingId);
+                const exists = updatedForm.some(item => item.parts == belongingId);
                 if (!exists) {
                     updatedForm.push({ parts: belongingId, description: '', value_number: valuenumber });
                 }
@@ -91,13 +119,13 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
 
     const onCheckboxChangeAccessory = (belongingId, isChecked) => {
         setForm2(prevForm => {
-            const updatedForm = [...prevForm.accessories];
+            const updatedForm = Array.isArray(prevForm.accessories) ? [...prevForm.accessories] : [];
             const exists = updatedForm.some(item => item.parts === belongingId);
 
             if (isChecked && !exists) {
                 updatedForm.push({ parts: belongingId, description: '' });
             } else if (!isChecked) {
-                const index = updatedForm.findIndex(item => item.parts === belongingId);
+                const index = updatedForm.findIndex(item => item.parts == belongingId);
                 if (index !== -1) {
                     updatedForm.splice(index, 1);
                 }
@@ -144,7 +172,6 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
     };
 
     const handleSelectChange = (name, id) => {
-        console.log(name, id)
         setForm2(prevState => ({
             ...prevState,
             customer_secend_form: {
@@ -177,27 +204,25 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                     : [...prevParts, mainpart];
 
                 setForm2(prevForm => {
-                    const updatedFillForm = Array.isArray(prevForm.fill_form) ? prevForm.fill_form : [];
-                    console.log(updatedFillForm)
+                    const updatedFillForm = Array.isArray(prevForm?.fill_form) ? prevForm?.fill_form : [];
                     if (isAlreadySelected) {
                         const newFillForm = updatedFillForm.filter(item => Number(item.value_number) !== number);
                         return {
                             ...prevForm,
                             fill_form: newFillForm
                         };
-                    } else {
-                        return {
-                            ...prevForm,
-                            fill_form: [...updatedFillForm, { parts: mainpart.parts, description: '', value_number: number }]
-                        };
                     }
+                    const newFillForm = [...updatedFillForm];
+                    return {
+                        ...prevForm,
+                        fill_form: newFillForm
+                    };
                 });
 
                 return newParts;
             });
         }
     };
-
 
     const handleOpenModal = (imageField, textField) => {
         const textValue = form2.customer_secend_form[textField];
@@ -301,6 +326,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
             }
 
             if (response.status === 201 || response.status === 200) {
+                console.log('Form submitted successfully:', response.data);
                 nextTab();
             }
 
@@ -358,6 +384,8 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
         }));
 
     }, [dataForm, carParts])
+
+
 
     return (
         <>

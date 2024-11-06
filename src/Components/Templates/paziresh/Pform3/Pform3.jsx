@@ -78,6 +78,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const [loading, setLoading] = useState(false)
     const [dateValue, setDateValue] = useState("")
     const { dataForm, idForm, editMode } = useContext(MyContext)
+    const [idDelete, setIdDelete] = useState("")
     const columns = editMode
         ? ['کداظهار', 'توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر']
         : ['توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
@@ -101,29 +102,45 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         declaration_code: ""
     });
 
-
     const formik = useFormik({
         initialValues: {
             form_id: editMode ? idForm : coustomer,
             form: editMode ? dataForm.customer_form_three : []
         },
         onSubmit: async (values) => {
-            setLoading(true)
+            setLoading(true);
+
             try {
                 let response;
-                if (editMode) {
-                    response = await axios.put(`${apiUrl}/app/fill-customer-third-form/`, values);
+                if (editMode && dataForm.customer_form_three.length > 0) {
+                    const cleanFormFields = (formArray) => {
+                        return formArray.map(entry => {
+                            const updatedEntry = { ...entry };
+                            ['customer_statements_voice', 'customer_statements_file', 'expert_statements_file', 'expert_statements_voice'].forEach(field => {
+                                if (updatedEntry[field] && typeof updatedEntry[field] === 'string' && updatedEntry[field].startsWith("/media")) {
+                                    delete updatedEntry[field];
+                                }
+                            });
+                            return updatedEntry;
+                        });
+                    };
+
+                    const cleanedValues = {
+                        ...values,
+                        form: cleanFormFields(values.form)
+                    };
+
+                    response = await axios.put(`${apiUrl}/app/fill-customer-third-form/`, cleanedValues);
                 } else {
-                    response = await axios.post(`http://5.9.108.174:9500/app/fill-customer-third-form/`, values);
+                    response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
                 }
                 if (response.status === 201 || response.status === 200) {
                     console.log('Form submitted successfully:', response.data);
-                    setLoading(false)
+                    setLoading(false);
                     nextTab();
                 }
             } catch (error) {
-                console.error('Error submitting form:', error);
-                setLoading(false)
+                setLoading(false);
             } finally {
                 setLoading(false);
             }
@@ -343,14 +360,13 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
 
                 formik.setFieldValue("form", [
                     ...formik.values.form.slice(0, existingIndex),
-                    updatedStatement, 
+                    updatedStatement,
                     ...formik.values.form.slice(existingIndex + 1)
                 ]);
             } else {
                 formik.setFieldValue("form", [...formik.values.form, newStatement]);
             }
         } else {
-
             formik.setFieldValue("form", [...formik.values.form, newStatement]);
         }
 
@@ -388,8 +404,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         if (!file) return;
 
         const base64File = await convertToBase64(file);
-
-        // Check if selectedStatement is defined and has a unique identifier
         if (!selectedStatement) return;
 
         const updatedForm = formik.values.form.map((statement) =>
@@ -426,13 +440,10 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         }));
     };
 
-    const handleDeleteImageCoustomer = () => {
-        const updatedForm = formik.values.form.map((statement) =>
-            statement.declaration_code === selectedStatement.declaration_code
-                ? { ...statement, customer_statements_file: null }
-                : statement
-        );
 
+    const handleDeleteImageCoustomer = () => {
+        const updatedForm = formik.values.form.map((statement) => statement.declaration_code == selectedStatement.declaration_code ?
+            { ...statement, customer_statements_file: null } : statement);
         formik.setFieldValue('form', updatedForm);
         setSelectedStatement({ ...selectedStatement, customer_statements_file: null });
     };
@@ -470,6 +481,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setSelectedStatement({ ...selectedStatement, expert_statements_voice: null });
     };
 
+
     const isBase64 = (str) => {
 
         const base64Regex = /^data:image\/[^;]+;base64,|^data:audio\/webm;base64,/;
@@ -489,21 +501,24 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setDateValue(parsedDate);
     };
 
-
     const deleteMainStatement = async (code) => {
         try {
-            const body = {
-                declaration_code: code
-            }
-            const response = await axios.delete(`${apiUrl}/app/fill-customer-third-form/`, body)
+            const response = await axios.delete(`${apiUrl}/app/fill-customer-third-form/${code}/`);
             if (response.status === 200) {
-                console.log(response.data)
+                console.log(response.data);
+                setIdDelete("")
+                setShowModal(false)
+                formik.setFieldValue(
+                    'form',
+                    formik.values.form.filter(item => item.declaration_code !== code)
+                );
+
+
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
-
+    };
 
     useEffect(() => {
         setContent("اظهارات مشتری :")
@@ -513,9 +528,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         handleestimated_repair_timeChange(dateValue)
     }, [dateValue])
 
- console.log(formik.values)
-   
-
+    console.log(formik.values)
+    console.log(dataForm?.customer_form_three?.length)
     return (
         <>
             <Modal
@@ -523,130 +537,157 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                 showModal={showModal}
                 setShowModal={setShowModal}
             >
-                <Box sx={{ width: '100%' }}>
-                    <Tabs value={value} onChange={handleChangetab} aria-label="simple tabs example">
-                        <CustomTab label="مشتری" {...a11yProps(0)} />
-                        <CustomTab label="کارشناس" {...a11yProps(1)} />
-                    </Tabs>
-                    <TabPanel value={value} index={0} key={0}>
-                        <div className='wrap-image-modal'>
-                            <div className='image-modal-content'>
-                                <FontAwesomeIcon
-                                    icon={faXmark}
-                                    className='delete-img-modal'
-                                    onClick={handleDeleteImageCoustomer}
-                                />
-                                {selectedStatement?.customer_statements_file ? (
-                                    <img
-                                        src={
-                                            isBase64(selectedStatement.customer_statements_file)
-                                                ? selectedStatement.customer_statements_file
-                                                : `${apiUrl}${selectedStatement.customer_statements_file}`
-                                        }
-                                        alt="Customer statement"
-                                        className='img-statmentmodal'
-                                    />
-                                ) : (
-                                    <div className='modal-empty-image'>
-                                        <FontAwesomeIcon icon={faImage} className='empty-icon-image' />
-                                    </div>
-                                )}
-                            </div>
-
-                            <label htmlFor="filechnage" className='btn-chnage-img-modal mt-4'>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChangeCoustomer}
-                                    className='mt-3 d-none'
-                                    id='filechnage'
-                                />
-                                ویرایش
-                                <FontAwesomeIcon icon={faPen} className='mx-2' />
-                            </label>
-
-                            {selectedStatement?.customer_statements_voice && (
-                                <div className='d-flex mt-4 align-items-center'>
+                {
+                    idDelete ?
+                        <>
+                            <div className='div-delete'>
+                                <div className='close-delete-modal'>
                                     <FontAwesomeIcon
-                                        icon={faTrash}
-                                        onClick={handleDeleteAudioCoustomer}
-                                        className='trash-audio-modal'
-                                    />
-                                    <audio controls>
-                                        <source
-                                            type="audio/webm"
-                                            src={
-                                                isBase64(selectedStatement.customer_statements_voice)
-                                                    ? selectedStatement.customer_statements_voice
-                                                    : `${apiUrl}${selectedStatement.customer_statements_voice}`
-                                            }
-                                        />
-                                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
-                                    </audio>
-                                </div>
-                            )}
-                        </div>
-                    </TabPanel>
+                                        icon={faXmark}
+                                        className='delete-icon-modal'
+                                        onClick={() => {
+                                            setShowModal(false)
 
-                    <TabPanel value={value} index={1} key={1} >
-                        <div className='wrap-image-modal'>
-                            <div className='image-modal-content'>
-                                <FontAwesomeIcon
-                                    icon={faXmark}
-                                    className='delete-img-modal'
-                                    onClick={handleDeleteImageExpert}
-                                />
-                                {selectedStatement?.expert_statements_file ? (
-                                    <img
-                                        src={
-                                            isBase64(selectedStatement.expert_statements_file)
-                                                ? selectedStatement.expert_statements_file
-                                                : `${apiUrl}${selectedStatement.expert_statements_file}`
-                                        }
-                                        alt="Customer statement"
-                                        className='img-statmentmodal'
+                                        }}
                                     />
-                                ) : (
-                                    <div className='modal-empty-image'>
-                                        <FontAwesomeIcon icon={faImage} className='empty-icon-image' />
-                                    </div>
-                                )}
+                                </div>
+                                <p className='delete-text'>آیا از حذف اطمینان دارید؟</p>
+                                <div className='delete-actions'>
+                                    <button className='btn-delete btn-yes-delete'
+                                        onClick={() => deleteMainStatement(idDelete)}>بله</button>
+                                    <button className='btn-delete btn-no-delete' onClick={() => {
+                                        setShowModal(false)
+
+                                    }}>خیر</button>
+                                </div>
                             </div>
-                            <label htmlFor="filechnage" className='btn-chnage-img-modal mt-4'>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChangeExpert}
-                                    className='mt-3 d-none'
-                                    id='filechnage'
-                                />
-                                ویرایش
-                                <FontAwesomeIcon icon={faPen} className='mx-2' />
-                            </label>
-
-                            {selectedStatement?.expert_statements_voice && (
-                                <div className='d-flex mt-4 align-items-center'>
-                                    <FontAwesomeIcon
-                                        icon={faTrash}
-                                        onClick={handleDeleteAudioExpert}
-                                        className='trash-audio-modal'
-                                    />
-                                    <audio controls>
-                                        <source
-                                            type="audio/webm"
-                                            src={
-                                                isBase64(selectedStatement.expert_statements_voice)
-                                                    ? selectedStatement.expert_statements_voice
-                                                    : `${apiUrl}${selectedStatement.expert_statements_voice}`
-                                            }
+                        </> :
+                        <Box sx={{ width: '100%' }}>
+                            <Tabs value={value} onChange={handleChangetab} aria-label="simple tabs example">
+                                <CustomTab label="مشتری" {...a11yProps(0)} />
+                                <CustomTab label="کارشناس" {...a11yProps(1)} />
+                            </Tabs>
+                            <TabPanel value={value} index={0} key={0}>
+                                <div className='wrap-image-modal'>
+                                    <div className='image-modal-content'>
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className='delete-img-modal'
+                                            onClick={handleDeleteImageCoustomer}
                                         />
-                                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
-                                    </audio>
+                                        {selectedStatement?.customer_statements_file ? (
+                                            <img
+                                                src={
+                                                    isBase64(selectedStatement.customer_statements_file)
+                                                        ? selectedStatement.customer_statements_file
+                                                        : `${apiUrl}${selectedStatement.customer_statements_file}`
+                                                }
+                                                alt="Customer statement"
+                                                className='img-statmentmodal'
+                                            />
+                                        ) : (
+                                            <div className='modal-empty-image'>
+                                                <FontAwesomeIcon icon={faImage} className='empty-icon-image' />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <label htmlFor="filechnage" className='btn-chnage-img-modal mt-4'>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChangeCoustomer}
+                                            className='mt-3 d-none'
+                                            id='filechnage'
+                                        />
+                                        ویرایش
+                                        <FontAwesomeIcon icon={faPen} className='mx-2' />
+                                    </label>
+
+                                    {selectedStatement?.customer_statements_voice && (
+                                        <div className='d-flex mt-4 align-items-center'>
+                                            <FontAwesomeIcon
+                                                icon={faTrash}
+                                                onClick={handleDeleteAudioCoustomer}
+                                                className='trash-audio-modal'
+                                            />
+                                            <audio controls>
+                                                <source
+                                                    type="audio/webm"
+                                                    src={
+                                                        isBase64(selectedStatement.customer_statements_voice)
+                                                            ? selectedStatement.customer_statements_voice
+                                                            : `${apiUrl}${selectedStatement.customer_statements_voice}`
+                                                    }
+                                                />
+                                                مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
+                                            </audio>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    </TabPanel>
-                </Box>
+                            </TabPanel>
+
+                            <TabPanel value={value} index={1} key={1} >
+                                <div className='wrap-image-modal'>
+                                    <div className='image-modal-content'>
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className='delete-img-modal'
+                                            onClick={handleDeleteImageExpert}
+                                        />
+                                        {selectedStatement?.expert_statements_file ? (
+                                            <img
+                                                src={
+                                                    isBase64(selectedStatement.expert_statements_file)
+                                                        ? selectedStatement.expert_statements_file
+                                                        : `${apiUrl}${selectedStatement.expert_statements_file}`
+                                                }
+                                                alt="Customer statement"
+                                                className='img-statmentmodal'
+                                            />
+                                        ) : (
+                                            <div className='modal-empty-image'>
+                                                <FontAwesomeIcon icon={faImage} className='empty-icon-image' />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <label htmlFor="filechnage" className='btn-chnage-img-modal mt-4'>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChangeExpert}
+                                            className='mt-3 d-none'
+                                            id='filechnage'
+                                        />
+                                        ویرایش
+                                        <FontAwesomeIcon icon={faPen} className='mx-2' />
+                                    </label>
+
+                                    {selectedStatement?.expert_statements_voice && (
+                                        <div className='d-flex mt-4 align-items-center'>
+                                            <FontAwesomeIcon
+                                                icon={faTrash}
+                                                onClick={handleDeleteAudioExpert}
+                                                className='trash-audio-modal'
+                                            />
+                                            <audio controls>
+                                                <source
+                                                    type="audio/webm"
+                                                    src={
+                                                        isBase64(selectedStatement.expert_statements_voice)
+                                                            ? selectedStatement.expert_statements_voice
+                                                            : `${apiUrl}${selectedStatement.expert_statements_voice}`
+                                                    }
+                                                />
+                                                مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
+                                            </audio>
+                                        </div>
+                                    )}
+                                </div>
+                            </TabPanel>
+                        </Box>
+                }
+
             </Modal>
             <div className="pform3-container">
                 <form onSubmit={formik.handleSubmit}>
@@ -804,7 +845,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                 className='statment-row-table'
                                             >
                                                 {
-                                                    editMode &&
+                                                    editMode && dataForm?.customer_form_three &&
                                                     <TableCell sx={{ borderRight: '1px solid #ddd' }}>
                                                         {item.declaration_code}
                                                     </TableCell>
@@ -836,7 +877,10 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                             alignItems: "center",
                                                             justifyContent: "center"
                                                         }}>
-                                                        <label className="media-statements mx-1" onClick={() => handleShowModal(item)}>
+                                                        <label className="media-statements mx-1" onClick={() => {
+                                                            setIdDelete("")
+                                                            handleShowModal(item)
+                                                        }}>
                                                             <FontAwesomeIcon icon={faFileLines} />
                                                         </label>
                                                     </TableCell>
@@ -845,8 +889,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                     <FontAwesomeIcon
                                                         icon={faTrash}
                                                         onClick={() => {
-                                                            if (editMode) {
-                                                                deleteMainStatement(item.declaration_code)
+                                                            if (editMode && dataForm?.customer_form_three?.length > 0) {
+                                                                setIdDelete(item.declaration_code)
+                                                                setShowModal(true)
                                                             } else {
                                                                 handleDeleteStatement(rowIndex)
                                                             }
