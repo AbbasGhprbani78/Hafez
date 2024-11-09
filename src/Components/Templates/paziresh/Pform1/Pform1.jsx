@@ -10,7 +10,6 @@ import InputRadio from '../../../Modules/InputRadio/InputRadio'
 import { Col } from 'react-bootstrap';
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
 import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn';
-import EditBtn from '../../../Modules/EditBtn/EditBtn';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik';
 import { useContext } from 'react'
@@ -58,11 +57,24 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     const nationalIdRegex = /^[0-9]{10}$/;
     const postalCodeRegex = /^[0-9]{10}$/;
     const economicCodeRegex = /^[0-9]{12}$/;
-
     const [services, setServices] = useState([])
     const [loading, setLoading] = useState(false)
-    const { dataForm, idForm, editMode } = useContext(MyContext)
-    setContent("اطلاعات اولیه مشتری :")
+    const { dataForm, idForm, editMode, setDataForm, setIdForm } = useContext(MyContext)
+    const [isEdited, setIsEdited] = useState(false);
+    const [isEdited2, setIsEdited2] = useState(false);
+
+
+    const getAllDataForm = async (id) => {
+        try {
+            const res = await axios.get(`${apiUrl}/app/get-form/${id}`)
+            if (res.status === 200) {
+                setDataForm(res.data)
+                console.log(res.data)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const validationSchema = Yup.object({
         owner_first_name: Yup.string()
@@ -97,61 +109,70 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     const formik = useFormik({
         initialValues: {
             form_type: 'personal',
-            owner_first_name: editMode && dataForm.customer_form ? dataForm.customer_form.owner_first_name : '',
-            owner_last_name: editMode && dataForm.customer_form ? dataForm.customer_form.owner_last_name : '',
-            phone_number: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number : '',
-            national_code_owner: editMode && dataForm.customer_form ? dataForm.customer_form.national_code_owner : '',
-            pyramid_number: editMode && dataForm.customer_form ? dataForm.customer_form.pyramid_number : '',
-            owner_address: editMode && dataForm.customer_form ? dataForm.customer_form.owner_address : '',
-            first_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.first_name_bearer : '',
-            last_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.last_name_bearer : '',
-            phone_number_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number_bearer : '',
-            how_make_turn: editMode && dataForm.customer_form ? dataForm.customer_form.how_make_turn : '',
-            how_to_apply: editMode && dataForm.customer_form ? dataForm.customer_form.how_to_apply : '',
-            type_of_service: editMode && dataForm.customer_form ? dataForm.customer_form.type_of_service : []
+            owner_first_name: dataForm.customer_form ? dataForm.customer_form.owner_first_name : '',
+            owner_last_name: dataForm.customer_form ? dataForm.customer_form.owner_last_name : '',
+            phone_number: dataForm.customer_form ? dataForm.customer_form.phone_number : '',
+            national_code_owner: dataForm.customer_form ? dataForm.customer_form.national_code_owner : '',
+            pyramid_number: dataForm.customer_form ? dataForm.customer_form.pyramid_number : '',
+            owner_address: dataForm.customer_form ? dataForm.customer_form.owner_address : '',
+            first_name_bearer: dataForm.customer_form ? dataForm.customer_form.first_name_bearer : '',
+            last_name_bearer: dataForm.customer_form ? dataForm.customer_form.last_name_bearer : '',
+            phone_number_bearer: dataForm.customer_form ? dataForm.customer_form.phone_number_bearer : '',
+            how_make_turn: dataForm.customer_form ? dataForm.customer_form.how_make_turn : '',
+            how_to_apply: dataForm.customer_form ? dataForm.customer_form.how_to_apply : '',
+            type_of_service: dataForm.customer_form ? dataForm.customer_form.type_of_service : []
         },
         validationSchema,
+        validateOnChange: false,
         onSubmit: async (values) => {
-            setLoading(true);
-            try {
-                let response;
-                if (editMode) {
-                    response = await axios.put(`${apiUrl}/app/fill-customer-form/${idForm}`, values);
-                } else {
-                    response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
-                }
+            if (isEdited) {
+                setLoading(true);
+                try {
+                    let response;
+                    if (idForm) {
+                        response = await axios.put(`${apiUrl}/app/fill-customer-form/${idForm}`, values);
+                    } else {
+                        response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
+                    }
 
-                if (response.status === 200 || response.status === 201) {
-                    console.log('Form submitted successfully:', response.data);
-                    setCoustomer(response.data.id);
-                    nextTab();
+                    if (response.status === 200 || response.status === 201) {
+                        console.log('Form submitted successfully:', response.data);
+                        getAllDataForm(response.data.id)
+                        setCoustomer(response.data.id);
+                        setIdForm(response.data.id)
+                        nextTab();
+                    }
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                } finally {
+                    setLoading(false);
+                    setIsEdited(false)
                 }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-            } finally {
-                setLoading(false);
+            } else {
+                nextTab()
             }
-        }
+
+        },
     });
 
     const formik2 = useFormik({
         initialValues: {
             form_type: 'corporate',
-            company_name: editMode && dataForm.customer_form ? dataForm.customer_form.company_name : '',
-            phone_number: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number : '',
-            pyramid_number: editMode && dataForm.customer_form ? dataForm.customer_form.pyramid_number : '',
-            national_id_corporate: editMode && dataForm.customer_form ? dataForm.customer_form.national_id_corporate : '',
-            economic_code: editMode && dataForm.customer_form ? dataForm.customer_form.economic_code : '',
-            company_phone_number: editMode && dataForm.customer_form ? dataForm.customer_form.company_phone_number : '',
-            postal_code: editMode && dataForm.customer_form ? dataForm.customer_form.postal_code : '',
-            how_make_turn: editMode && dataForm.customer_form ? dataForm.customer_form.how_make_turn : '',
-            address: editMode && dataForm.customer_form ? dataForm.customer_form.address : '',
-            how_to_apply: editMode && dataForm.customer_form ? dataForm.customer_form.how_to_apply : '',
-            first_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.first_name_bearer : '',
-            last_name_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.last_name_bearer : '',
-            national_code_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.national_code_bearer : '',
-            phone_number_bearer: editMode && dataForm.customer_form ? dataForm.customer_form.phone_number_bearer : '',
-            type_of_service: editMode && dataForm.customer_form ? dataForm.customer_form.type_of_service : []
+            company_name: dataForm.customer_form ? dataForm.customer_form.company_name : '',
+            phone_number: dataForm.customer_form ? dataForm.customer_form.phone_number : '',
+            pyramid_number: dataForm.customer_form ? dataForm.customer_form.pyramid_number : '',
+            national_id_corporate: dataForm.customer_form ? dataForm.customer_form.national_id_corporate : '',
+            economic_code: dataForm.customer_form ? dataForm.customer_form.economic_code : '',
+            company_phone_number: dataForm.customer_form ? dataForm.customer_form.company_phone_number : '',
+            postal_code: dataForm.customer_form ? dataForm.customer_form.postal_code : '',
+            how_make_turn: dataForm.customer_form ? dataForm.customer_form.how_make_turn : '',
+            address: dataForm.customer_form ? dataForm.customer_form.address : '',
+            how_to_apply: dataForm.customer_form ? dataForm.customer_form.how_to_apply : '',
+            first_name_bearer: dataForm.customer_form ? dataForm.customer_form.first_name_bearer : '',
+            last_name_bearer: dataForm.customer_form ? dataForm.customer_form.last_name_bearer : '',
+            national_code_bearer: dataForm.customer_form ? dataForm.customer_form.national_code_bearer : '',
+            phone_number_bearer: dataForm.customer_form ? dataForm.customer_form.phone_number_bearer : '',
+            type_of_service: dataForm.customer_form ? dataForm.customer_form.type_of_service : []
         },
         validationSchema: Yup.object({
             company_name: Yup.string()
@@ -194,25 +215,33 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         }),
 
         onSubmit: async (values) => {
-            setLoading(true);
-            try {
-                let response;
-                if (editMode) {
-                    response = await axios.put(`${apiUrl}/app/update-customer-form/${idForm}/`, values);
-                } else {
-                    response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
-                }
+            if (isEdited2) {
+                setLoading(true);
+                try {
+                    let response;
+                    if (editMode) {
+                        response = await axios.put(`${apiUrl}/app/fill-customer-form/${idForm}`, values);
+                    } else {
+                        response = await axios.post(`${apiUrl}/app/fill-customer-form/`, values);
+                    }
 
-                if (response.status === 200 || response.status === 201) {
-                    console.log('Form submitted successfully:', response.data);
-                    setCoustomer(response.data.id);
-                    nextTab();
+                    if (response.status === 200 || response.status === 201) {
+                        console.log('Form submitted successfully:', response.data);
+                        getAllDataForm(response.data.id)
+                        setCoustomer(response.data.id);
+                        setIdForm(response.data.id)
+                        nextTab();
+                    }
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                } finally {
+                    setLoading(false);
+                    setIsEdited2(false)
                 }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-            } finally {
-                setLoading(false);
+            } else {
+                nextTab()
             }
+
         }
     });
 
@@ -261,8 +290,21 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     }, []);
 
 
-    // console.log(formik2.values)
-    // console.log(formik.values)
+    useEffect(() => {
+        setContent("اطلاعات اولیه مشتری :");
+    }, [setContent]);
+
+    useEffect(() => {
+        if (formik.dirty) {
+            setIsEdited(true);
+        }
+    }, [formik.dirty]);
+
+    useEffect(() => {
+        if (formik2.dirty) {
+            setIsEdited2(true);
+        }
+    }, [formik2.dirty]);
 
     return (
         <>

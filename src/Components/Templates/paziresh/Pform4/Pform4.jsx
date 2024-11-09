@@ -1,14 +1,37 @@
-import React, { useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Pform4.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { Col } from 'react-bootstrap';
 import { useReactToPrint } from 'react-to-print';
+import { MyContext } from '../../../../context/context';
+import axios from 'axios';
 
 
-export default function Pform4() {
+export default function Pform4({ prevTab }) {
+
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const { idForm } = useContext(MyContext)
+    const [dataForm, setDataForm] = useState()
+
+
+    useEffect(() => {
+        
+        const getMainFormData = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/app/get-complated-form/${idForm}`)
+                if (response.status === 200) {
+                    console.log(response.data)
+                    setDataForm(response.data)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        getMainFormData()
+    }, [idForm])
 
     return (
         <div className='confirmation-form-wrapper'>
@@ -55,8 +78,8 @@ export default function Pform4() {
             </div>
 
             <div className='confirmation-btns'>
-                <button className='edit-btn confirmation-btn'>
-                    ویرایش
+                <button className='edit-btn confirmation-btn ' onClick={prevTab}>
+                    قبلی
                     <FontAwesomeIcon icon={faPen} className={`penicon`} />
                 </button>
                 <button className='print-btn confirmation-btn' onClick={reactToPrintFn}>

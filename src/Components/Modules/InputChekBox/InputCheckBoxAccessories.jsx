@@ -18,8 +18,8 @@ export default function InputCheckBoxAccessories({
         if (accessoriesItem) {
             setIsChecked(true);
             setDescription(accessoriesItem.description || '');
-            onChange(true);
-            onDescriptionChange(accessoriesItem.description || '');
+            // onChange(true);
+            // onDescriptionChange(accessoriesItem.description || '');
         }
     }, [allAccessories]);
 

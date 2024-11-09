@@ -77,8 +77,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const [selectedStatement, setSelectedStatement] = useState(null);
     const [loading, setLoading] = useState(false)
     const [dateValue, setDateValue] = useState("")
-    const { dataForm, idForm, editMode } = useContext(MyContext)
+    const { dataForm, idForm, editMode, setDataForm } = useContext(MyContext)
     const [idDelete, setIdDelete] = useState("")
+    const [isEdited, setIsEdited] = useState(false);
     const columns = editMode
         ? ['کداظهار', 'توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر']
         : ['توضیحات مشتری', 'توضیحات کارشناس', 'تخمین قیمت', 'تخمین زمان تعمیر'];
@@ -102,47 +103,63 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         declaration_code: ""
     });
 
+    const getAllDataForm = async (id) => {
+        try {
+            const res = await axios.get(`${apiUrl}/app/get-form/${id}`)
+            if (res.status === 200) {
+                setDataForm(res.data)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const formik = useFormik({
         initialValues: {
-            form_id: editMode ? idForm : coustomer,
-            form: editMode ? dataForm.customer_form_three : []
+            form_id: idForm ? idForm : coustomer,
+            form: dataForm.customer_form_three.length > 0 ? dataForm.customer_form_three : []
         },
         onSubmit: async (values) => {
-            setLoading(true);
-
-            try {
-                let response;
-                if (editMode && dataForm.customer_form_three.length > 0) {
-                    const cleanFormFields = (formArray) => {
-                        return formArray.map(entry => {
-                            const updatedEntry = { ...entry };
-                            ['customer_statements_voice', 'customer_statements_file', 'expert_statements_file', 'expert_statements_voice'].forEach(field => {
-                                if (updatedEntry[field] && typeof updatedEntry[field] === 'string' && updatedEntry[field].startsWith("/media")) {
-                                    delete updatedEntry[field];
-                                }
+            if (isEdited) {
+                setLoading(true);
+                try {
+                    let response;
+                    if (dataForm.customer_form_three.length > 0) {
+                        const cleanFormFields = (formArray) => {
+                            return formArray.map(entry => {
+                                const updatedEntry = { ...entry };
+                                ['customer_statements_voice', 'customer_statements_file', 'expert_statements_file', 'expert_statements_voice'].forEach(field => {
+                                    if (updatedEntry[field] && typeof updatedEntry[field] === 'string' && updatedEntry[field].startsWith("/media")) {
+                                        delete updatedEntry[field];
+                                    }
+                                });
+                                return updatedEntry;
                             });
-                            return updatedEntry;
-                        });
-                    };
+                        };
 
-                    const cleanedValues = {
-                        ...values,
-                        form: cleanFormFields(values.form)
-                    };
+                        const cleanedValues = {
+                            ...values,
+                            form: cleanFormFields(values.form)
+                        };
 
-                    response = await axios.put(`${apiUrl}/app/fill-customer-third-form/`, cleanedValues);
-                } else {
-                    response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
-                }
-                if (response.status === 201 || response.status === 200) {
-                    console.log('Form submitted successfully:', response.data);
+                        response = await axios.put(`${apiUrl}/app/fill-customer-third-form/`, cleanedValues);
+                    } else {
+                        response = await axios.post(`${apiUrl}/app/fill-customer-third-form/`, values);
+                    }
+                    if (response.status === 201 || response.status === 200) {
+                        console.log('Form submitted successfully:', response.data);
+                        getAllDataForm(coustomer)
+                        setLoading(false);
+                        nextTab();
+                    }
+                } catch (error) {
                     setLoading(false);
-                    nextTab();
+                } finally {
+                    setLoading(false);
+                    setIsEdited(false)
                 }
-            } catch (error) {
-                setLoading(false);
-            } finally {
-                setLoading(false);
+            } else {
+                nextTab()
             }
         },
     });
@@ -440,7 +457,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         }));
     };
 
-
     const handleDeleteImageCoustomer = () => {
         const updatedForm = formik.values.form.map((statement) => statement.declaration_code == selectedStatement.declaration_code ?
             { ...statement, customer_statements_file: null } : statement);
@@ -480,7 +496,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         formik.setFieldValue('form', updatedForm);
         setSelectedStatement({ ...selectedStatement, expert_statements_voice: null });
     };
-
 
     const isBase64 = (str) => {
 
@@ -524,12 +539,23 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         setContent("اظهارات مشتری :")
     }, [])
 
+
     useEffect(() => {
         handleestimated_repair_timeChange(dateValue)
     }, [dateValue])
 
-    console.log(formik.values)
-    console.log(dataForm?.customer_form_three?.length)
+
+    useEffect(() => {
+        if (formik.dirty) {
+            setIsEdited(true);
+        }
+    }, [formik.dirty]);
+
+
+    console.log(isEdited)
+
+    // console.log(formik.values)
+    // console.log(dataForm?.customer_form_three?.length)
     return (
         <>
             <Modal

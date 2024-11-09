@@ -3,35 +3,50 @@ import './CodeCar.css'
 
 export default function CodeCar({ name, value, setFieldValue }) {
     const [inputs, setInputs] = useState(["", "", "", ""]);
+    const [isEdited, setIsEdited] = useState(false);
+
     const inputRefs = useRef([]);
 
-    // Split the initial license plate value into the separate inputs
     useEffect(() => {
         if (value) {
             const parts = [
-                value.slice(0, 2),  // First two digits
-                value.slice(2, 3),  // One character (e.g. 'ی')
-                value.slice(3, 6),  // Three digits
-                value.slice(6, 8),  // Last two digits
+                value.slice(0, 2),
+                value.slice(2, 3),
+                value.slice(3, 6),
+                value.slice(6, 8),
             ];
             setInputs(parts);
         }
     }, [value]);
 
-    // Update Formik's state on every input change
+
+
     useEffect(() => {
-        const finalPlates = inputs.join("");
-        setFieldValue(finalPlates);  // Use Formik's setFieldValue
+        if (isEdited) {
+            const finalPlates = inputs.join("");
+            setFieldValue(finalPlates);
+            setIsEdited(false); 
+        }
     }, [inputs]);
+
+
+    // useEffect(() => {
+    //     const finalPlates = inputs.join("");
+    //     setFieldValue(finalPlates);  
+    // }, [inputs]);
+
+    // const finalPlates = inputs.join("");
+    // setFieldValue(finalPlates);
+
 
     const validateInput = (index, value) => {
         switch (index) {
             case 0:
-                return /^\d{0,2}$/.test(value);  // Two digits
+                return /^\d{0,2}$/.test(value);
             case 1:
-                return /^[\u0600-\u06FF]?$/.test(value);  // Persian letter
+                return /^[\u0600-\u06FF]?$/.test(value);
             case 2:
-                return /^\d{0,3}$/.test(value);  // Three digits
+                return /^\d{0,3}$/.test(value);
             case 3:
                 return /^\d{0,2}$/.test(value);  // Two digits
             default:
@@ -41,6 +56,7 @@ export default function CodeCar({ name, value, setFieldValue }) {
 
     const handleInputChange = (index, event) => {
         const { value } = event.target;
+        setIsEdited(true);
         if (validateInput(index, value)) {
             const newInputs = [...inputs];
             newInputs[index] = value;

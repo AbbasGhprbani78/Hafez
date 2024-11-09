@@ -11,8 +11,8 @@ export default function InputCheckBoxPartMachine({ value, onChange, onDescriptio
         if (matchingItem) {
             setChecked(true);
             setDescription(matchingItem.description || '');
-            onChange(true);
-            onDescriptionChange(matchingItem.description || '');
+            // onChange(true);
+            // onDescriptionChange(matchingItem.description || '');
         }
     }, []);
 
