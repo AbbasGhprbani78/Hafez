@@ -1,5 +1,5 @@
 
-.grid-container {
+.grid_container {
     width: 100%;
 }
 
@@ -58,20 +58,20 @@
     background-color: #eeeeee;
 }
 
-.path-1 {
+.path_1 {
     clip-path: circle(35.9% at 0 100%);
 }
 
 
-.path-2 {
+.path_2 {
     clip-path: circle(35.9% at 99% 100%);
 }
 
-.path-3 {
+.path_3 {
     clip-path: circle(35.9% at 0 0);
 }
 
-.path-4 {
+.path_4 {
     clip-path: circle(35.9% at 100% 0);
 }
 
@@ -85,35 +85,35 @@
 }
 
 @media (max-width:992px) {
-    .grid-container {
+    .grid_container {
         width: 30%;
         margin-left: 4rem;
     }
 }
 
 @media (max-width:860px) {
-    .grid-container {
+    .grid_container {
         width: 35%;
         margin-left: 4rem;
     }
 }
 
 @media (max-width:760px) {
-    .grid-container {
+    .grid_container {
         width: 45%;
         margin-left: 4rem;
     }
 }
 
 @media (max-width:622px) {
-    .grid-container {
+    .grid_container {
         width: 50%;
         margin-left: 2rem;
     }
 }
 
 @media (max-width:600px) {
-    .grid-container {
+    .grid_container {
         width: 90%;
         margin-left: 0
     }

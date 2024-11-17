@@ -1,4 +1,4 @@
-import './Modal.css'
+import styles from './Modal.module.css'
 
 export default function Modal({
     children,
@@ -7,11 +7,14 @@ export default function Modal({
     setShowModal
 }) {
     return (
-        <div className={`modal-container ${showModal && 'showmodal'}`}>
-            <div className='closemodal' onClick={() => setShowModal(false)}></div>
-            <div className={`modal-contant ${style}`}>
-                {children}
-            </div>
-        </div>
-    )
+      <div
+        className={`${styles.modal_container} ${showModal && styles.showmodal}`}
+      >
+        <div
+          className={styles.closemodal}
+          onClick={() => setShowModal(false)}
+        ></div>
+        <div className={`${styles.modal_contant} ${style}`}>{children}</div>
+      </div>
+    );
 }

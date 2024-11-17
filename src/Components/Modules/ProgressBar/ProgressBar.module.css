@@ -1,9 +1,9 @@
-.pragress-wrapper {
+.pragress_wrapper {
     text-align: center;
     margin-left: 31px;
 }
 
-.pragress-Container {
+.pragress_Container {
     display: flex;
     justify-content: space-between;
     width: 400px;
@@ -13,7 +13,7 @@
 
 }
 
-.pragress-Container::before {
+.pragress_Container::before {
     content: "";
     position: absolute;
     top: 50%;
@@ -75,7 +75,7 @@
     cursor: not-allowed;
 }
 
-.item-prog-text {
+.item_prog_text {
     position: absolute;
     top: 100%;
     padding-top: 10px;
@@ -86,16 +86,16 @@
 
 
 @media (max-width:600px) {
-    .pragress-wrapper {
+    .pragress_wrapper {
         margin-left: 0;
     }
 
-    .pragress-Container {
+    .pragress_Container {
         width: 95%;
         margin: 0 auto 30px auto;
     }
 
-    .item-prog-text {
+    .item_prog_text {
         font-size: .8rem;
     }
 }

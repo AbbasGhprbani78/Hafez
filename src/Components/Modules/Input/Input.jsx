@@ -1,30 +1,39 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './Input.css';
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from "./Input.module.css";
 
-const Input = ({ name, label, icon, placeholder, type, styleInput, value, onChange, styled }) => {
-
-
-
-    return (
-        <div className={`input-container ${styleInput} ${styled}`}>
-            <label htmlFor={name} className='label-input mb-2'>{label}</label>
-            <div className="input-content-wrapper">
-                <input
-                    id={name}
-                    name={name}
-                    type={type}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onChange}
-                    className='input-form'
-                    autoComplete='off'
-                    maxLength={40}
-                />
-                {icon && <FontAwesomeIcon icon={icon} className='icon-input' />}
-            </div>
-        </div>
-    );
+const Input = ({
+  name,
+  label,
+  icon,
+  placeholder,
+  type,
+  styleInput,
+  value,
+  onChange,
+  styled,
+}) => {
+  return (
+    <div className={`${styles.input_container} ${styleInput} ${styled}`}>
+      <label htmlFor={name} className={`label_input mb-2`}>
+        {label}
+      </label>
+      <div className={styles.input_content_wrapper}>
+        <input
+          id={name}
+          name={name}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          className={styles.input_form}
+          autoComplete="off"
+          maxLength={40}
+        />
+        {icon && <FontAwesomeIcon icon={icon} className={styles.icon_input} />}
+      </div>
+    </div>
+  );
 };
 
 export default Input;

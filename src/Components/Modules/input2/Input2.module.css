@@ -1,6 +1,6 @@
 @import url('../../../');
 
-.input2-container {
+.input2_container {
     border-bottom: 1px solid var(--color-21);
     width: max-content;
     padding: 15px;
@@ -10,14 +10,14 @@
     width: 100%;
 }
 
-.input2-form {
+.input2_form {
     border: none;
     outline: none;
     background-color: transparent;
     width: 100%
 }
 
-.input2-container input::placeholder {
+.input2_container input::placeholder {
     color: var(--color-21);
     opacity: 1;
     font-size: clamp(.8rem, .9vw, 1rem);

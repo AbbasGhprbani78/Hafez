@@ -10,6 +10,10 @@ body {
 .content-conatiner {
     display: flex;
 }
+.subtitle-project{
+    font-size: 1rem;
+    font-weight: bold;
+}
 
 .space-content {
     padding: 0 calc(20px + 1vw);

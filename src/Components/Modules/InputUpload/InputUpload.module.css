@@ -1,6 +1,6 @@
 
 
-.uploadInput-container {
+.uploadInput_container {
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -11,18 +11,18 @@
     width: 100%;
 }
 
-.uploadInput-title {
+.uploadInput_title {
     margin-right: 8px;
 }
 
-.uploadInput-wrapper {
+.uploadInput_wrapper {
     border: 1px solid var(--color-8);
     padding: 30px 40px 30px 40px;
     border-radius: var(--border-radius-1);
     width: 100%;
 }
 
-.uploadInput-content {
+.uploadInput_content {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -34,21 +34,21 @@
     display: none;
 }
 
-.label-uploadInput {
+.label_uploadInput {
     font-weight: bold;
     border-bottom: 1px solid;
     width: max-content;
 }
 
-.img-input,
-.drag-drop-text {
+.img_input,
+.drag_drop_text {
     width: calc(100px + 4vw);
     height: calc(100px + 4vh);
     border: 1px dotted var(--color-8);
     border-radius: var(--border-radius-1);
 }
 
-.drag-drop-text {
+.drag_drop_text {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,11 +58,11 @@
 
 @media (max-width:600px) {
 
-    .drag-drop-text {
+    .drag_drop_text {
         width: 100%;
     }
 
-    .img-input {
+    .img_input {
         width: 100%;
     }
 }

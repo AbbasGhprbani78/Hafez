@@ -1,0 +1,9 @@
+.add_btn{
+    background-color: var(--color-3);
+    color: #fff;
+    border-radius: 100px;
+    padding: 5px 15px;
+    border: none;
+    outline: none;
+    min-width: 130px;
+}

@@ -1,6 +1,6 @@
 
 
-.btn-1-wrapper {
+.btn_1_wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,11 +12,11 @@
     background-color: transparent;
 }
 
-.btn-1-wrapper:hover .btn-1 {
+.btn_1_wrapper:hover .btn_1 {
     background-color: var(--color-1);
 }
 
-.btn-1 {
+.btn_1 {
     all: unset;
     background-color: var(--color-3);
     border-radius: 0 20px 20px 0;
@@ -24,7 +24,7 @@
     transition: all .4s ease;
 }
 
-.btn-arrow-wrapper {
+.btn_arrow_wrapper {
     background: rgba(62, 132, 107, 0.2);
     border-radius: 20px 0px 0px 20px;
     padding: 9px 13px;

@@ -1,9 +1,9 @@
 
-.select-car-wrapper {
+.select_car_wrapper {
     width: 90%;
 }
 
-.select-car {
+.select_car {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -14,18 +14,18 @@
     position: relative;
 }
 
-.input-cars {
+.input_cars {
     outline: none;
     border: none;
     width: 100%;
     background-color: transparent;
 }
 
-.select-car-icon {
+.select_car_icon {
     color: var(--color-1);
 }
 
-.list-cars {
+.list_cars {
     position: absolute;
     list-style: none;
     top: 110%;
@@ -40,11 +40,11 @@
     overflow-y: scroll;
 }
 
-.list-cars::-webkit-scrollbar {
+.list_cars::-webkit-scrollbar {
     display: none;
 }
 
-.car-item {
+.car_item {
     padding: 10px;
     color: var(--color-3);
     margin-top: 10px;
@@ -52,14 +52,14 @@
 
 }
 
-.car-item:hover {
+.car_item:hover {
     background-color: #a8a4a4d1;
     color: #fff;
 }
 
 
 @media (max-width:768px) {
-    .select-car-wrapper {
+    .select_car_wrapper {
         width: 100%;
     }
 }

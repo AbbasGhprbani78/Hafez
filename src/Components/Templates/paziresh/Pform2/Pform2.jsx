@@ -15,6 +15,7 @@ import CarModal from '../../../Modules/CarModal/CarModal'
 import DropDown from '../../../Modules/DropDown/DropDown'
 import PartMachine from './PartMachine/PartMachine'
 import InputCheckBox from '../../../Modules/InputChekBox/InputCheckBox'
+import LoadingForm from '../../../Modules/Loading/LoadingForm'
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
 import axios from 'axios'
@@ -690,6 +691,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
+                                        setIsEdit={setIsEdited}
                                             name="front_car_image"
                                             setForm2={setForm2}
                                             src={form2?.customer_secend_form?.front_car_image}
@@ -706,6 +708,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
+                                        setIsEdit={setIsEdited}
                                             name="behind_car_image"
                                             setForm2={setForm2}
                                             src={form2?.customer_secend_form?.behind_car_image}
@@ -722,6 +725,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
+                                        setIsEdit={setIsEdited}
                                             name="right_side_image"
                                             setForm2={setForm2}
                                             src={form2?.customer_secend_form?.right_side_image}
@@ -738,6 +742,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
+                                        setIsEdit={setIsEdited}
                                             name="left_side_image"
                                             setForm2={setForm2}
                                             src={form2?.customer_secend_form?.left_side_image}
@@ -754,6 +759,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
+                                        setIsEdit={setIsEdited}
                                             name="car_km_image"
                                             setForm2={setForm2}
                                             src={form2?.customer_secend_form?.car_km_image}
@@ -770,6 +776,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                                 <Col xs={12} sm={6} md={4} className='mt-4 vehicle-condition-item-content'>
                                     <div className='vehicle-condition-item'>
                                         <InputUloadPform2
+                                        setIsEdit={setIsEdited}
                                             name="engine_door_open_image"
                                             setForm2={setForm2}
                                             src={form2?.customer_secend_form?.engine_door_open_image}
@@ -891,7 +898,9 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                     </div>
                 </form>
             </div>
+            {
+                loading&&<LoadingForm/>
+            }
         </>
     )
 }
-

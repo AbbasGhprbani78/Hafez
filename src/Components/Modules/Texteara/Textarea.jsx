@@ -1,16 +1,16 @@
 import React from 'react'
-import './Textarea.css'
+import styles from './Textarea.module.css'
 
 export default function Textarea({ styled, value, onChange, name }) {
     return (
-        <div className='textarea-container'>
-            <label className='label-input mb-2'>آدرس</label>
-            <textarea
-                className={`textarea ${styled}`}
-                value={value}
-                onChange={onChange}
-                name={name}
-            />
-        </div>
-    )
+      <div className={styles.textarea_container}>
+        <label className={`label_input mb-2`}>آدرس</label>
+        <textarea
+          className={`${styles.textarea} ${styled}`}
+          value={value}
+          onChange={onChange}
+          name={name}
+        />
+      </div>
+    );
 }

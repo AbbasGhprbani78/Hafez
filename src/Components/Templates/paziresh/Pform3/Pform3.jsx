@@ -29,6 +29,7 @@ import DatePicker from 'react-multi-date-picker';
 import persian from "react-date-object/calendars/persian"
 import persian_fa from "react-date-object/locales/persian_fa"
 import TimePicker from 'react-multi-date-picker/plugins/time_picker';
+import LoadingForm from '../../../Modules/Loading/LoadingForm';
 
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
@@ -117,7 +118,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     const formik = useFormik({
         initialValues: {
             form_id: idForm ? idForm : coustomer,
-            form: dataForm.customer_form_three.length > 0 ? dataForm.customer_form_three : []
+            form: dataForm?.customer_form_three?.length > 0 ? dataForm?.customer_form_three : []
         },
         onSubmit: async (values) => {
             if (isEdited) {
@@ -551,11 +552,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         }
     }, [formik.dirty]);
 
-
-    console.log(isEdited)
-
-    // console.log(formik.values)
-    // console.log(dataForm?.customer_form_three?.length)
     return (
         <>
             <Modal
@@ -813,8 +809,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                             <div className="estimate-item">
                                 <div className="estimate-input">
                                     <div className={`input-container`}>
-                                        <label htmlFor={"تخمین قیمت"} className='label-input mb-2'>تخمین قیمت</label>
-                                        <div className="input-content-wrapper">
+                                        <label htmlFor={"تخمین قیمت"} className='label_input mb-2'>تخمین قیمت</label>
+                                        <div className="input_content_wrapper">
                                             <input
                                                 id={"تخمین قیمت"}
                                                 name={"تخمین قیمت"}
@@ -822,7 +818,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                 placeholder={"تخمین قیمت"}
                                                 value={toFarsiNumber(formatWithThousandSeparators(statementData.price_estimate))}
                                                 onChange={handleprice_estimateChange}
-                                                className='input-form'
+                                                className='input_form'
                                                 autoComplete='off'
                                                 maxLength={30}
                                             />
@@ -833,8 +829,8 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                             </div>
                             <div className="mt-3 mt-sm-0 estimate-item">
                                 <div className="estimate-input">
-                                    <label htmlFor="estimated-time" className='label-input mb-2'>تخمین زمان تعمیر</label>
-                                    <div className="input-content-wrapper">
+                                    <label htmlFor="estimated-time" className='label_input mb-2'>تخمین زمان تعمیر</label>
+                                    <div className="input_content_wrapper">
                                         <DatePicker
                                             calendar={persian}
                                             locale={persian_fa}
@@ -859,7 +855,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                         <div className="pform3-container-table mt-5" dir="rtl">
                             <button className="add-estimate-btn mb-3" onClick={addStatement}>
                                 افزودن شرح اظهار
-                                <FontAwesomeIcon icon={faPlus} className="plus-btn-2" />
                             </button>
                             {
                                 formik.values.form.length ?
@@ -872,20 +867,20 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                             >
                                                 {
                                                     editMode && dataForm?.customer_form_three &&
-                                                    <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                    <TableCell>
                                                         {item.declaration_code}
                                                     </TableCell>
                                                 }
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                <TableCell sx={{maxWidth:"280px"}}>
                                                     {item.customer_statements_text}
                                                 </TableCell>
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                <TableCell sx={{maxWidth:"280px"}}>
                                                     {item.expert_statements_text}
                                                 </TableCell>
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                <TableCell >
                                                     {Number(item.price_estimate).toLocaleString("fa")}
                                                 </TableCell>
-                                                <TableCell sx={{ borderRight: '1px solid #ddd' }}>
+                                                <TableCell >
                                                     {item?.estimated_repair_time ? (
                                                         new Intl.DateTimeFormat('fa-IR', {
                                                             dateStyle: 'full',
@@ -898,7 +893,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                                                 {(item?.customer_statements_voice || item?.customer_statements_file || item?.expert_statements_file || item?.expert_statements_voice) ? (
                                                     <TableCell
                                                         sx={{
-                                                            borderRight: '1px solid #ddd',
                                                             display: "flex",
                                                             alignItems: "center",
                                                             justifyContent: "center"
@@ -945,6 +939,9 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                     </div>
                 </form >
             </div >
+            {
+                loading && <LoadingForm />
+            }
         </>
 
     );

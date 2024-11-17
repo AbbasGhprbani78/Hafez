@@ -1,0 +1,27 @@
+.title_item_form {
+    color: var(--color-1);
+    font-weight: bold;
+    font-size: clamp(.8rem, .9vw, 1rem);}
+
+.options_services_wrappper {
+    width: 93.5%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between
+}
+
+@media (max-width:900px) {
+
+    .options_services_wrappper {
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+}
+
+
+@media (max-width:600px) {
+    .options_services_wrappper {
+        flex-direction: column;
+    }
+}

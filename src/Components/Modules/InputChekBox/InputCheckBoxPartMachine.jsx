@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import './InputCheckBox.css';
+import styles from "./InputCheckBox.module.css";
 
 export default function InputCheckBoxPartMachine({ value, onChange, onDescriptionChange, name, fillForm }) {
     const [checked, setChecked] = useState(false);
@@ -34,28 +34,28 @@ export default function InputCheckBoxPartMachine({ value, onChange, onDescriptio
     };
 
     return (
-        <>
-            <div className='checkbox-container mx-2'>
-                <input
-                    type="checkbox"
-                    className='check-input'
-                    value={value}
-                    onChange={handleChange}
-                    checked={checked}
-                />
+      <>
+        <div className={`${styles.checkbox_container} mx-2`}>
+          <input
+            type="checkbox"
+            className={styles.check_input}
+            value={value}
+            onChange={handleChange}
+            checked={checked}
+          />
 
-                <label className='label-check'>{name}</label>
-            </div>
-            {checked && (
-                <div className='wrap-checkbox-dec'>
-                    <textarea
-                        className='wrap-checkbox textarea'
-                        placeholder='توضیحات'
-                        value={description}
-                        onChange={handleDescriptionChange}
-                    />
-                </div>
-            )}
-        </>
+          <label className={styles.label_check}>{name}</label>
+        </div>
+        {checked && (
+          <div className={styles.wrap_checkbox_dec}>
+            <textarea
+              className={`${styles.wrap_checkbox} textarea`}
+              placeholder="توضیحات"
+              value={description}
+              onChange={handleDescriptionChange}
+            />
+          </div>
+        )}
+      </>
     );
 }

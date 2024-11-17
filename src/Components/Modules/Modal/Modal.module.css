@@ -1,4 +1,4 @@
-.modal-container,
+.modal_container,
 .closemodal {
     position: fixed;
     left: 0;
@@ -14,7 +14,7 @@
     z-index: 10;
 }
 
-.modal-container {
+.modal_container {
     opacity: 0;
     visibility: hidden;
     transition: all .3s ease;
@@ -29,7 +29,7 @@
     z-index: 11;
 }
 
-.modal-contant {
+.modal_contant {
     box-shadow: 0px 4px 4px 0px #00000040;
     border-radius: var(--border-radius-2);
     background-color: #fff;

@@ -1,13 +1,7 @@
 
 
-.label-input {
-    color: var(--color-1);
-    margin-right: 8px;
-    font-size: clamp(.8rem, .9vw, 1rem);
-    font-weight: bold;
-}
 
-.input-content-wrapper {
+.input_content_wrapper {
     border: 1px solid var(--color-8);
     border-radius: var(--border-radius-1);
     padding: 10px 9px 10px 15px;
@@ -17,13 +11,13 @@
     justify-content: space-between;
 }
 
-.input-content-wrapper input::placeholder {
+.input_content_wrapper input::placeholder {
     color: var(--color-21);
     opacity: 1;
     font-size: clamp(.8rem, .9vw, 1rem);
 }
 
-.input-form {
+.input_form {
     all: unset;
     width: 100%;
     border: none;
@@ -31,7 +25,7 @@
     background: transparent;
 }
 
-.icon-input {
+.icon_input {
     color: var(--color-1);
 }
 

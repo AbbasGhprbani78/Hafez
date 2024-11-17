@@ -21,27 +21,27 @@
     background-color: #f9f9f9;
 }
 
-.search-input {
+.search_input {
     border: none;
     outline: none;
     background-color: transparent;
 }
 
-.search-input::placeholder {
+.search_input::placeholder {
     color: var(--color-15);
     font-size: calc(.8rem + .1vw);
 }
 
-.search-wrapper {
+.search_wrapper {
     border-bottom: 1px solid var(--color-15);
     padding-bottom: 5px;
 }
 
-.search-icon {
+.search_icon {
     color: var(--color-15);
 }
 
-.btn-2 {
+.btn_2 {
     all: unset;
     color: #fff;
     background-color: var(--color-3);
@@ -52,6 +52,6 @@
     font-size: calc(.8rem + .1vw);
 }
 
-.plus-btn-2 {
+.plus_btn_2 {
     margin-right: 15px;
 }

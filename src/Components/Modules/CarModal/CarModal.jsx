@@ -1,5 +1,5 @@
 import React from 'react';
-import './CarModel.css';
+import styles from  './CarModel.module.css';
 
 export default function CarModal({
     opneModal,
@@ -18,28 +18,35 @@ export default function CarModal({
     const imgsrc = imgImModal ? (isBase64(imgImModal) ? imgImModal : `${apiUrl}${imgImModal}`) : ""
 
     return (
-        <div className={`carModal-container ${opneModal ? "activeModalCar" : ""}`}>
-            <div className='closeCarModal' onClick={() => setOpenModal(false)}></div>
-            <div className="carModal-content">
-                <div className='modal-image'>
-                    {imgsrc ? (
-                        <img src={imgsrc} alt="Uploaded Preview" />
-                    ) : (
-                        <div className='text-center d-flex align-items-center justify-content-center h-100'>
-                            عکسی جهت نمایش وجود ندارد
-                        </div>
-                    )}
-                </div>
-                <textarea
-                    className='modal-textarea'
-                    placeholder='توضیحات'
-                    value={modalText || ''}
-                    onChange={(e) => setModalText(e.target.value)}
-                />
-                <button className='btn-modalcar mt-3' onClick={handleSaveText}>
-                    ثبت
-                </button>
-            </div>
+      <div
+        className={`${styles.carModal_container} ${
+          opneModal ? styles.activeModalCar : ""
+        }`}
+      >
+        <div
+          className={styles.closeCarModal}
+          onClick={() => setOpenModal(false)}
+        ></div>
+        <div className={`${styles.carModal_content}`}>
+          <div className={styles.modal_image}>
+            {imgsrc ? (
+              <img src={imgsrc} alt="Uploaded Preview" />
+            ) : (
+              <div className="text-center d-flex align-items-center justify-content-center h-100">
+                عکسی جهت نمایش وجود ندارد
+              </div>
+            )}
+          </div>
+          <textarea
+            className={styles.modal_textarea}
+            placeholder="توضیحات"
+            value={modalText || ""}
+            onChange={(e) => setModalText(e.target.value)}
+          />
+          <button className="btn-modalcar mt-3" onClick={handleSaveText}>
+            ثبت
+          </button>
         </div>
+      </div>
     );
 }
