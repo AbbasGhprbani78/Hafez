@@ -4,7 +4,7 @@ import ProgressBar from '../../Components/Modules/ProgressBar/ProgressBar'
 import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 import Pform2 from '../../Components/Templates/paziresh/Pform2/Pform2'
 import Pform3 from '../../Components/Templates/paziresh/Pform3/Pform3'
-import './Paziresh.css'
+import styles from './Paziresh.module.css'
 import Pform4 from '../../Components/Templates/paziresh/Pform4/Pform4'
 
 export default function Paziresh() {

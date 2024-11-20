@@ -6,4 +6,16 @@
     border: none;
     outline: none;
     min-width: 130px;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    gap: 5px;
+}
+
+
+@media (max-width:600px) {
+    .width{
+        width: 100%;
+    }
 }

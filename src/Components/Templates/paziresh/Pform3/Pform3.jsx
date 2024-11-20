@@ -11,7 +11,7 @@ import {
     faTrash,
     faPenToSquare
 } from '@fortawesome/free-solid-svg-icons';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
 import EditBtn from '../../../Modules/EditBtn/EditBtn';
 import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn';
 import TableForm from '../../../Modules/Table/TableForm';
@@ -30,6 +30,9 @@ import persian from "react-date-object/calendars/persian"
 import persian_fa from "react-date-object/locales/persian_fa"
 import TimePicker from 'react-multi-date-picker/plugins/time_picker';
 import LoadingForm from '../../../Modules/Loading/LoadingForm';
+import SelectDropDown from '../../../Modules/SelectDropDown/SelectDropDown';
+import Button2 from '../../../Modules/Button2/Button2'
+import { Col } from 'react-bootstrap';
 
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
@@ -553,399 +556,498 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     }, [formik.dirty]);
 
     return (
-        <>
-            <Modal
-                style={"widthstyle"}
-                showModal={showModal}
-                setShowModal={setShowModal}
-            >
-                {
-                    idDelete ?
-                        <>
-                            <div className='div-delete'>
-                                <div className='close-delete-modal'>
-                                    <FontAwesomeIcon
-                                        icon={faXmark}
-                                        className='delete-icon-modal'
-                                        onClick={() => {
-                                            setShowModal(false)
+      <>
+        <Modal
+          style={"widthstyle"}
+          showModal={showModal}
+          setShowModal={setShowModal}
+        >
+          {idDelete ? (
+            <>
+              <div className="div-delete">
+                <div className="close-delete-modal">
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    className="delete-icon-modal"
+                    onClick={() => {
+                      setShowModal(false);
+                    }}
+                  />
+                </div>
+                <p className="delete-text">آیا از حذف اطمینان دارید؟</p>
+                <div className="delete-actions">
+                  <button
+                    className="btn-delete btn-yes-delete"
+                    onClick={() => deleteMainStatement(idDelete)}
+                  >
+                    بله
+                  </button>
+                  <button
+                    className="btn-delete btn-no-delete"
+                    onClick={() => {
+                      setShowModal(false);
+                    }}
+                  >
+                    خیر
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <Box sx={{ width: "100%" }}>
+              <Tabs
+                value={value}
+                onChange={handleChangetab}
+                aria-label="simple tabs example"
+              >
+                <CustomTab label="مشتری" {...a11yProps(0)} />
+                <CustomTab label="کارشناس" {...a11yProps(1)} />
+              </Tabs>
+              <TabPanel value={value} index={0} key={0}>
+                <div className="wrap-image-modal">
+                  <div className="image-modal-content">
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="delete-img-modal"
+                      onClick={handleDeleteImageCoustomer}
+                    />
+                    {selectedStatement?.customer_statements_file ? (
+                      <img
+                        src={
+                          isBase64(selectedStatement.customer_statements_file)
+                            ? selectedStatement.customer_statements_file
+                            : `${apiUrl}${selectedStatement.customer_statements_file}`
+                        }
+                        alt="Customer statement"
+                        className="img-statmentmodal"
+                      />
+                    ) : (
+                      <div className="modal-empty-image">
+                        <FontAwesomeIcon
+                          icon={faImage}
+                          className="empty-icon-image"
+                        />
+                      </div>
+                    )}
+                  </div>
 
-                                        }}
-                                    />
-                                </div>
-                                <p className='delete-text'>آیا از حذف اطمینان دارید؟</p>
-                                <div className='delete-actions'>
-                                    <button className='btn-delete btn-yes-delete'
-                                        onClick={() => deleteMainStatement(idDelete)}>بله</button>
-                                    <button className='btn-delete btn-no-delete' onClick={() => {
-                                        setShowModal(false)
+                  <label
+                    htmlFor="filechnage"
+                    className="btn-chnage-img-modal mt-4"
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChangeCoustomer}
+                      className="mt-3 d-none"
+                      id="filechnage"
+                    />
+                    ویرایش
+                    <FontAwesomeIcon icon={faPen} className="mx-2" />
+                  </label>
 
-                                    }}>خیر</button>
-                                </div>
-                            </div>
-                        </> :
-                        <Box sx={{ width: '100%' }}>
-                            <Tabs value={value} onChange={handleChangetab} aria-label="simple tabs example">
-                                <CustomTab label="مشتری" {...a11yProps(0)} />
-                                <CustomTab label="کارشناس" {...a11yProps(1)} />
-                            </Tabs>
-                            <TabPanel value={value} index={0} key={0}>
-                                <div className='wrap-image-modal'>
-                                    <div className='image-modal-content'>
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className='delete-img-modal'
-                                            onClick={handleDeleteImageCoustomer}
-                                        />
-                                        {selectedStatement?.customer_statements_file ? (
-                                            <img
-                                                src={
-                                                    isBase64(selectedStatement.customer_statements_file)
-                                                        ? selectedStatement.customer_statements_file
-                                                        : `${apiUrl}${selectedStatement.customer_statements_file}`
-                                                }
-                                                alt="Customer statement"
-                                                className='img-statmentmodal'
-                                            />
-                                        ) : (
-                                            <div className='modal-empty-image'>
-                                                <FontAwesomeIcon icon={faImage} className='empty-icon-image' />
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <label htmlFor="filechnage" className='btn-chnage-img-modal mt-4'>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleImageChangeCoustomer}
-                                            className='mt-3 d-none'
-                                            id='filechnage'
-                                        />
-                                        ویرایش
-                                        <FontAwesomeIcon icon={faPen} className='mx-2' />
-                                    </label>
-
-                                    {selectedStatement?.customer_statements_voice && (
-                                        <div className='d-flex mt-4 align-items-center'>
-                                            <FontAwesomeIcon
-                                                icon={faTrash}
-                                                onClick={handleDeleteAudioCoustomer}
-                                                className='trash-audio-modal'
-                                            />
-                                            <audio controls>
-                                                <source
-                                                    type="audio/webm"
-                                                    src={
-                                                        isBase64(selectedStatement.customer_statements_voice)
-                                                            ? selectedStatement.customer_statements_voice
-                                                            : `${apiUrl}${selectedStatement.customer_statements_voice}`
-                                                    }
-                                                />
-                                                مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
-                                            </audio>
-                                        </div>
-                                    )}
-                                </div>
-                            </TabPanel>
-
-                            <TabPanel value={value} index={1} key={1} >
-                                <div className='wrap-image-modal'>
-                                    <div className='image-modal-content'>
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className='delete-img-modal'
-                                            onClick={handleDeleteImageExpert}
-                                        />
-                                        {selectedStatement?.expert_statements_file ? (
-                                            <img
-                                                src={
-                                                    isBase64(selectedStatement.expert_statements_file)
-                                                        ? selectedStatement.expert_statements_file
-                                                        : `${apiUrl}${selectedStatement.expert_statements_file}`
-                                                }
-                                                alt="Customer statement"
-                                                className='img-statmentmodal'
-                                            />
-                                        ) : (
-                                            <div className='modal-empty-image'>
-                                                <FontAwesomeIcon icon={faImage} className='empty-icon-image' />
-                                            </div>
-                                        )}
-                                    </div>
-                                    <label htmlFor="filechnage" className='btn-chnage-img-modal mt-4'>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleImageChangeExpert}
-                                            className='mt-3 d-none'
-                                            id='filechnage'
-                                        />
-                                        ویرایش
-                                        <FontAwesomeIcon icon={faPen} className='mx-2' />
-                                    </label>
-
-                                    {selectedStatement?.expert_statements_voice && (
-                                        <div className='d-flex mt-4 align-items-center'>
-                                            <FontAwesomeIcon
-                                                icon={faTrash}
-                                                onClick={handleDeleteAudioExpert}
-                                                className='trash-audio-modal'
-                                            />
-                                            <audio controls>
-                                                <source
-                                                    type="audio/webm"
-                                                    src={
-                                                        isBase64(selectedStatement.expert_statements_voice)
-                                                            ? selectedStatement.expert_statements_voice
-                                                            : `${apiUrl}${selectedStatement.expert_statements_voice}`
-                                                    }
-                                                />
-                                                مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
-                                            </audio>
-                                        </div>
-                                    )}
-                                </div>
-                            </TabPanel>
-                        </Box>
-                }
-
-            </Modal>
-            <div className="pform3-container">
-                <form onSubmit={formik.handleSubmit}>
-                    <div className="p-form3-content">
-                        <div className="statements-container">
-                            <div className="statements-right">
-                                <div className="statements-customer">
-                                    <span className="statements-title">اظهارات مشتری</span>
-                                    <div className="statements-content">
-                                        <textarea
-                                            className="statements-text"
-                                            placeholder="اظهارات مشتری"
-                                            value={statementData.customer_statements_text}
-                                            onChange={handlecustomer_statements_textChange}
-                                        ></textarea>
-                                        <div className="statements-media">
-                                            <div className="media-statements media-voice">
-                                                {isRecordingCustomer ? (
-                                                    <FontAwesomeIcon icon={faMicrophoneSlash} onClick={stopRecordingCustomer} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faMicrophone} onClick={startRecordingCustomer} />
-                                                )}
-                                            </div>
-                                            <label htmlFor="file_customer" className="media-statements media-file">
-                                                <input
-                                                    type="file"
-                                                    id="file_customer"
-                                                    style={{ display: 'none' }}
-                                                    accept="image/*"
-                                                    onChange={handlecustomer_statements_fileChange}
-                                                />
-                                                {
-                                                    statementData.customer_statements_file ?
-                                                        <FontAwesomeIcon icon={faFileLines} />
-                                                        :
-                                                        <FontAwesomeIcon icon={faFile} />
-                                                }
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* {statementData.customer_statements_voice && (
-                                    <audio controls className='mt-4'>
-                                        <source src={URL.createObjectURL(statementData.customer_statements_voice)} type="audio/webm" />
-                                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
-                                    </audio>
-                                )} */}
-                                {errors.customer_statements_text && <p className='error mt-2'>{errors.customer_statements_text}</p>}
-                            </div>
-
-                            <div className="statements-left">
-                                <div className="statements-export">
-                                    <span className="statements-title">اظهارات کارشناس</span>
-                                    <div className="statements-content">
-                                        <textarea
-                                            className="statements-text"
-                                            placeholder="اظهارات کارشناس"
-                                            value={statementData.expert_statements_text}
-                                            onChange={handleexpert_statements_textChange}
-                                        ></textarea>
-                                        <div className="statements-media">
-                                            <div className="media-statements media-voice">
-                                                {isRecordingExpert ? (
-                                                    <FontAwesomeIcon icon={faMicrophoneSlash} onClick={stopRecordingExpert} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faMicrophone} onClick={startRecordingExpert} />
-                                                )}
-                                            </div>
-                                            <label htmlFor="file_statment" className="media-statements media-file">
-                                                <input
-                                                    type="file"
-                                                    id="file_statment"
-                                                    style={{ display: 'none' }}
-                                                    accept="image/*"
-                                                    onChange={handleexpert_statements_fileChange}
-                                                />
-                                                {
-                                                    statementData.expert_statements_file ?
-                                                        <FontAwesomeIcon icon={faFileLines} />
-                                                        :
-                                                        <FontAwesomeIcon icon={faFile} />
-                                                }
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* {statementData.expert_statements_voice && (
-                                    <audio controls className='mt-4'>
-                                        <source src={URL.createObjectURL(statementData.expert_statements_voice)} type="audio/webm" />
-                                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
-                                    </audio>
-                                )} */}
-                                {errors.expert_statements_text && <p className='error mt-2'>{errors.expert_statements_text}</p>}
-                            </div>
-                        </div>
-                        <div className="estimate-wrapper mt-4">
-                            <div className="estimate-item">
-                                <div className="estimate-input">
-                                    <div className={`input-container`}>
-                                        <label htmlFor={"تخمین قیمت"} className='label_input mb-2'>تخمین قیمت</label>
-                                        <div className="input_content_wrapper">
-                                            <input
-                                                id={"تخمین قیمت"}
-                                                name={"تخمین قیمت"}
-                                                type={"text"}
-                                                placeholder={"تخمین قیمت"}
-                                                value={toFarsiNumber(formatWithThousandSeparators(statementData.price_estimate))}
-                                                onChange={handleprice_estimateChange}
-                                                className='input_form'
-                                                autoComplete='off'
-                                                maxLength={30}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                {errors.price_estimate && <p className='error mt-2'>{errors.price_estimate}</p>}
-                            </div>
-                            <div className="mt-3 mt-sm-0 estimate-item">
-                                <div className="estimate-input">
-                                    <label htmlFor="estimated-time" className='label_input mb-2'>تخمین زمان تعمیر</label>
-                                    <div className="input_content_wrapper">
-                                        <DatePicker
-                                            calendar={persian}
-                                            locale={persian_fa}
-                                            calendarPosition="bottom-right"
-                                            value={dateValue}
-                                            onChange={setDateValue}
-                                            format="YYYY/MM/DD HH:mm"
-                                            style={{
-                                                border: "none",
-                                                background: "transparent",
-                                                outline: "none"
-                                            }}
-                                            plugins={[
-                                                <TimePicker position="bottom" />,
-                                            ]}
-                                        />
-                                    </div>
-                                </div>
-                                {errors.estimated_repair_time && <p className='error mt-2'>{errors.estimated_repair_time}</p>}
-                            </div>
-                        </div>
-                        <div className="pform3-container-table mt-5" dir="rtl">
-                            <button className="add-estimate-btn mb-3" onClick={addStatement}>
-                                افزودن شرح اظهار
-                            </button>
-                            {
-                                formik.values.form.length ?
-                                    <TableForm columns={columns}>
-                                        {formik.values.form?.map((item, rowIndex) => (
-                                            <TableRow
-                                                key={rowIndex}
-                                                sx={{ border: '1px solid #ddd', fontFamily: "iranYekan", cursor: "pointer" }}
-                                                className='statment-row-table'
-                                            >
-                                                {
-                                                    editMode && dataForm?.customer_form_three &&
-                                                    <TableCell>
-                                                        {item.declaration_code}
-                                                    </TableCell>
-                                                }
-                                                <TableCell sx={{maxWidth:"280px"}}>
-                                                    {item.customer_statements_text}
-                                                </TableCell>
-                                                <TableCell sx={{maxWidth:"280px"}}>
-                                                    {item.expert_statements_text}
-                                                </TableCell>
-                                                <TableCell >
-                                                    {Number(item.price_estimate).toLocaleString("fa")}
-                                                </TableCell>
-                                                <TableCell >
-                                                    {item?.estimated_repair_time ? (
-                                                        new Intl.DateTimeFormat('fa-IR', {
-                                                            dateStyle: 'full',
-                                                            timeStyle: 'short'
-                                                        }).format(new Date(item?.estimated_repair_time))
-                                                    ) : (
-                                                        'N/A'
-                                                    )}
-                                                </TableCell>
-                                                {(item?.customer_statements_voice || item?.customer_statements_file || item?.expert_statements_file || item?.expert_statements_voice) ? (
-                                                    <TableCell
-                                                        sx={{
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            justifyContent: "center"
-                                                        }}>
-                                                        <label className="media-statements mx-1" onClick={() => {
-                                                            setIdDelete("")
-                                                            handleShowModal(item)
-                                                        }}>
-                                                            <FontAwesomeIcon icon={faFileLines} />
-                                                        </label>
-                                                    </TableCell>
-                                                ) : null}
-                                                <div className='wrap-trash-table'>
-                                                    <FontAwesomeIcon
-                                                        icon={faTrash}
-                                                        onClick={() => {
-                                                            if (editMode && dataForm?.customer_form_three?.length > 0) {
-                                                                setIdDelete(item.declaration_code)
-                                                                setShowModal(true)
-                                                            } else {
-                                                                handleDeleteStatement(rowIndex)
-                                                            }
-                                                        }}
-                                                        className='trash-row-table'
-                                                    />
-                                                </div>
-                                                <div className='wrap-edit-table'>
-                                                    <FontAwesomeIcon icon={faPenToSquare}
-                                                        onClick={() => selectRow(item)}
-                                                        className='edit-row-table'
-                                                    />
-                                                </div>
-                                            </TableRow>
-                                        ))}
-                                    </TableForm>
-                                    :
-                                    null
-                            }
-                        </div>
-                        <div className="p-form-actions pt-3">
-                            <EditBtn onClick={prevTab} />
-                            <ConfirmBtn type="submit" isSubmitting={loading} />
-                        </div>
+                  {selectedStatement?.customer_statements_voice && (
+                    <div className="d-flex mt-4 align-items-center">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={handleDeleteAudioCoustomer}
+                        className="trash-audio-modal"
+                      />
+                      <audio controls>
+                        <source
+                          type="audio/webm"
+                          src={
+                            isBase64(
+                              selectedStatement.customer_statements_voice
+                            )
+                              ? selectedStatement.customer_statements_voice
+                              : `${apiUrl}${selectedStatement.customer_statements_voice}`
+                          }
+                        />
+                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
+                      </audio>
                     </div>
-                </form >
-            </div >
-            {
-                loading && <LoadingForm />
-            }
-        </>
+                  )}
+                </div>
+              </TabPanel>
 
+              <TabPanel value={value} index={1} key={1}>
+                <div className="wrap-image-modal">
+                  <div className="image-modal-content">
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="delete-img-modal"
+                      onClick={handleDeleteImageExpert}
+                    />
+                    {selectedStatement?.expert_statements_file ? (
+                      <img
+                        src={
+                          isBase64(selectedStatement.expert_statements_file)
+                            ? selectedStatement.expert_statements_file
+                            : `${apiUrl}${selectedStatement.expert_statements_file}`
+                        }
+                        alt="Customer statement"
+                        className="img-statmentmodal"
+                      />
+                    ) : (
+                      <div className="modal-empty-image">
+                        <FontAwesomeIcon
+                          icon={faImage}
+                          className="empty-icon-image"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <label
+                    htmlFor="filechnage"
+                    className="btn-chnage-img-modal mt-4"
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChangeExpert}
+                      className="mt-3 d-none"
+                      id="filechnage"
+                    />
+                    ویرایش
+                    <FontAwesomeIcon icon={faPen} className="mx-2" />
+                  </label>
+
+                  {selectedStatement?.expert_statements_voice && (
+                    <div className="d-flex mt-4 align-items-center">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={handleDeleteAudioExpert}
+                        className="trash-audio-modal"
+                      />
+                      <audio controls>
+                        <source
+                          type="audio/webm"
+                          src={
+                            isBase64(selectedStatement.expert_statements_voice)
+                              ? selectedStatement.expert_statements_voice
+                              : `${apiUrl}${selectedStatement.expert_statements_voice}`
+                          }
+                        />
+                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
+                      </audio>
+                    </div>
+                  )}
+                </div>
+              </TabPanel>
+            </Box>
+          )}
+        </Modal>
+        <div className="pform3-container">
+          <form onSubmit={formik.handleSubmit}>
+            <div className="p-form3-content">
+              <div className="statements-container">
+                <div className="statements-right">
+                  <div className="statements-customer">
+                    <span className="statements-title">اظهارات مشتری</span>
+                    <div className="statements-content">
+                      <textarea
+                        className="statements-text"
+                        placeholder="اظهارات مشتری"
+                        value={statementData.customer_statements_text}
+                        onChange={handlecustomer_statements_textChange}
+                      ></textarea>
+                      <div className="statements-media">
+                        <div className="media-statements media-voice">
+                          {isRecordingCustomer ? (
+                            <FontAwesomeIcon
+                              icon={faMicrophoneSlash}
+                              onClick={stopRecordingCustomer}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faMicrophone}
+                              onClick={startRecordingCustomer}
+                            />
+                          )}
+                        </div>
+                        <label
+                          htmlFor="file_customer"
+                          className="media-statements media-file"
+                        >
+                          <input
+                            type="file"
+                            id="file_customer"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handlecustomer_statements_fileChange}
+                          />
+                          {statementData.customer_statements_file ? (
+                            <FontAwesomeIcon icon={faFileLines} />
+                          ) : (
+                            <FontAwesomeIcon icon={faFile} />
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  {errors.customer_statements_text && (
+                    <p className="error mt-2">
+                      {errors.customer_statements_text}
+                    </p>
+                  )}
+                </div>
+
+                <div className="statements-left">
+                  <div className="statements-export">
+                    <span className="statements-title">اظهارات کارشناس</span>
+                    <div className="statements-content">
+                      <textarea
+                        className="statements-text"
+                        placeholder="اظهارات کارشناس"
+                        value={statementData.expert_statements_text}
+                        onChange={handleexpert_statements_textChange}
+                      ></textarea>
+                      <div className="statements-media">
+                        <div className="media-statements media-voice">
+                          {isRecordingExpert ? (
+                            <FontAwesomeIcon
+                              icon={faMicrophoneSlash}
+                              onClick={stopRecordingExpert}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faMicrophone}
+                              onClick={startRecordingExpert}
+                            />
+                          )}
+                        </div>
+                        <label
+                          htmlFor="file_statment"
+                          className="media-statements media-file"
+                        >
+                          <input
+                            type="file"
+                            id="file_statment"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handleexpert_statements_fileChange}
+                          />
+                          {statementData.expert_statements_file ? (
+                            <FontAwesomeIcon icon={faFileLines} />
+                          ) : (
+                            <FontAwesomeIcon icon={faFile} />
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {errors.expert_statements_text && (
+                    <p className="error mt-2">
+                      {errors.expert_statements_text}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className={"declaration-code-export mt-4"}>
+                <Col xs={12} sm={7} md={6} lg={4} className="wrap-dropdown" >
+                  <SelectDropDown
+                    icon={""}
+                    label={"کد اظهار"}
+                    items={""}
+                    name=""
+                    value={""}
+                    onChange={""}
+                    material={""}
+                  />
+                </Col>
+                <Button2 text={"ارجا به کارشناس"} onClick={""} />
+              </div>
+
+              <div className="estimate-wrapper mt-4">
+                <Col xs={12} md={5}>
+                  <div className="estimate-item">
+                    <div className="estimate-input">
+                      <div className={`input-container`}>
+                        <label
+                          htmlFor={"تخمین قیمت"}
+                          className="label_input mb-2"
+                        >
+                          تخمین قیمت
+                        </label>
+                        <div className="input_content_wrapper">
+                          <input
+                            id={"تخمین قیمت"}
+                            name={"تخمین قیمت"}
+                            type={"text"}
+                            placeholder={"تخمین قیمت"}
+                            value={toFarsiNumber(
+                              formatWithThousandSeparators(
+                                statementData.price_estimate
+                              )
+                            )}
+                            onChange={handleprice_estimateChange}
+                            className="input_form"
+                            autoComplete="off"
+                            maxLength={30}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {errors.price_estimate && (
+                      <p className="error mt-2">{errors.price_estimate}</p>
+                    )}
+                  </div>
+                </Col>
+                <Col xs={12} md={7}>
+                  <label htmlFor="estimated-time" className="label_input mb-2">
+                    تخمین زمان تعمیر
+                  </label>
+                  <div className="d-flex gap-2 align-items-center flex-wrap">
+                    <div className="mt-3 mt-sm-0 estimate-item ">
+                      <div className="estimate-input">
+                        <div className="input_content_wrapper">
+                          <DatePicker
+                            calendar={persian}
+                            locale={persian_fa}
+                            calendarPosition="bottom-right"
+                            value={dateValue}
+                            onChange={setDateValue}
+                            format="YYYY/MM/DD HH:mm"
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              outline: "none",
+                            }}
+                            plugins={[<TimePicker position="bottom" />]}
+                          />
+                        </div>
+                      </div>
+                      {errors.estimated_repair_time && (
+                        <p className="error mt-2">
+                          {errors.estimated_repair_time}
+                        </p>
+                      )}
+                    </div>
+                    <div className='wrap-btn'>
+                      <Button2 text={"برنامه ریزی تعمیرگاه"} onClick={""} />
+                    </div>
+                  </div>
+                </Col>
+              </div>
+
+              <div className="pform3-container-table mt-5" dir="rtl">
+                <Button2 text={"افزودن شرح اظهار"} onClick={addStatement} />
+                {formik.values.form.length ? (
+                  <TableForm columns={columns}>
+                    {formik.values.form?.map((item, rowIndex) => (
+                      <TableRow
+                        key={rowIndex}
+                        sx={{
+                          border: "1px solid #ddd",
+                          fontFamily: "iranYekan",
+                          cursor: "pointer",
+                        }}
+                        className="statment-row-table"
+                      >
+                        {editMode && dataForm?.customer_form_three && (
+                          <TableCell>{item.declaration_code}</TableCell>
+                        )}
+                        <TableCell sx={{ maxWidth: "280px" }}>
+                          {item.customer_statements_text}
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: "280px" }}>
+                          {item.expert_statements_text}
+                        </TableCell>
+                        <TableCell>
+                          {Number(item.price_estimate).toLocaleString("fa")}
+                        </TableCell>
+                        <TableCell>
+                          {item?.estimated_repair_time
+                            ? new Intl.DateTimeFormat("fa-IR", {
+                                dateStyle: "full",
+                                timeStyle: "short",
+                              }).format(new Date(item?.estimated_repair_time))
+                            : "N/A"}
+                        </TableCell>
+                        {item?.customer_statements_voice ||
+                        item?.customer_statements_file ||
+                        item?.expert_statements_file ||
+                        item?.expert_statements_voice ? (
+                          <TableCell
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <label
+                              className="media-statements mx-1"
+                              onClick={() => {
+                                setIdDelete("");
+                                handleShowModal(item);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faFileLines} />
+                            </label>
+                          </TableCell>
+                        ) : null}
+                        <div className="wrap-trash-table">
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            onClick={() => {
+                              if (
+                                editMode &&
+                                dataForm?.customer_form_three?.length > 0
+                              ) {
+                                setIdDelete(item.declaration_code);
+                                setShowModal(true);
+                              } else {
+                                handleDeleteStatement(rowIndex);
+                              }
+                            }}
+                            className="trash-row-table"
+                          />
+                        </div>
+                        <div className="wrap-edit-table">
+                          <FontAwesomeIcon
+                            icon={faPenToSquare}
+                            onClick={() => selectRow(item)}
+                            className="edit-row-table"
+                          />
+                        </div>
+                      </TableRow>
+                    ))}
+                  </TableForm>
+                ) : null}
+              </div>
+              <div className="p-form-actions pt-3">
+                <EditBtn onClick={prevTab} text={"قبلی"}/>
+                <ConfirmBtn type="submit" isSubmitting={loading} />
+              </div>
+            </div>
+          </form>
+        </div>
+        {loading && <LoadingForm />}
+      </>
     );
 }
 
 
 
+
+{
+  /* {statementData.expert_statements_voice && (
+                                    <audio controls className='mt-4'>
+                                        <source src={URL.createObjectURL(statementData.expert_statements_voice)} type="audio/webm" />
+                                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
+                                    </audio>
+                                )} */
+}
+
+
+ {
+   /* {statementData.customer_statements_voice && (
+                                    <audio controls className='mt-4'>
+                                        <source src={URL.createObjectURL(statementData.customer_statements_voice)} type="audio/webm" />
+                                        مرورگر شما از پخش فایل‌های صوتی پشتیبانی نمی‌کند.
+                                    </audio>
+                                )} */
+ }

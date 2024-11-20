@@ -4,24 +4,19 @@ import Button2 from "../../../Modules/Button2/Button2";
 import TableForm from "../../../Modules/Table/TableForm";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import TypeOfService from "../../../Modules/TypeOfService/TypeOfService";
-import { useFormik } from "formik";
+import { FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faNewspaper, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import OccultationItem from "../../../Modules/OccultationItem/OccultationItem";
+import { Col } from "react-bootstrap";
+import ConfirmBtn from "../../../Modules/ConfirmBtn/ConfirmBtn";
+import EditBtn from "../../../Modules/EditBtn/EditBtn";
 export default function Occultation() {
   const columns = ["شرح اظهار", "توضیحات کارشناس", "توضیحات مشتری"];
 
-  const formik = useFormik({
-    initialValues: {},
-
-    onSubmit: async (values) => {
-      console.log(values);
-    },
-  });
 
   return (
-    <div className={`${styles.occultation_box} mt-3`}>
-      <span className={`${styles.car_onfo_box_title} subtitle-project`}>
+    <div className={`${styles.box}`}>
+      <span className={`${styles.box_title} subtitle-project`}>
         عیب یابی :
       </span>
 
@@ -50,8 +45,29 @@ export default function Occultation() {
             </TableRow>
           </TableForm>
         </div>
-        <div className="mt-5">
-          <TypeOfService handleServiceChange={""} selectedServices={""} />
+        <p className={styles.sub_title}>نوع خدمات و انتخاب تعمیرکار :</p>
+        <div className={styles.occultationItem_container}>
+          {Array(3)
+            .fill(0)
+            .map((item, i) => (
+              <Col xs={12} sm={5} md={3} key={i}>
+                <OccultationItem key={i} />
+              </Col>
+            ))}
+        </div>
+        <div className={styles.wrap_contract}>
+          <FontAwesomeIcon icon={faNewspaper} />
+          <p className={styles.contract_text}>قرارداد صافکاری - نقاشی</p>
+        </div>
+
+        <div className="p-form-actions">
+          <div className="p-form-actions">
+            <EditBtn
+              onClick={""}
+              text={"ویرایش"}
+            />
+            <ConfirmBtn type="submit" isSubmitting={""} />
+          </div>
         </div>
       </div>
     </div>

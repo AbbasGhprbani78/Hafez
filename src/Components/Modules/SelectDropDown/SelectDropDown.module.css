@@ -1,4 +1,3 @@
-
 .select_car_wrapper {
     width: 90%;
 }
@@ -38,6 +37,8 @@
     padding-left: 0;
     max-height: 220px;
     overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .list_cars::-webkit-scrollbar {

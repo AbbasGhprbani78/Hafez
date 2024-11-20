@@ -68,9 +68,11 @@ export default function SelectDropDown({
 
   return (
     <div className={styles.select_car_wrapper} ref={dropdownRef}>
-      <label htmlFor="myInput" className={`label_input mb-2`}>
-        {label}
-      </label>
+      {label && (
+        <label htmlFor="myInput" className={`label_input mb-2`}>
+          {label}
+        </label>
+      )}
       <div className={styles.select_car}>
         <input
           type="text"

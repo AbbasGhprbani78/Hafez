@@ -93,11 +93,11 @@
 }
 
 .estimate-item {
-    width: 45%;
+    width: 220.68px;
 }
 
 .estimate-input {
-    width: 50%;
+
     display: flex;
     flex-direction: column;
 }
@@ -261,7 +261,7 @@
 
 .close-delete-modal {}
 
-.delete-icon-modal{
+.delete-icon-modal {
     cursor: pointer;
 }
 
@@ -297,7 +297,9 @@
 }
 
 
-
+.wrap-dropdown {
+    display: inline-block;
+}
 
 
 @media (max-width:1130px) {
@@ -307,19 +309,35 @@
 }
 
 
+@media (max-width:1055px) {
+    .estimate-wrapper {
+        width: 100%;
+    }
+}
+
 @media (max-width:1025px) {
     .widthstyle {
         width: 50%;
     }
+
+    .statements-container {
+        width: 100%;
+    }
 }
 
 @media (max-width:992px) {
-    .estimate-input {
-        width: 70%;
-    }
+    .estimate-input {}
 
     .widthstyle {
         width: 60%;
+    }
+}
+
+
+@media (max-width:780px) {
+    .estimate-wrapper {
+        flex-direction: column;
+        gap: 20px;
     }
 }
 
@@ -327,27 +345,35 @@
 
     .statements-right,
     .statements-left {
-        width: 70%;
+        width: 80%;
     }
 
-    .estimate-input {
-        width: 85%;
+    .statements-left {
+        margin-top: 20px;
     }
+
+    .estimate-input {}
 
     .statements-container {
         flex-direction: column;
-        align-items: center;
         width: 100%;
     }
 
     .p-form3-content {
         display: flex;
         flex-direction: column;
-        align-items: center;
     }
 
     .widthstyle {
         width: 75%;
+    }
+
+    .declaration-code-export {
+        width: 100%;
+    }
+
+    .wrap-dropdown {
+        margin-left: 20px;
     }
 }
 
@@ -356,8 +382,14 @@
         padding: 5px 10px;
     }
 
+    .p-form3-content {
+        width: 95%;
+        margin: 0 auto;
+    }
+
     .statements-container {
         width: 100%;
+        align-items: center;
     }
 
     .statements-text {
@@ -366,7 +398,7 @@
 
     .statements-right,
     .statements-left {
-        width: 95%;
+        width: 100%;
     }
 
     .statements-content {
@@ -383,9 +415,7 @@
         width: 100%;
     }
 
-    .estimate-input {
-        width: 100%;
-    }
+    .estimate-input {}
 
     .estimate-item {
         width: 100%;
@@ -405,5 +435,13 @@
 
     .widthstyle {
         width: 90%;
+    }
+
+    .wrap-dropdown {
+        margin-bottom: 20px;
+    }
+
+    .wrap-btn {
+        margin-top: 20px;
     }
 }

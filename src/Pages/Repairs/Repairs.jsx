@@ -3,17 +3,32 @@ import styles from "./Repairs.module.css";
 import SideBar from "../../Components/Modules/SideBar/SideBar";
 import AboutCar from "../../Components/Templates/Repairs/AboutCar/AboutCar";
 import Occultation from "../../Components/Templates/Repairs/Occulatation/Occultation";
+import Geret from "../../Components/Templates/Repairs/Geret/Geret";
+import Piece from "../../Components/Templates/Repairs/Piece/Piece";
+import OutWork from "../../Components/Templates/Repairs/OutWork/OutWork";
+import Attaches from "../../Components/Templates/Repairs/Attaches/Attaches";
+import Button2 from "../../Components/Modules/Button2/Button2";
+import { faCheck, faPrint } from "@fortawesome/free-solid-svg-icons";
 export default function Repairs() {
   return (
     <div className="content-conatiner">
       <SideBar />
-      <div className="space-content">
+      <div className={`space-content ${styles.wrap_repairs}`}>
         <div className="headerP">
           <p className="headerPtext">کارت تعمیر</p>
         </div>
         <div className="my-4">
           <AboutCar />
           <Occultation />
+          <Geret />
+          <Piece />
+          <OutWork />
+          <Attaches />
+
+          <div className={styles.wrap_actions_repairs}>
+            <Button2 text={"پرینت"} onClick={""} icon={faPrint} style={"width"}/>
+            <Button2 text={"بستن کارت تعمیر"} onClick={""} icon={faCheck} style={"width"}/>
+          </div>
         </div>
       </div>
     </div>

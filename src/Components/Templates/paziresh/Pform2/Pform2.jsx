@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import './Pform2.css'
+import styles from './Pform2.module.css';
 import Input from '../../../Modules/Input/Input'
 import EditBtn from '../../../Modules/EditBtn/EditBtn'
 import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn'
