@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styles from './Pform2.module.css';
+import './Pform2.css';
 import Input from '../../../Modules/Input/Input'
 import EditBtn from '../../../Modules/EditBtn/EditBtn'
 import ConfirmBtn from '../../../Modules/ConfirmBtn/ConfirmBtn'
@@ -889,7 +889,7 @@ export default function Pform2({ nextTab, prevTab, setContent, coustomer }) {
                         {errors.accessories && <span className='error'>{errors.accessories}</span>}
                         <div className='p-form-actions'>
                             <div className='p-form-actions'>
-                                <EditBtn onClick={() => {
+                                <EditBtn text={"قبل"} onClick={() => {
                                     prevTab()
                                 }} />
                                 <ConfirmBtn type="submit" isSubmitting={loading} />

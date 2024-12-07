@@ -6,6 +6,7 @@ export default function Modal({
     showModal,
     setShowModal
 }) {
+
     return (
       <div
         className={`${styles.modal_container} ${showModal && styles.showmodal}`}

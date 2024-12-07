@@ -12,6 +12,7 @@ const Input = ({
   value,
   onChange,
   styled,
+  
 }) => {
   return (
     <div className={`${styles.input_container} ${styleInput} ${styled}`}>

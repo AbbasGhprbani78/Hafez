@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './Draft.css'
 import { useEffect } from 'react'
 import { MyContext } from '../../context/context'

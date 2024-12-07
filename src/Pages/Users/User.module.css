@@ -1,0 +1,82 @@
+.top_content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.new_user_action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: var(--color-3);
+}
+
+.wrap_icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--color-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #fff;
+    font-size: .9rem;
+}
+
+.icon {}
+
+.new_user_text {
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    justify-content: center;
+}
+
+.icon_table {
+    cursor: pointer;
+    color: var(--color-3);
+    font-size: 1.1rem;
+}
+
+.modal_bottom {
+    margin-top: 1.5rem;
+}
+
+.input_wrap {
+    margin-top: 1rem;
+}
+
+.modal_bottom {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.wrap_icon_modal {
+    color: #9f9f9f;
+    border: 1px solid #9f9f9f;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.title_modal {
+    color: var(--color-3);
+}
+
+.wrap_btn {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

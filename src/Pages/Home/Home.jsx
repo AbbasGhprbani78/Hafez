@@ -1,10 +1,8 @@
-import React from 'react';
 import './Home.css';
 import SideBar from '../../Components/Modules/SideBar/SideBar'
 import Header from '../../Components/Modules/Header/Header'
-import TypeActivity from '../../Pages/Login/TypeActivity/TypeActivity'
-export default function Home() {
 
+export default function Home() {
     return (
         <>
             <div className="content-conatiner">
@@ -21,7 +19,6 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-            {/* <TypeActivity /> */}
         </>
     );
 }

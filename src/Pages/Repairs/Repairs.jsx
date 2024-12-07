@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./Repairs.module.css";
 import SideBar from "../../Components/Modules/SideBar/SideBar";
 import AboutCar from "../../Components/Templates/Repairs/AboutCar/AboutCar";
@@ -24,7 +23,6 @@ export default function Repairs() {
           <Piece />
           <OutWork />
           <Attaches />
-
           <div className={styles.wrap_actions_repairs}>
             <Button2 text={"پرینت"} onClick={""} icon={faPrint} style={"width"}/>
             <Button2 text={"بستن کارت تعمیر"} onClick={""} icon={faCheck} style={"width"}/>

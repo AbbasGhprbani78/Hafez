@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import{ useState } from "react";
 import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 export default function Header() {
   const [fixtop, setFixTop] = useState(false);
@@ -14,7 +14,15 @@ export default function Header() {
             <FontAwesomeIcon icon={faPlus} className={styles.plus_btn_2} />
           </button>
         </div>
-        <div className={styles.search_wrapper}>
+      </header>
+    </>
+  );
+}
+
+
+// import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+{
+  /* <div className={styles.search_wrapper}>
           <input
             type="text"
             name=""
@@ -26,10 +34,7 @@ export default function Header() {
             icon={faMagnifyingGlass}
             className={styles.search_icon}
           />
-        </div>
-      </header>
-    </>
-  );
+        </div> */
 }
 
 // useEffect(() => {

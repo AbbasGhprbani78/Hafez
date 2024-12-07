@@ -9,6 +9,7 @@ export default function Textarea({ styled, value, onChange, name,text }) {
           className={`${styles.textarea} ${styled}`}
           value={value}
           onChange={onChange}
+          placeholder={text}
           name={name}
         />
       </div>

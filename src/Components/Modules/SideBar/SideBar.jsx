@@ -50,8 +50,10 @@ export default function SideBar() {
             </div>
             <p className={styles.sidebar_item_text}>خانه</p>
           </NavLink>
-
-          <NavLink to={"/paziresh"} className={`${styles.sidebar_item} navlink`}>
+          <NavLink
+            to={"/paziresh"}
+            className={`${styles.sidebar_item} navlink`}
+          >
             <div className={styles.icon_sidebar_wrapper}>
               <FontAwesomeIcon icon={faNewspaper} />
             </div>
@@ -61,7 +63,7 @@ export default function SideBar() {
             <div className={styles.icon_sidebar_wrapper}>
               <FontAwesomeIcon icon={faScrewdriverWrench} />
             </div>
-            <p className={styles.sidebar_item_text}>تعمیرات</p>
+            <p className={styles.sidebar_item_text}>کارت تعمیر</p>
           </NavLink>
           <NavLink to={"/h"} className={`${styles.sidebar_item} navlink`}>
             <div className={styles.icon_sidebar_wrapper}>
@@ -75,22 +77,23 @@ export default function SideBar() {
             </div>
             <p className={styles.sidebar_item_text}>گزارشات</p>
           </NavLink>
-          <NavLink to={"/allform"} className={`${styles.sidebar_item} navlink`}>
+          <NavLink to={"/users"} className={`${styles.sidebar_item} navlink`}>
             <div className={styles.icon_sidebar_wrapper}>
               <FontAwesomeIcon icon={faBoxArchive} />
             </div>
             <p className={styles.sidebar_item_text}>انبار</p>
           </NavLink>
-          <NavLink to={"/draft"} className={`${styles.sidebar_item} navlink`}>
+          <NavLink
+            to={"/allform"}
+            className={`${styles.sidebar_item} navlink`}
+          >
             <div className={styles.icon_sidebar_wrapper}>
               <FontAwesomeIcon icon={faListCheck} />
             </div>
-            <p className={styles.sidebar_item_text}>فرم های ناتمام</p>
+            <p className={styles.sidebar_item_text}>فرم ها</p>
           </NavLink>
           <li
-            className={`${styles.sidebar_item} navlink ${
-              styles.logou_sidebar
-            }`}
+            className={`${styles.sidebar_item} navlink ${styles.logou_sidebar}`}
             onClick={logoutHandler}
           >
             <div className={styles.icon_sidebar_wrapper}>

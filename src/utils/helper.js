@@ -8,3 +8,6 @@ export function toEnglishNumber(number) {
 }
 
 
+export function formatWithThousandSeparators(number) {
+  return number.replace(/[^\d]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

@@ -97,7 +97,6 @@
 }
 
 .estimate-input {
-
     display: flex;
     flex-direction: column;
 }
@@ -301,6 +300,13 @@
     display: inline-block;
 }
 
+.declaration-code-export {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+
 
 @media (max-width:1130px) {
     .pform3-container {
@@ -326,8 +332,6 @@
 }
 
 @media (max-width:992px) {
-    .estimate-input {}
-
     .widthstyle {
         width: 60%;
     }
@@ -352,7 +356,6 @@
         margin-top: 20px;
     }
 
-    .estimate-input {}
 
     .statements-container {
         flex-direction: column;
@@ -415,7 +418,6 @@
         width: 100%;
     }
 
-    .estimate-input {}
 
     .estimate-item {
         width: 100%;

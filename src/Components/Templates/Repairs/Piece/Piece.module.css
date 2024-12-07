@@ -22,9 +22,30 @@
     justify-content: space-between;
 }
 
+.modal_content {
+    width: 30vw;
+    padding: 20px;
+}
+
+.modal_top {
+    border-bottom: 1px solid #9f9f9f;
+    padding-bottom: 3px;
+    font-weight: 500;
+}
+
+.modal_bottom {
+    margin-top: 1.2rem;
+}
+
+
+@media (max-width:768px) {
+    .wrap_input {
+        margin-top: 1rem;
+    }
+}
 
 @media (max-width:600px) {
-    .wrap_drop{
+    .wrap_drop {
         flex-direction: column;
         align-items: start;
     }

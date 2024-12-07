@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 20px 40px;
+    padding: 20px 20px;
     border-bottom: 1px solid var(--color-21);
     transition: all .3s ease;
     z-index: 999;

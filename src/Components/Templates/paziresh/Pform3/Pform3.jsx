@@ -25,14 +25,12 @@ import axios from 'axios';
 import { useContext } from 'react'
 import { MyContext } from '../../../../context/context'
 import { toFarsiNumber, toEnglishNumber } from '../../../../utils/helper';
-import DatePicker from 'react-multi-date-picker';
-import persian from "react-date-object/calendars/persian"
-import persian_fa from "react-date-object/locales/persian_fa"
-import TimePicker from 'react-multi-date-picker/plugins/time_picker';
 import LoadingForm from '../../../Modules/Loading/LoadingForm';
 import SelectDropDown from '../../../Modules/SelectDropDown/SelectDropDown';
 import Button2 from '../../../Modules/Button2/Button2'
 import { Col } from 'react-bootstrap';
+import { formatWithThousandSeparators } from '../../../../utils/helper'; 
+import DataInput from '../../../Modules/DataInput/DataInput';
 
 const CustomTab = styled(Tab)({
     fontSize: 'inherit',
@@ -278,10 +276,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
         }));
     };
 
-    function formatWithThousandSeparators(number) {
-        return number.replace(/[^\d]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-
+  
     const handleprice_estimateChange = (e) => {
         const englishNumber = toEnglishNumber(e.target.value.replace(/,/g, ''));
         setStatementData((prevState) => ({
@@ -502,7 +497,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     };
 
     const isBase64 = (str) => {
-
         const base64Regex = /^data:image\/[^;]+;base64,|^data:audio\/webm;base64,/;
         return base64Regex.test(str);
     };
@@ -845,12 +839,11 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                   )}
                 </div>
               </div>
-
-              <div className={"declaration-code-export mt-4"}>
-                <Col xs={12} sm={7} md={6} lg={4} className="wrap-dropdown" >
+              <p className="mt-4 mb-2 label_input">کد اظهار</p>
+              <div className={"declaration-code-export "}>
+                <Col xs={12} sm={7} md={6} lg={4} className="wrap-dropdown">
                   <SelectDropDown
                     icon={""}
-                    label={"کد اظهار"}
                     items={""}
                     name=""
                     value={""}
@@ -900,33 +893,18 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                   <label htmlFor="estimated-time" className="label_input mb-2">
                     تخمین زمان تعمیر
                   </label>
-                  <div className="d-flex gap-2 align-items-center flex-wrap">
+                  <div className="d-flex gap-sx-2 gap-sm-4 align-items-center flex-wrap">
                     <div className="mt-3 mt-sm-0 estimate-item ">
                       <div className="estimate-input">
-                        <div className="input_content_wrapper">
-                          <DatePicker
-                            calendar={persian}
-                            locale={persian_fa}
-                            calendarPosition="bottom-right"
-                            value={dateValue}
-                            onChange={setDateValue}
-                            format="YYYY/MM/DD HH:mm"
-                            style={{
-                              border: "none",
-                              background: "transparent",
-                              outline: "none",
-                            }}
-                            plugins={[<TimePicker position="bottom" />]}
-                          />
+                          <DataInput value={dateValue} onChange={setDateValue}/>
                         </div>
-                      </div>
                       {errors.estimated_repair_time && (
                         <p className="error mt-2">
                           {errors.estimated_repair_time}
                         </p>
                       )}
                     </div>
-                    <div className='wrap-btn'>
+                    <div className="wrap-btn">
                       <Button2 text={"برنامه ریزی تعمیرگاه"} onClick={""} />
                     </div>
                   </div>
@@ -1019,7 +997,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                 ) : null}
               </div>
               <div className="p-form-actions pt-3">
-                <EditBtn onClick={prevTab} text={"قبلی"}/>
+                <EditBtn onClick={prevTab} text={"قبلی"} />
                 <ConfirmBtn type="submit" isSubmitting={loading} />
               </div>
             </div>
