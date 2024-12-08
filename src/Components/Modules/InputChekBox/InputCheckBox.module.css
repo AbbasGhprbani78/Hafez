@@ -30,3 +30,12 @@
 .wrap_checkbox.wrap_checkbox::placeholder {
     font-size: .9rem;
 }
+
+.textarea {
+    outline: none;
+    border: 1px solid var(--color-8);
+    border-radius: var(--border-radius-1);
+    padding: 15px;
+    background-color: #f7f7f7;
+    resize: none;
+}

@@ -1,6 +1,3 @@
-
-
-
 .input_content_wrapper {
     border: 1px solid var(--color-8);
     border-radius: var(--border-radius-1);
@@ -29,4 +26,35 @@
     color: var(--color-1);
 }
 
-/* font-size: clamp(.8rem, .9vw, 1rem); */
+.width {
+    width: 70%;
+}
+
+
+.inputtire {
+    width: 45%;
+}
+
+@media (max-width:992px) {
+    .inputtire {
+        width: 80%;
+    }
+}
+
+@media (max-width:769px) {
+    .inputtire {
+        width: 100%;
+    }
+}
+
+@media (max-width:767.5px) {
+    .inputtire {
+        width: 50%;
+    }
+}
+
+@media (max-width:600px) {
+    .inputtire {
+        width: 100%;
+    }
+}

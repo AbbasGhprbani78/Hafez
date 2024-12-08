@@ -67,9 +67,7 @@
     align-items: center;
 }
 
-.radiostyle {
-    margin-right: 2rem;
-}
+
 
 .p-form-row3 {
     margin-top: 5rem;
@@ -230,13 +228,9 @@
     }
 }
 
-@media (max-width:1007px) {}
 
-@media (max-width:963px) {
-    .radiostyle {
-        margin-right: 1rem;
-    }
-}
+
+
 
 @media (max-width:900px) {
 

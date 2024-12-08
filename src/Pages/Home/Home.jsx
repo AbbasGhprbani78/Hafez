@@ -8,7 +8,7 @@ export default function Home() {
             <div className="content-conatiner">
                 <SideBar />
                 <div className='space-content'>
-                    <Header />
+                    <Header title={"خانه"}/>
                     <div className="home-container">
                         <div className="home-item div1">1</div>
                         <div className="home-item div2">2</div>

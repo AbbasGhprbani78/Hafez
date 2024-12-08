@@ -6,6 +6,8 @@ import Draft from "./src/Pages/Draft/Draft";
 import AllForm from "./src/Pages/AllForm/AllForm";
 import Repairs from "./src/Pages/Repairs/Repairs";
 import User from "./src/Pages/Users/User";
+import RepairPlan from "./src/Pages/RepairPlan/RepairPlan";
+import Fund from "./src/Pages/Fund/Fund";
 
 const routes = [
   { path: "/", element: <Home /> },
@@ -16,6 +18,8 @@ const routes = [
   { path: "/allform", element: <AllForm /> },
   { path: "/repairs", element: <Repairs /> },
   { path: "/users", element: <User /> },
+  { path: "/repairplan", element: <RepairPlan /> },
+  { path: "/fund", element: <Fund /> },
 ];
 
 export default routes;

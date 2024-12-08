@@ -11,6 +11,7 @@
 
 .sidebar_item_text {
     display: none;
+    transition: display 0.3s ease 0s
 }
 
 .active_sidebar {
@@ -19,6 +20,7 @@
 
 .active_sidebar .sidebar_item_text {
     display: block;
+    transition: display .3s ease .5s;
 }
 
 .sidebarlist {
@@ -43,9 +45,7 @@
     background-color: var(--color-5);
 }
 
-.sidebarlist a.active {
-    background-color: var(--color-5);
-}
+
 
 .first_icon_sidebar {
     margin-top: 0;
@@ -61,9 +61,6 @@
 }
 
 
-.sidebarlist a.active {
-    background-color: var(--color-5);
-}
 
 
 @media (max-width:1025px) {

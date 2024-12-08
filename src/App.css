@@ -47,6 +47,18 @@ body {
     scrollbar-width: none;
 }
 
+.sidebarlist {
+    padding: 0;
+    margin: 0;
+    position: sticky;
+    right: 0;
+    top: 0;
+}
+
+.sidebarlist a.active {
+    background-color: var(--color-5);
+}
+
 @media (max-width:1238px) {
     .modal_content {
         width: 34vw;

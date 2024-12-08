@@ -1,13 +1,13 @@
-import{ useState } from "react";
 import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-export default function Header() {
-  const [fixtop, setFixTop] = useState(false);
+export default function Header({title}) {
+
   return (
     <>
-      <header className={`${styles.header} ${fixtop ? styles.fixheader : ""}`}>
+      <header className={`${styles.header}`}>
+        <span className={styles.title_page}>{title}</span>
         <div className={styles.header_btn_wrapper}>
           <button className={styles.btn_2}>
             پذیرش جدید
@@ -18,8 +18,11 @@ export default function Header() {
     </>
   );
 }
+// 
 
-
+{
+  /* <FontAwesomeIcon icon={faBars} />; */
+}
 // import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 {
   /* <div className={styles.search_wrapper}>

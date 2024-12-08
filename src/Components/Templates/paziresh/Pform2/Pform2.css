@@ -1,5 +1,3 @@
-
-
 .form2-container {
     width: 93%;
     margin: 1.5rem auto 0 auto;
@@ -55,6 +53,7 @@
 }
 
 
+
 .f-text {
     color: var(--color-1);
     margin: 0 2rem;
@@ -80,9 +79,6 @@
     margin: 0 auto;
 }
 
-.inputtire {
-    width: 45%;
-}
 
 .p-form2-row4 {
     width: 70%;
@@ -110,14 +106,8 @@
     flex-wrap: wrap;
 }
 
-.input-erosion,
-.input-spare {
-    margin-right: 1.2rem;
-}
 
-.input-amount {
-    margin: 0 .6rem;
-}
+
 
 .p-form2-row6 {
     margin-top: 4rem;
@@ -233,6 +223,7 @@
 .radio-fuel-wrapper {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .dropwidth3 {
@@ -324,9 +315,7 @@
         width: 50%;
     }
 
-    .inputtire {
-        width: 80%;
-    }
+
 
     .map-drop_wrapper {
         width: 100%;
@@ -379,9 +368,7 @@
         margin-top: 20px;
     }
 
-    .inputtire {
-        width: 100%;
-    }
+
 }
 
 @media (max-width:768px) {
@@ -417,11 +404,6 @@
 }
 
 
-@media (max-width:767.5px) {
-    .inputtire {
-        width: 50%;
-    }
-}
 
 
 @media (max-width:740px) {
@@ -449,6 +431,11 @@
 }
 
 @media (max-width:600px) {
+
+    .amount-fuel-content,
+    .amount-cng-content {
+        width: 100%;
+    }
 
     .form2-container {
         width: 100%;
@@ -486,18 +473,10 @@
         flex-wrap: wrap;
     }
 
-    .input-amount {
-        margin: 0;
-    }
 
-    .input-erosion,
-    .input-spare {
-        width: 50%;
-        margin-right: 0;
-    }
 
-    .numbers-tire,
-    .inputtire {
+
+    .numbers-tire {
         width: 100%;
     }
 

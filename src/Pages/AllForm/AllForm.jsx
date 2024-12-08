@@ -38,7 +38,7 @@ export default function AllForm() {
        vin: "154884DFGBH4512445",
        brand: "BMW",
        count: 5,
-       number: "4000251521", // Fixed part of number with a unique last digit
+       number: "4000251521", 
      },
      {
        status: "pending approval",
@@ -147,6 +147,7 @@ export default function AllForm() {
   const [rowsPerPage, setRowsPerPage] = useState(2);
 
   useEffect(() => {
+    
     if (filterText === "all" || filterText === "") {
       setFilterRows(rows);
       return;
@@ -165,7 +166,7 @@ export default function AllForm() {
     <div className="content-conatiner">
       <SideBar />
       <div className="space-content">
-        <Header />
+        <Header title={"کارتابل پذیرش :"} />
         <div className={styles.search_container}>
           <span className={styles.number_pa}>شماره پذیرش :</span>
           <div className={styles.wrap_search}>

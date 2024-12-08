@@ -22,6 +22,8 @@
 
 .code_car {
     margin-left: 20px;
+    color: var(--color-1);
+    font-weight: 500;
 }
 
 .codecar_itemes {

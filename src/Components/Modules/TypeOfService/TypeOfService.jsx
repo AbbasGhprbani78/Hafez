@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./TtypeOfService.module.css";
 import { Col } from "react-bootstrap";
 import axios from "axios";
 import InputCheckBox from "../InputChekBox/InputCheckBox";
-export default function TypeOfService({ handleServiceChange, selectedServices }) {
+
+export default function TypeOfService({
+  handleServiceChange,
+  selectedServices,
+}) {
   const [services, setServices] = useState([]);
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -38,4 +42,20 @@ export default function TypeOfService({ handleServiceChange, selectedServices })
       </div>
     </>
   );
+}
+
+{
+  /* <InputCheckBoxAccessories
+              value={service.id}
+              checked={""}
+              onChange={(isChecked) =>
+                handleServiceChange(service.id, isChecked)
+              }
+              onDescriptionChange={(description) =>
+                handleDescriptionChange(service.id, description)
+              }
+              name={service.name}
+              accessoriesFill={selectedServices}
+              allAccessories={services}
+            /> */
 }

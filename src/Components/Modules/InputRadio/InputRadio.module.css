@@ -1,8 +1,8 @@
-
 .radio_container {
     display: flex;
     align-items: center;
     margin: 10px 0;
+    justify-content: center;
 }
 
 
@@ -43,6 +43,38 @@
 .lable_radio {
     color: var(--color-1);
     font-size: clamp(.8rem, .9vw, 1rem);
+}
+
+.radiostyle {
+    margin-right: 2rem;
+}
+
+.input-amount {
+    margin: 0 .6rem;
+}
+
+.input-erosion,
+.input-spare {
+    margin-right: 1.2rem;
+}
+
+
+@media (max-width:963px) {
+    .radiostyle {
+        margin-right: 1rem;
+    }
+}
+
+@media (max-width:600px) {
+    .input-amount {
+        margin: 0;
+    }
+
+    .input-erosion,
+    .input-spare {
+        width: 50%;
+        margin-right: 0;
+    }
 }
 
 /* 

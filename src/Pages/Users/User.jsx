@@ -128,7 +128,10 @@ export default function User() {
             <span className={`titel_top ${styles.title_modal}`}>
               تعریف کاربر جدید
             </span>
-            <div className={styles.wrap_icon_modal}>
+            <div
+              className={styles.wrap_icon_modal}
+              onClick={() => setShowModal(false)}
+            >
               <FontAwesomeIcon icon={faXmark} />
             </div>
           </div>
@@ -193,9 +196,8 @@ export default function User() {
       <div className="content-conatiner">
         <SideBar />
         <div className="space-content">
-          <Header />
+          <Header title={"کاربرها :"} />
           <div className={styles.top_content}>
-            <span className="headerPtext">کاربر ها :</span>
             <div
               className={styles.new_user_action}
               onClick={() => setShowModal(true)}
@@ -236,6 +238,7 @@ export default function User() {
                         <FontAwesomeIcon
                           icon={faPen}
                           className={styles.icon_table}
+                          onClick={() => setShowModal(true)}
                         />
                         <FontAwesomeIcon
                           icon={faTrash}

@@ -1,4 +1,4 @@
-import React from 'react'
+
 import styles from './SideBar.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -19,7 +19,8 @@ import { useContext } from 'react';
 import { MyContext } from '../../../context/context';
 export default function SideBar() {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
     const logoutHandler = () => {
         localStorage.removeItem('access')
         localStorage.removeItem("refresh")
@@ -34,7 +35,7 @@ export default function SideBar() {
           isOpen ? styles.active_sidebar : null
         } `}
       >
-        <ul className={styles.sidebarlist}>
+        <ul className={"sidebarlist"}>
           <li
             className={`${styles.sidebar_item} ${styles.first_icon_sidebar}`}
             onClick={toggleOpen}

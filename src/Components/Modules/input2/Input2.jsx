@@ -13,7 +13,7 @@ export default function Input2({ icon, placeholder, name, value, onChange }) {
         className={styles.input2_form}
         placeholder={placeholder}
         autoComplete="off"
-        maxLength={40}
+        maxLength={70}
       />
       <FontAwesomeIcon icon={icon} className={styles.icon_input} />
     </div>

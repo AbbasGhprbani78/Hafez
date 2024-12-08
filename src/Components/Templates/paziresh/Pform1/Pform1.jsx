@@ -276,10 +276,10 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
     };
 
 
-
     useEffect(() => {
         setContent("اطلاعات اولیه مشتری :");
     }, [setContent]);
+
 
     useEffect(() => {
         if (formik.dirty) {
@@ -287,6 +287,7 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
         }
     }, [formik.dirty]);
 
+    
     useEffect(() => {
         if (formik2.dirty) {
             setIsEdited2(true);
@@ -576,12 +577,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                     </div>
                   </div>
                   <div className="p-form-row3">
-                 
-                      <TypeOfService
-                        handleServiceChange={handleServiceChange}
-                        selectedServices={formik.values.type_of_service}
-                      />
-                 
+                    <TypeOfService
+                      handleServiceChange={handleServiceChange}
+                      selectedServices={formik.values.type_of_service}
+                    />
+
                     {formik.errors.type_of_service &&
                       formik.touched.type_of_service && (
                         <span className="error">
@@ -1005,12 +1005,11 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
                     </Col>
                   </div>
                   <div className="p-form-row3">
-                
-                      <TypeOfService
-                        handleServiceChange={handleServiceChangeCo}
-                        selectedServices={formik2.values?.type_of_service}
-                      />
-                
+                    <TypeOfService
+                      handleServiceChange={handleServiceChangeCo}
+                      selectedServices={formik2.values?.type_of_service}
+                    />
+
                     {formik2.errors.type_of_service &&
                       formik2.touched.type_of_service && (
                         <span className="error">
@@ -1035,30 +1034,36 @@ export default function Pform1({ nextTab, setContent, setCoustomer }) {
 }
 
 
-  {
-    /* {services?.map(service => (
-                                            <Col md={4} key={service.id}>
-                                                <InputCheckBox
-                                                    value={service.id}
-                                                    text={service.name}
-                                                    onChange={() => handleServiceChange(service.id)}
-                                                    checked={formik.values.type_of_service.includes(service.id)}
-                                                />
-                                            </Col>
-                                        ))} */
-  }
 
-  {
-    /* {services?.map((service) => (
-                        <Col md={4} key={service.id}>
-                          <InputCheckBox
-                            value={service.id}
-                            text={service.name}
-                            onChange={() => handleServiceChangeCo(service.id)}
-                            checked={formik2.values?.type_of_service.includes(
-                              service.id
-                            )}
-                          />
-                        </Col>
-                      ))} */
-  }
+// const handleServiceChange = (serviceId, isChecked) => {
+//   const { type_of_service } = formik.values;
+
+//   const updatedServices = Array.isArray(type_of_service)
+//     ? [...type_of_service]
+//     : [];
+//   const exists = updatedServices.some((item) => item.id === serviceId);
+
+//   if (isChecked && !exists) {
+//     updatedServices.push({ id: serviceId, description: "" });
+//   } else if (!isChecked) {
+//     const index = updatedServices.findIndex((item) => item.id === serviceId);
+//     if (index !== -1) {
+//       updatedServices.splice(index, 1);
+//     }
+//   }
+
+//   formik.setFieldValue("type_of_service", updatedServices);
+// };
+
+// const handleDescriptionChange = (serviceId, newDescription) => {
+//   const { type_of_service } = formik.values;
+
+//   const updatedServices = type_of_service.map((item) => {
+//     if (item.id === serviceId) {
+//       return { ...item, description: newDescription };
+//     }
+//     return item;
+//   });
+
+//   formik.setFieldValue("type_of_service", updatedServices);
+// };

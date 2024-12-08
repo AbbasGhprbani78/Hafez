@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import styles from "./DropDown.module.css";
 
-export default function DropDown({ lable, styled, items, onChange, name }) {
+export default function DropDown({ lable, styled, items, onChange, name, defaultOption }) {
   const handleChange = (event) => {
     const value = event.target.value;
     onChange(name, value);

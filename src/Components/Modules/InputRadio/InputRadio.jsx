@@ -4,7 +4,7 @@ import styles from './InputRadio.module.css'
 export default function InputRadio({ text, marginRight, onChange, value, checked, name }) {
     return (
       <>
-        <div className={`${styles.radio_container}  ${marginRight}`}>
+        <div className={`${styles.radio_container}  ${styles[marginRight]}`}>
           <input
             type="radio"
             className={styles.radio_input}

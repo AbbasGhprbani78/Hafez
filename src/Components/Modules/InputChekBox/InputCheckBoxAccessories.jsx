@@ -59,7 +59,7 @@ export default function InputCheckBoxAccessories({
       {isChecked && (
         <div className={styles.wrap_checkbox_dec}>
           <textarea
-            className={`${styles.wrap_checkbox} textarea`}
+            className={`${styles.wrap_checkbox} ${styles.textarea}`}
             placeholder="توضیحات"
             value={description}
             onChange={handleDescriptionChange}

@@ -8,14 +8,13 @@ import OutWork from "../../Components/Templates/Repairs/OutWork/OutWork";
 import Attaches from "../../Components/Templates/Repairs/Attaches/Attaches";
 import Button2 from "../../Components/Modules/Button2/Button2";
 import { faCheck, faPrint } from "@fortawesome/free-solid-svg-icons";
+import Header from '../../Components/Modules/Header/Header'
 export default function Repairs() {
   return (
     <div className="content-conatiner">
       <SideBar />
       <div className={`space-content ${styles.wrap_repairs}`}>
-        <div className="headerP">
-          <p className="headerPtext">کارت تعمیر</p>
-        </div>
+        <Header title={"کارت تعمیر :"} />
         <div className="my-4">
           <AboutCar />
           <Occultation />
@@ -24,8 +23,18 @@ export default function Repairs() {
           <OutWork />
           <Attaches />
           <div className={styles.wrap_actions_repairs}>
-            <Button2 text={"پرینت"} onClick={""} icon={faPrint} style={"width"}/>
-            <Button2 text={"بستن کارت تعمیر"} onClick={""} icon={faCheck} style={"width"}/>
+            <Button2
+              text={"پرینت"}
+              onClick={""}
+              icon={faPrint}
+              style={"width"}
+            />
+            <Button2
+              text={"بستن کارت تعمیر"}
+              onClick={""}
+              icon={faCheck}
+              style={"width"}
+            />
           </div>
         </div>
       </div>

@@ -28,7 +28,7 @@
     width: 100%;
 }
 
-.input_search::placeholder{
+.input_search::placeholder {
     color: var(--color-21);
     font-size: .9rem;
 }
@@ -37,7 +37,7 @@
     color: var(--color-1);
 }
 
-.wrap_btns_filter{
+.wrap_btns_filter {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -67,6 +67,6 @@
 }
 
 .status_four {
-    background-color: #4c6fff;
-    color: #a5b6ff;
+    background-color: #a5b6ff;
+    color: #4c6fff;
 }

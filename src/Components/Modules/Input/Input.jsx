@@ -15,10 +15,14 @@ const Input = ({
   
 }) => {
   return (
-    <div className={`${styles.input_container} ${styleInput} ${styled}`}>
-      <label htmlFor={name} className={`label_input mb-2`}>
-        {label}
-      </label>
+    <div
+      className={`${styles.input_container} ${styles[styleInput]} ${styles[styled]}`}
+    >
+      {label && (
+        <label htmlFor={name} className={`label_input mb-2`}>
+          {label}
+        </label>
+      )}
       <div className={styles.input_content_wrapper}>
         <input
           id={name}
@@ -29,7 +33,7 @@ const Input = ({
           onChange={onChange}
           className={styles.input_form}
           autoComplete="off"
-          maxLength={40}
+          maxLength={70}
         />
         {icon && <FontAwesomeIcon icon={icon} className={styles.icon_input} />}
       </div>
