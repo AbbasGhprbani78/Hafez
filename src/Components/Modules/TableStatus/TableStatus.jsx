@@ -22,7 +22,7 @@ export default function TableStatus({
         <Table
           stickyHeader
           sx={{
-            minWidth: 750,
+            minWidth: "max-content",
           }}
         >
           <TableHead sx={{ background: "#f4f1e8" }}>

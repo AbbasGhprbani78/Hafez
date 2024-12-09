@@ -1,4 +1,4 @@
-import './Table.css';
+import "./Table.css";
 import {
   Table,
   TableBody,
@@ -6,37 +6,33 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from '@mui/material';
-
+} from "@mui/material";
 
 export default function TableForm({ columns, children }) {
-
-    return (
-        <>
-            <TableContainer sx={{ maxHeight: 340 }}>
-                <Table
-                    aria-label="dynamic table"
-                    stickyHeader
-                        sx={{
-                        minWidth: 750,
-                        typography: "inherit",
-                        border: "1px solid #f2f2f2", 
-                    }}
-                >
-                    <TableHead>
-                        <TableRow>
-                            {columns?.map((column, index) => (
-                                <TableCell key={index}  sx={{background:"#f7f4eb"}}>
-                                    {column}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {children}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </>
-    );
+  return (
+    <>
+      <TableContainer sx={{ maxHeight: 340 }}>
+        <Table
+          aria-label="dynamic table"
+          stickyHeader
+          sx={{
+            minWidth: "max-content",
+            typography: "inherit",
+            border: "1px solid #f2f2f2",
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              {columns?.map((column, index) => (
+                <TableCell key={index} sx={{ background: "#f7f4eb" }}>
+                  {column}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>{children}</TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 }

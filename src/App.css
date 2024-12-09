@@ -59,6 +59,10 @@ body {
     background-color: var(--color-5);
 }
 
+.content-offcanvas a.active {
+    background-color:#629d89;
+}
+
 @media (max-width:1238px) {
     .modal_content {
         width: 34vw;
@@ -68,6 +72,11 @@ body {
 @media (max-width:1024px) {
     .modal_content {
         width: 38vw;
+    }
+
+    .space-content {
+        padding: 0 calc(10px + 1vw);
+        width: 100%;
     }
 }
 

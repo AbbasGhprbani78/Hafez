@@ -261,17 +261,17 @@ export default function Fund() {
                 styled={"width"}
               />
             </Col>
-            <Col xs={12} md={8}>
+            <Col xs={12} md={8} className="mt-3 mt-md-0">
               <Row className="align-items-end">
-                <Col xs={12} md={8}>
+                <Col xs={12} sm={9} md={8}>
                   <Row>
-                    <Col xs={12} md={6}>
+                    <Col xs={12} sm={6} md={6}>
                       <label className={`label_input mb-2`}>
                         از تاریخ فاکتور
                       </label>
                       <DataInput value={dateStart} onChange={setDateStart} />
                     </Col>
-                    <Col xs={12} md={6}>
+                    <Col xs={12} sm={6} md={6} className="mt-3 mt-sm-0">
                       <label className={`label_input mb-2`}>
                         تا تاریخ فاکتور
                       </label>
@@ -279,7 +279,12 @@ export default function Fund() {
                     </Col>
                   </Row>
                 </Col>
-                <Col xs={12} md={4} className={styles.wrap_button}>
+                <Col
+                  xs={12}
+                  sm={3}
+                  md={4}
+                  className={`${styles.wrap_button} mt-4 mt-sm-0`}
+                >
                   <Button2
                     text={"جستجو"}
                     icon={faMagnifyingGlass}
@@ -289,7 +294,7 @@ export default function Fund() {
               </Row>
             </Col>
           </Row>
-          {/* <div className={styles.wrap_table}>
+          <div className={styles.wrap_table}>
             <TableStatus
               columns={columns}
               rows={rows}
@@ -321,7 +326,7 @@ export default function Fund() {
                   </TableRow>
                 ))}
             </TableStatus>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import Repairs from "./src/Pages/Repairs/Repairs";
 import User from "./src/Pages/Users/User";
 import RepairPlan from "./src/Pages/RepairPlan/RepairPlan";
 import Fund from "./src/Pages/Fund/Fund";
+import FundItem from "./src/Pages/Fund/FundItem";
 
 const routes = [
   { path: "/", element: <Home /> },
@@ -20,6 +21,7 @@ const routes = [
   { path: "/users", element: <User /> },
   { path: "/repairplan", element: <RepairPlan /> },
   { path: "/fund", element: <Fund /> },
+  { path: "/fund/:id", element: <FundItem /> },
 ];
 
 export default routes;

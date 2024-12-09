@@ -1,24 +1,42 @@
 import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-export default function Header({title}) {
+import { faAlignRight, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import ResponsiveExample from '../Offcanvas/OffcanvasMenu'
+export default function Header({ title }) {
+  const [isShowSideBar, setIsShowSideBar] = useState(false);
 
   return (
     <>
+      <ResponsiveExample
+        show={isShowSideBar}
+        setIsShowSideBar={setIsShowSideBar}
+      />
       <header className={`${styles.header}`}>
-        <span className={styles.title_page}>{title}</span>
-        <div className={styles.header_btn_wrapper}>
-          <button className={styles.btn_2}>
-            پذیرش جدید
-            <FontAwesomeIcon icon={faPlus} className={styles.plus_btn_2} />
-          </button>
+        <div className={styles.header_content}>
+          <div
+            className={styles.wrap_icon}
+            onClick={() => setIsShowSideBar(true)}
+          >
+            <FontAwesomeIcon icon={faAlignRight} className={styles.icon_m} />
+          </div>
+          <span className={styles.title_page}>{title}</span>
+          <div className={styles.logo_wrapper}>
+            <img src="/image/1.svg" alt="logo" />
+          </div>
+          <div className={styles.header_btn_wrapper}>
+            <button className={styles.btn_2}>
+              پذیرش جدید
+              <FontAwesomeIcon icon={faPlus} className={styles.plus_btn_2} />
+            </button>
+          </div>
         </div>
+        <span className={styles.title_bottom}>{title}</span>
       </header>
     </>
   );
 }
-// 
+
 
 {
   /* <FontAwesomeIcon icon={faBars} />; */
