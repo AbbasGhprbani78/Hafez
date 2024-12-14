@@ -225,15 +225,25 @@ export default function User() {
                       backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
                     }}
                   >
-                    <TableCell>{row.row}</TableCell>
-                    <TableCell>{row.full_name}</TableCell>
-                    <TableCell>{row.user_role}</TableCell>
-                    <TableCell>{row.national_code}</TableCell>
-                    <TableCell>{row.phone_number}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.row}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.full_name}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.user_role}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.national_code}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.phone_number}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
                       <ToggleSwitch />
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
                       <div className={styles.actions}>
                         <FontAwesomeIcon
                           icon={faPen}

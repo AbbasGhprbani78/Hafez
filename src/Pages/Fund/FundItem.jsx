@@ -5,11 +5,54 @@ import styles from "./FundItem.module.css";
 import { useParams } from "react-router-dom";
 import Accardion from "../../Components/Modules/Accardion/Accardion";
 import SumItem from "../../Components/Modules/SumItem/SumItem";
+import TableStatus from "../../Components/Modules/TableStatus/TableStatus";
+import { useState } from "react";
+import { TableCell, TableRow } from "@mui/material";
+import { toFarsiNumber } from "../../utils/helper";
 
 export default function FundItem() {
   const { id } = useParams();
 
   console.log(id);
+
+  const columns = ["", "عهده شرکت", "مشتری"];
+  const [rows, setRows] = useState([
+    {
+      work: "قطعات",
+      company: 0,
+      customer: 1200000,
+    },
+    {
+      work: "اجرت تعمیرات",
+      company: 2,
+      customer: 1500000,
+    },
+    {
+      work: "جمع کل خدمات",
+      company: 7,
+      customer: 1900000,
+    },
+    {
+      work: "تخفیف خدمات",
+      company: 2,
+      customer: 3400000,
+    },
+    {
+      work: "کار خارج",
+      company: 11,
+      customer: 100000,
+    },
+    {
+      work: "جمع خالص",
+      company: 4,
+      customer: 1700000,
+    },
+    {
+      work: "مبلغ قابل پرداخت",
+      company: 2,
+      customer: 16700000,
+    },
+  ]);
   return (
     <>
       <div className="content-conatiner">
@@ -95,8 +138,8 @@ export default function FundItem() {
               </Col>
             </Row>
           </div>
-          <Row className="gx-2 mt-4 mb-5">
-            <Col xs={12} md={6} className={styles.payment_method}>
+          <Row className="gx-4 mt-4 mb-5">
+            <Col xs={12} md={7} className={styles.payment_method}>
               <div className={styles.wrap_accardions}>
                 <Accardion title={"انتخاب تخفیف"} />
                 <Accardion title={"پرداخت چک"} />
@@ -105,10 +148,44 @@ export default function FundItem() {
               <div className={styles.prices_wrapper}>
                 <SumItem title={"پیش پرداخت"} price={1200000} />
                 <SumItem title={"جمع پرداختی"} price={1200000} />
-                <SumItem title={"جمع پرداختی"} price={1200000} color={"color"}/>
+                <SumItem
+                  title={"جمع پرداختی"}
+                  price={1200000}
+                  color={"color"}
+                />
               </div>
             </Col>
-            <Col xs={12} md={6} className={styles.invoice}></Col>
+            <Col xs={12} md={5} className={styles.invoice}>
+              <div className={styles.invoice_content}>
+                <div className={styles.invoice_header}>
+                  <span className={styles.invoice_title}>جمع فاکتور</span>
+                </div>
+                <div className={styles.wrap_table}>
+                  <TableStatus
+                    columns={columns}
+                    rows={""}
+                    page={""}
+                    onChange={""}
+                    rowsPerPage={""}
+                  >
+                    {rows.length > 0 &&
+                      rows.map((row, i) => (
+                        <TableRow key={i}>
+                          <TableCell sx={{ fontFamily: "iranYekan" }}>
+                            {row.work}
+                          </TableCell>
+                          <TableCell sx={{ fontFamily: "iranYekan" }}>
+                            {toFarsiNumber(row.company)}
+                          </TableCell>
+                          <TableCell sx={{ fontFamily: "iranYekan" }}>
+                            {row.customer.toLocaleString("fa")}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableStatus>
+                </div>
+              </div>
+            </Col>
           </Row>
         </div>
       </div>

@@ -61,9 +61,9 @@ export default function Occultation() {
           <div className="mt-3">
             <TableForm columns={columns}>
               <TableRow className="statment-row-table">
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
+                <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
+                <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
+                <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
                 <div className="wrap-trash-table">
                   <FontAwesomeIcon
                     icon={faTrash}

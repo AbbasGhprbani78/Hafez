@@ -237,13 +237,28 @@ export default function RepairPlan() {
                   key={index}
                   sx={{
                     backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                    fontFamily: "iranYekan",
                   }}
                 >
-                  <TableCell>{row.code}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.expertise}</TableCell>
-                  <TableCell>{row.time_capability}</TableCell>
-                  <TableCell sx={{ display: "flex", justifyContent: "center" }}>
+                  <TableCell sx={{ fontFamily: "iranYekan" }}>
+                    {row.code}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "iranYekan" }}>
+                    {row.name}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "iranYekan" }}>
+                    {row.expertise}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "iranYekan" }}>
+                    {row.time_capability}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      fontFamily: "iranYekan",
+                    }}
+                  >
                     <div
                       className={`
                       ${styles.status_wrap}

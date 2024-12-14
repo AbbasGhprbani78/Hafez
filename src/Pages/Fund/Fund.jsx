@@ -309,16 +309,17 @@ export default function Fund() {
                     key={index}
                     sx={{
                       backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                      fontFamily: "iranYekan",
                     }}
                   >
-                    <TableCell>{row.admission_number}</TableCell>
-                    <TableCell>{row.invoice_number}</TableCell>
-                    <TableCell>{row.invoice_date}</TableCell>
-                    <TableCell>{row.date_of_admission}</TableCell>
-                    <TableCell>{row.chassis_number}</TableCell>
-                    <TableCell>{row.national_code}</TableCell>
-                    <TableCell>{row.fullname}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.admission_number}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.invoice_number}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.invoice_date}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.date_of_admission}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.chassis_number}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.national_code}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.fullname}</TableCell>
+                    <TableCell sx={{fontFamily: "iranYekan"}}>
                       <div className={styles.wrap_btn}>
                         <button className={styles.btn}>مشاهده</button>
                       </div>

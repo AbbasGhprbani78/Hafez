@@ -38,6 +38,15 @@ body {
     margin: 0 auto;
 }
 
+body::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 p {
     margin-bottom: 0;
 }
@@ -115,8 +124,8 @@ p {
 
 html,
 body {
-
     font-family: 'iranYekan', sans-serif !important;
+    font-weight: 400;
 }
 
 

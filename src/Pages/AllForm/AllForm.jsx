@@ -28,126 +28,125 @@ export default function AllForm() {
     "پلاک خودرو",
     "وضعیت پذیرش",
   ];
-    const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0);
 
-   const [rows, setRows] = useState([
-     {
-       status: "returned",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251521", 
-     },
-     {
-       status: "pending approval",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251522", // Incrementing the last digit by 1
-     },
-     {
-       status: "unfinished",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251523", // Incrementing the last digit by 1
-     },
-     {
-       status: "unfinished",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251524", // Incrementing the last digit by 1
-     },
-     {
-       status: "completed",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251525", // Incrementing the last digit by 1
-     },
-     {
-       status: "completed",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251526", // Incrementing the last digit by 1
-     },
-   ]);
+  const [rows, setRows] = useState([
+    {
+      status: "returned",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251521",
+    },
+    {
+      status: "pending approval",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251522", // Incrementing the last digit by 1
+    },
+    {
+      status: "unfinished",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251523", // Incrementing the last digit by 1
+    },
+    {
+      status: "unfinished",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251524", // Incrementing the last digit by 1
+    },
+    {
+      status: "completed",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251525", // Incrementing the last digit by 1
+    },
+    {
+      status: "completed",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251526", // Incrementing the last digit by 1
+    },
+  ]);
 
-   const [filterRows, setFilterRows] = useState([
-     {
-       status: "returned",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251521", // Fixed part of number with a unique last digit
-     },
-     {
-       status: "pending approval",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251522", // Incrementing the last digit by 1
-     },
-     {
-       status: "unfinished",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251523", // Incrementing the last digit by 1
-     },
-     {
-       status: "unfinished",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251524", // Incrementing the last digit by 1
-     },
-     {
-       status: "completed",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251525", // Incrementing the last digit by 1
-     },
-     {
-       status: "completed",
-       plate: "45-ج-32-953",
-       date: "01/02/03",
-       vin: "154884DFGBH4512445",
-       brand: "BMW",
-       count: 5,
-       number: "4000251526", // Incrementing the last digit by 1
-     },
-   ]);
+  const [filterRows, setFilterRows] = useState([
+    {
+      status: "returned",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251521", // Fixed part of number with a unique last digit
+    },
+    {
+      status: "pending approval",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251522", // Incrementing the last digit by 1
+    },
+    {
+      status: "unfinished",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251523", // Incrementing the last digit by 1
+    },
+    {
+      status: "unfinished",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251524", // Incrementing the last digit by 1
+    },
+    {
+      status: "completed",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251525", // Incrementing the last digit by 1
+    },
+    {
+      status: "completed",
+      plate: "45-ج-32-953",
+      date: "01/02/03",
+      vin: "154884DFGBH4512445",
+      brand: "BMW",
+      count: 5,
+      number: "4000251526", // Incrementing the last digit by 1
+    },
+  ]);
 
   const [rowsPerPage, setRowsPerPage] = useState(2);
 
   useEffect(() => {
-    
     if (filterText === "all" || filterText === "") {
       setFilterRows(rows);
       return;
@@ -158,9 +157,9 @@ export default function AllForm() {
     setFilterRows(filteredRows);
   }, [filterText, rows]);
 
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <div className="content-conatiner">
@@ -249,16 +248,33 @@ export default function AllForm() {
                     key={index}
                     sx={{
                       backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                      fontFamily: "iranYekan",
                     }}
                   >
-                    <TableCell>{row.number}</TableCell>
-                    <TableCell>{row.count}</TableCell>
-                    <TableCell>{row.brand}</TableCell>
-                    <TableCell>{row.vin}</TableCell>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.plate}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.number}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.count}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.brand}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.vin}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.date}
+                    </TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                      {row.plate}
+                    </TableCell>
                     <TableCell
-                      sx={{ display: "flex", justifyContent: "center" }}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        fontFamily: "iranYekan",
+                      }}
                     >
                       <div
                         className={`${styles.status_btn} ${

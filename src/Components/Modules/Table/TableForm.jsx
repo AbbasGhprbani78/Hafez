@@ -24,7 +24,10 @@ export default function TableForm({ columns, children }) {
           <TableHead>
             <TableRow>
               {columns?.map((column, index) => (
-                <TableCell key={index} sx={{ background: "#f7f4eb" }}>
+                <TableCell
+                  key={index}
+                  sx={{ background: "#f7f4eb", fontFamily: "iranYekan" }}
+                >
                   {column}
                 </TableCell>
               ))}

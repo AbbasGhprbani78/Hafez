@@ -28,7 +28,10 @@ export default function TableStatus({
           <TableHead sx={{ background: "#f4f1e8" }}>
             <TableRow>
               {columns.map((item, i) => (
-                <TableCell key={i} sx={{ background: "#f4f1e8" }}>
+                <TableCell
+                  key={i}
+                  sx={{ background: "#f4f1e8", fontFamily: "iranYekan" }}
+                >
                   {item}
                 </TableCell>
               ))}
