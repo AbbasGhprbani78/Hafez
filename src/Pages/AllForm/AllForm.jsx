@@ -14,6 +14,7 @@ import Button2 from "../../Components/Modules/Button2/Button2";
 import ButtonFilter from "../../Components/Modules/ButtonFilter/ButtonFilter";
 import TableStatus from "../../Components/Modules/TableStatus/TableStatus";
 import { TableCell, TableRow } from "@mui/material";
+import SelectDropDown2 from "../../Components/Modules/SelectDropDown2/SelectDropDown2";
 
 export default function AllForm() {
   const [inputSearch, setInputSearch] = useState("");
@@ -167,22 +168,33 @@ export default function AllForm() {
       <div className="space-content">
         <Header title={"کارتابل پذیرش :"} />
         <div className={styles.search_container}>
-          <span className={styles.number_pa}>شماره پذیرش :</span>
-          <div className={styles.wrap_search}>
-            <input
-              type="text"
-              value={inputSearch}
-              onChange={(e) => setInputSearch(e.target.value)}
-              className={styles.input_search}
-              placeholder="شماره پذیرش"
-            />
-            <FontAwesomeIcon icon={faHashtag} className={styles.icon_input} />
+          <div className={styles.wrap_title_input}>
+            <span className={styles.number_pa}>شماره پذیرش :</span>
+            <div className={styles.wrap_search}>
+              <input
+                type="text"
+                value={inputSearch}
+                onChange={(e) => setInputSearch(e.target.value)}
+                className={styles.input_search}
+                placeholder="شماره پذیرش"
+              />
+              <FontAwesomeIcon icon={faHashtag} className={styles.icon_input} />
+            </div>
           </div>
-          <Button2
-            text={"جستجو"}
-            icon={faMagnifyingGlass}
+          <div className={styles.wrap_button}>
+            <Button2
+              text={"جستجو"}
+              icon={faMagnifyingGlass}
+              onClick={() => setFilterText(inputSearch)}
+            />
+          </div>
+
+          <button
+            className={styles.btn_m}
             onClick={() => setFilterText(inputSearch)}
-          />
+          >
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
         </div>
         <div className={styles.table_container}>
           <div className={styles.wrap_btns_filter}>
@@ -231,6 +243,9 @@ export default function AllForm() {
               filterText={filterText}
               value={"pending approval"}
             />
+          </div>
+          <div className={styles.wrap_dropdown}>
+            <SelectDropDown2 styleList={"positionlist"} text={"فیلتر براساس"}/>
           </div>
           <div className={"mt-3"}>
             <TableStatus

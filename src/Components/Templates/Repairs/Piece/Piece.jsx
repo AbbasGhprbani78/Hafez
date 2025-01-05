@@ -45,7 +45,7 @@ export default function Piece() {
             </div>
             <div className="mt-3">
               <label className={`label_input mb-2 `}>تعمیرکار</label>
-              <SelectDropDown2 text={"تعمیرکار"} />
+              <SelectDropDown2 text={"تعمیرکار"} styleList={"positionlisttop"}/>
             </div>
             <Row className="mt-3 mb-3 d-flex gx-3">
               <Col xs={12} md={6}>
@@ -91,7 +91,11 @@ export default function Piece() {
         <span className={`${styles.box_title} subtitle-project`}>قطعه :</span>
         <div className={`${styles.wrap_drop} mt-3`}>
           <span className={styles.text_drop}>تامین کننده :</span>
-          <SelectDropDown2 text={"خدمات دهنده"} style={"width"} />
+          <SelectDropDown2
+            text={"خدمات دهنده"}
+            style={"width"}
+            styleList={"positionlist"}
+          />
         </div>
         <div className={`${styles.wrap_actions} mt-4`}>
           <Button2 onClick={() => setShowModal(true)} text={"افزودن قطعه"} />
@@ -100,9 +104,9 @@ export default function Piece() {
         <div className="mt-3">
           <TableForm columns={columns}>
             <TableRow className="statment-row-table">
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
               <div className="wrap-trash-table">
                 <FontAwesomeIcon
                   icon={faTrash}

@@ -185,7 +185,10 @@ export default function User() {
             </div>
             <div className={styles.input_wrap}>
               <label className={`label_input mb-2`}>نقش کاربر</label>
-              <SelectDropDown2 text={"کارشناس فنی"} />
+              <SelectDropDown2
+                text={"کارشناس فنی"}
+                styleList={"positionlisttop"}
+              />
             </div>
             <div className={styles.wrap_btn}>
               <ConfirmBtn />

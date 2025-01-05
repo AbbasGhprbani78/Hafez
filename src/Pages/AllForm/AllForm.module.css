@@ -6,8 +6,15 @@
     border-bottom: 1px solid var(--color-21);
 }
 
+.wrap_title_input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .number_pa {
     color: var(--color-1);
+    font-weight: 600;
 }
 
 .wrap_search {
@@ -69,4 +76,64 @@
 .status_four {
     background-color: #a5b6ff;
     color: #4c6fff;
+}
+
+.wrap_button {
+    width: max-content;
+}
+
+.btn_m {
+    border: none;
+    outline: none;
+    border-radius: 50%;
+    background-color: var(--color-3);
+    color: #fff;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    object-fit: cover;
+    padding-top: 3px;
+}
+
+.wrap_dropdown {
+    display: none;
+}
+
+@media (max-width:768px) {
+    .wrap_btns_filter {
+        display: none;
+    }
+
+    .search_container {
+        border: none;
+    }
+
+    .wrap_dropdown {
+        display: block;
+        margin-top: 10px;
+    }
+}
+
+
+@media (max-width:600px) {
+    .wrap_title_input {
+        flex-direction: column;
+        align-items: start;
+        gap: 5px;
+    }
+
+    .search_container {
+        align-items: end;
+    }
+
+    .wrap_button {
+        display: none;
+    }
+
+    .btn_m {
+        display: block;
+    }
 }

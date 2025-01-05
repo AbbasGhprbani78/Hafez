@@ -44,7 +44,7 @@ export default function Occultation() {
             </div>
             <div className="mt-3 mb-3">
               <label className={`label_input mb-2 `}>کد اظهار</label>
-              <SelectDropDown2 text={"کد"} />
+              <SelectDropDown2 text={"کد"} styleList={"positionlisttop"} />
             </div>
             <div className="d-flex justify-content-end">
               <ConfirmBtn />
@@ -61,9 +61,9 @@ export default function Occultation() {
           <div className="mt-3">
             <TableForm columns={columns}>
               <TableRow className="statment-row-table">
-                <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-                <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-                <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
+                <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+                <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+                <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
                 <div className="wrap-trash-table">
                   <FontAwesomeIcon
                     icon={faTrash}

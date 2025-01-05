@@ -6,7 +6,7 @@ export default function OccultationItem() {
     <div className={styles.occultationItem_wrapper}>
       <p className={styles.title}>مکانیک</p>
       <span className={styles.subtitle}>تعمیرکار مکانیک</span>
-      <SelectDropDown2 text={"نام تعمیرکار"}/>
+      <SelectDropDown2 text={"نام تعمیرکار"} styleList={"positionlist"} />
     </div>
   );
 }

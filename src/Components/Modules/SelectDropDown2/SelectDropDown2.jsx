@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import styles from "./SelectDropDown2.module.css";
 
-export default function SelectDropDown2({ text, style }) {
+export default function SelectDropDown2({ text, style, styleList }) {
   const [showOptions, setShowOptions] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedValue, setSelectedValue] = useState(text);
@@ -30,7 +30,7 @@ export default function SelectDropDown2({ text, style }) {
   };
 
   const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchText.toLowerCase())
+    option?.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
@@ -49,7 +49,7 @@ export default function SelectDropDown2({ text, style }) {
         <FontAwesomeIcon icon={faChevronDown} className={styles.arrow_icon} />
       </div>
       {showOptions && (
-        <ul className={styles.list_dropdwon}>
+        <ul className={`${styles.list_dropdwon} ${styles[styleList]}`}>
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option, index) => (
               <li
