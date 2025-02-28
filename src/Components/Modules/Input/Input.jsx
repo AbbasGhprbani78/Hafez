@@ -12,7 +12,7 @@ const Input = ({
   value,
   onChange,
   styled,
-  
+
 }) => {
   return (
     <div

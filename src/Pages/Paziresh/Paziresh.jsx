@@ -9,7 +9,7 @@ import Header from '../../Components/Modules/Header/Header'
 
 export default function Paziresh() {
     const [content, setContent] = useState("اطلاعات اولیه مشتری :")
-    const [currentTab, setCurrentTab] = useState(2);
+    const [currentTab, setCurrentTab] = useState(3);
     const [coustomer, setCoustomer] = useState("")
 
 

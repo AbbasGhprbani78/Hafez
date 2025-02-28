@@ -14,11 +14,16 @@ export default function TableStatus({
   rows,
   page,
   onChange,
-  rowsPerPage,
+  rowsPerPage = 8,
 }) {
   return (
     <>
-      <TableContainer style={{ maxHeight: 500, direction: "rtl" }}>
+      <TableContainer style={{
+        maxHeight: 500,
+        direction: "rtl",
+        borderTopLeftRadius: "10px",
+        borderTopRightRadius: "10px"
+      }}>
         <Table
           stickyHeader
           sx={{
@@ -47,8 +52,10 @@ export default function TableStatus({
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={onChange}
+
         sx={{
           direction: "ltr",
+          alignItems: "flex-start"
         }}
       />
     </>

@@ -13,10 +13,12 @@
     opacity: 1;
     font-size: clamp(.8rem, .9vw, 1rem);
 }
-
+.admission_number_input{
+    width: 100%;
+}
 .input_form {
     all: unset;
-    width: 100%;
+    width: 100% !important;
     border: none;
     outline: none;
     background: transparent;

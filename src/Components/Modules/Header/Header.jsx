@@ -12,7 +12,7 @@ export default function Header({ title }) {
         show={isShowSideBar}
         setIsShowSideBar={setIsShowSideBar}
       />
-      <header className={`${styles.header}`}>
+      <header className={`${styles.header}`} style={{width:"100%"}}>
         <div className={styles.header_content}>
           <div
             className={styles.wrap_icon}
