@@ -1,0 +1,43 @@
+.status_btn_halls {
+    padding: 5px;
+    border-radius: 100px;
+    min-width: 100px;
+}
+
+.status_halls_one {
+    background-color: #ccf3ea;
+    color: #3e846b;
+}
+
+.status_halls_two {
+    background-color: #FFDE9680;
+    color: #DD7C53;
+}
+
+.status_halls_three{
+    background-color: #fcdada;
+    color: var(--color-18);
+}
+
+.status_halls_defualt {
+    background-color: #a5b6ff;
+    color: #4c6fff;
+}
+
+.view_btn{
+    background-color: var(--color-3) !important;
+    color: #fff !important;
+    border-radius: 50px !important;
+    padding: 8px 15px !important;
+    border: none !important;
+    outline: none !important;
+    min-width: 102px !important;
+    width: max-content !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content:center !important;
+    gap: 10px ;
+    font-size: .9rem !important;
+    font-family: 'iranYekan', sans-serif !important;
+    line-height: 20px !important;
+}

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import ResponsiveExample from '../Offcanvas/OffcanvasMenu'
-export default function Header({ title }) {
+export default function Header({ title, disabledButton = false }) {
   const [isShowSideBar, setIsShowSideBar] = useState(false);
 
   return (
@@ -12,7 +12,7 @@ export default function Header({ title }) {
         show={isShowSideBar}
         setIsShowSideBar={setIsShowSideBar}
       />
-      <header className={`${styles.header}`} style={{width:"100%"}}>
+      <header className={`${styles.header}`} style={{ width: "100%" }}>
         <div className={styles.header_content}>
           <div
             className={styles.wrap_icon}
@@ -24,12 +24,13 @@ export default function Header({ title }) {
           <div className={styles.logo_wrapper}>
             <img src="/image/1.svg" alt="logo" />
           </div>
-          <div className={styles.header_btn_wrapper}>
+          {disabledButton ? <></> : <div className={styles.header_btn_wrapper}>
             <button className={styles.btn_2}>
               پذیرش جدید
               <FontAwesomeIcon icon={faPlus} className={styles.plus_btn_2} />
             </button>
-          </div>
+          </div>}
+
         </div>
         <span className={styles.title_bottom}>{title}</span>
       </header>
