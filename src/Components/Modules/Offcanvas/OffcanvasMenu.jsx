@@ -1,6 +1,6 @@
 import Offcanvas from "react-bootstrap/Offcanvas";
 import styles from "./Offcanvas.module.css";
-import { faBoxArchive, faChartPie, faHome, faLayerGroup, faListCheck, faNewspaper, faRightToBracket, faScrewdriverWrench, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBoxArchive, faCalendarPlus, faChartPie, faHome, faLayerGroup, faListCheck, faNewspaper, faRightToBracket, faScrewdriverWrench, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "react-router-dom";
 
@@ -85,13 +85,21 @@ function ResponsiveExample({ show, setIsShowSideBar }) {
                   className={styles.icon_offcanvas}
                 />
               </div>
-              <p className={styles.canvas_item_text}>فرم ها</p>
+              <p className={styles.canvas_item_text}>فرم‌ها</p>
+            </NavLink>
+            <NavLink to={"/settings"} className={styles.canvasitem}>
+              <div className={styles.icon_offcanvas_wrapper}>
+                <FontAwesomeIcon
+                  icon={faCalendarPlus}
+                  className={styles.icon_offcanvas}
+                />
+              </div>
+              <p className={styles.canvas_item_text}>مدیریت</p>
             </NavLink>
             <li className={`${styles.canvasitem} ${styles.logout_item}`}>
               <div className={styles.icon_offcanvas_wrapper}>
                 <FontAwesomeIcon
                   icon={faRightToBracket}
-                  className={styles.icon_offcanvas}
                 />
               </div>
               <p className={styles.canvas_item_text}>خروج</p>
@@ -102,5 +110,4 @@ function ResponsiveExample({ show, setIsShowSideBar }) {
     </>
   );
 }
-
 export default ResponsiveExample;

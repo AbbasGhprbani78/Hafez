@@ -54,9 +54,8 @@ export default function SelectDropDown2({ text, style, styleList }) {
             filteredOptions.map((option, index) => (
               <li
                 key={index}
-                className={`${styles.item_dropdown} ${
-                  option === text ? styles.disabled_item : ""
-                }`}
+                className={`${styles.item_dropdown} ${option === text ? styles.disabled_item : ""
+                  }`}
                 onClick={() => handleSelect(option)}
               >
                 {option}

@@ -1,0 +1,16 @@
+.modal_parent{
+    min-width: 30dvh !important;
+    padding: 20px;
+}
+.confirm_btn{
+    border: none !important;
+    outline: none !important;
+    border-radius: 100px !important;
+    padding: 9px 15px !important;
+    color: #ffffff !important;
+    background-color: var(--color-3) !important;
+
+}
+.cancell_btn{
+
+}

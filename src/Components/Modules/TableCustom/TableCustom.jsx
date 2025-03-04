@@ -23,9 +23,10 @@ function TableCustom({
     columns,
     rows = [],
     onChange,
-    page = 1,
+    page = 0,
     rowsPerPage = 5,
-    total = 10
+    total = 10,
+    maxHeight = 370
 
 }) {
 
@@ -42,7 +43,7 @@ function TableCustom({
             }}
         >
             <TableContainer style={{
-                maxHeight: 500,
+                maxHeight: maxHeight,
                 direction: "rtl",
                 borderTopLeftRadius: "10px",
                 borderTopRightRadius: "10px"
@@ -98,19 +99,19 @@ function TableCustom({
                 }}
                 spacing={1}
             >
-                <IconButton disabled={(page + 1) * rowsPerPage >= total} onClick={() => onChange(page + 2)} aria-label="double_next">
+                <IconButton disabled={(page + 2) * rowsPerPage >= total} onClick={() => onChange(page + 2)} aria-label="double_next">
                     <KeyboardDoubleArrowRightIcon />
                 </IconButton>
-                <IconButton disabled={page * rowsPerPage >= total}
+                <IconButton disabled={(page + 1) * rowsPerPage >= total}
                     onClick={() => onChange(page + 1)} aria-label="next">
                     <ChevronRightIcon />
                 </IconButton>
                 <Typography className={styles.text_navigation} style={{ direction: "ltr" }}>
-                    {`${((page - 1) * rowsPerPage) + 1} - ${Math.min(page * rowsPerPage, total)} of ${total}`}                    </Typography>
-                <IconButton disabled={page <= 1} onClick={() => onChange(page - 1)} aria-label="previous">
+                    {`${(page * rowsPerPage) + 1} - ${Math.min((page + 1) * rowsPerPage, total)} of ${total}`}                    </Typography>
+                <IconButton disabled={page <= 0} onClick={() => onChange(page - 1)} aria-label="previous">
                     <ChevronLeftIcon />
                 </IconButton>
-                <IconButton disabled={page <= 2} onClick={() => onChange(page - 2)} aria-label="double_previous">
+                <IconButton disabled={page <= 1} onClick={() => onChange(page - 2)} aria-label="double_previous">
                     <KeyboardDoubleArrowLeftIcon />
                 </IconButton>
             </Grid>

@@ -13,7 +13,7 @@ import DatePicker from '../../Components/Modules/DatePicker/DatePickerInput';
 import LoadingForm from '../../Components/Modules/Loading/LoadingForm';
 import TableCustom from '../../Components/Modules/TableCustom/TableCustom';
 import { ToastContainerCustom } from '../../Components/Modules/Toast/ToastCustom';
-import { infoMessage, errorMessage, warningMessage, successMessage } from '../../Components/Modules/Toast/ToastCustom';
+import { errorMessage, warningMessage, successMessage } from '../../Components/Modules/Toast/ToastCustom';
 
 //MUI Components
 import Grid from '@mui/material/Grid2';
@@ -24,8 +24,8 @@ import { Button, TableCell, TableRow } from "@mui/material";
 import { faHashtag, faMagnifyingGlass, faCalendarDays, faCalendarXmark } from '@fortawesome/free-solid-svg-icons';
 
 function RepairCardMain() {
-    const [page, setPage] = useState("1")
-    const [pageLength, setPageLength] = useState(5)
+    const [page, setPage] = useState(0)
+    const [pageLength, setPageLength] = useState(10)
     const [totalRows, setTotalRows] = useState(fakeInfo.length)
     const [information, setInformation] = useState(fakeInfo)
     const [admissionNumber, setAdmissionNumber] = useState(undefined)
@@ -66,23 +66,28 @@ function RepairCardMain() {
         fetchCommonData(page, pageLength);
     }, [page]);
 
-    const fetchCommonData = async (page = 1, pageLength = 5) => {
+    const fetchCommonData = async (page = 1, pageLength = 10) => {
         let access = window.localStorage.getItem("access")
+        page++
         const headers = {
             Authorization: `Bearer ${access}`
         };
         try {
-            const response = await axios.get(`${apiUrl}/`, {
+            const response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
                 headers,
-                params: { page, pageLength }
+                params: { page, page_size: pageLength }
             });
-            const data = await response.json();
-            setInformation(undefined);
+            if (response.status === 200) {
+                console.log(response.data)
+                setInformation(undefined);
+            }
+
 
         } catch (error) {
             errorMessage("خطا در برقراری ارتباط با سرور")
         }
     }
+    // /app/get-full-forms/?page=1&page_size=5&admission_number=12345&from_date=2024-02-01&to_date=2024-02-28
     const filterDataByNumber = async (admissionNumber) => {
         console.log(admissionNumber)
         let access = window.localStorage.getItem("access")
@@ -276,8 +281,8 @@ function InfoTabel({
     tableInformation = [],
     handleChange,
     handleExcel,
-    page,
-    pageLength,
+    page = 0,
+    pageLength = 10,
     totalRows
 }) {
     const columns = [
@@ -425,64 +430,64 @@ const fakeInfo = [
         "customer_name": "Maryam Sharifi",
         "action": "https://example.com/action/567890"
     },
-    // {
-    //     "admission_number": "901234",
-    //     "invoice_number": "F-852963",
-    //     "invoice_date": "1402/12/22",
-    //     "admission_date": "1402/12/15",
-    //     "chassis_number": "VWX234YZA567",
-    //     "national_id": "5566778899",
-    //     "customer_name": "Mohammad Amini",
-    //     "action": "https://example.com/action/901234"
-    // },
-    // {
-    //     "admission_number": "112233",
-    //     "invoice_number": "F-123456",
-    //     "invoice_date": "1402/12/25",
-    //     "admission_date": "1402/12/20",
-    //     "chassis_number": "LMN987OPQ654",
-    //     "national_id": "3344556677",
-    //     "customer_name": "Sara Mousavi",
-    //     "action": "https://example.com/action/112233"
-    // },
-    // {
-    //     "admission_number": "445566",
-    //     "invoice_number": "F-789101",
-    //     "invoice_date": "1402/12/28",
-    //     "admission_date": "1402/12/22",
-    //     "chassis_number": "RST321UVW543",
-    //     "national_id": "2233445566",
-    //     "customer_name": "Ahmad Naderi",
-    //     "action": "https://example.com/action/445566"
-    // },
-    // {
-    //     "admission_number": "778899",
-    //     "invoice_number": "F-654987",
-    //     "invoice_date": "1403/01/02",
-    //     "admission_date": "1402/12/29",
-    //     "chassis_number": "XYZ987ABC654",
-    //     "national_id": "8899001122",
-    //     "customer_name": "Fatemeh Hosseini",
-    //     "action": "https://example.com/action/778899"
-    // },
-    // {
-    //     "admission_number": "334455",
-    //     "invoice_number": "F-321654",
-    //     "invoice_date": "1403/01/05",
-    //     "admission_date": "1403/01/02",
-    //     "chassis_number": "MNO654PQR321",
-    //     "national_id": "7788990011",
-    //     "customer_name": "Hassan Abbasi",
-    //     "action": "https://example.com/action/334455"
-    // },
-    // {
-    //     "admission_number": "556677",
-    //     "invoice_number": "F-147258",
-    //     "invoice_date": "1403/01/10",
-    //     "admission_date": "1403/01/05",
-    //     "chassis_number": "UVW543RST321",
-    //     "national_id": "9900112233",
-    //     "customer_name": "Reza Sharifi",
-    //     "action": "https://example.com/action/556677"
-    // }
+    {
+        "admission_number": "901234",
+        "invoice_number": "F-852963",
+        "invoice_date": "1402/12/22",
+        "admission_date": "1402/12/15",
+        "chassis_number": "VWX234YZA567",
+        "national_id": "5566778899",
+        "customer_name": "Mohammad Amini",
+        "action": "https://example.com/action/901234"
+    },
+    {
+        "admission_number": "112233",
+        "invoice_number": "F-123456",
+        "invoice_date": "1402/12/25",
+        "admission_date": "1402/12/20",
+        "chassis_number": "LMN987OPQ654",
+        "national_id": "3344556677",
+        "customer_name": "Sara Mousavi",
+        "action": "https://example.com/action/112233"
+    },
+    {
+        "admission_number": "445566",
+        "invoice_number": "F-789101",
+        "invoice_date": "1402/12/28",
+        "admission_date": "1402/12/22",
+        "chassis_number": "RST321UVW543",
+        "national_id": "2233445566",
+        "customer_name": "Ahmad Naderi",
+        "action": "https://example.com/action/445566"
+    },
+    {
+        "admission_number": "778899",
+        "invoice_number": "F-654987",
+        "invoice_date": "1403/01/02",
+        "admission_date": "1402/12/29",
+        "chassis_number": "XYZ987ABC654",
+        "national_id": "8899001122",
+        "customer_name": "Fatemeh Hosseini",
+        "action": "https://example.com/action/778899"
+    },
+    {
+        "admission_number": "334455",
+        "invoice_number": "F-321654",
+        "invoice_date": "1403/01/05",
+        "admission_date": "1403/01/02",
+        "chassis_number": "MNO654PQR321",
+        "national_id": "7788990011",
+        "customer_name": "Hassan Abbasi",
+        "action": "https://example.com/action/334455"
+    },
+    {
+        "admission_number": "556677",
+        "invoice_number": "F-147258",
+        "invoice_date": "1403/01/10",
+        "admission_date": "1403/01/05",
+        "chassis_number": "UVW543RST321",
+        "national_id": "9900112233",
+        "customer_name": "Reza Sharifi",
+        "action": "https://example.com/action/556677"
+    }
 ]
