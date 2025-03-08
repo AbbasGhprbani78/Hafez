@@ -6,7 +6,7 @@
     border: none !important;
     outline: none !important;
     min-width: 130px !important;
-    width: max-content !important;
+    width: max-content ;
     display: flex !important;
     align-items: center !important;
     justify-content:center !important;
@@ -42,4 +42,7 @@
     font-size: .9rem !important;
     font-family: 'iranYekan', sans-serif !important;
     line-height: 20px !important;
+}
+.search_btn_modal{
+    width: 100% !important;
 }

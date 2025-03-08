@@ -110,13 +110,17 @@ function ManagementPage() {
     console.log(`operation: ${operation}`)
     console.log(`selected item: ${selectedRowInfo.name}`)
 
-
-
     return (
         <Grid className="content-conatiner">
             <Modal showModal={modal} setShowModal={handleToggleModal}>
                 {tab === 0 ? (
-                    operation === "add" ? <AddAndEditHalls /> : operation === "edit" ? <AddAndEditHalls /> : operation === "delete" ? <DeleteError toggleModal={handleToggleModal} type="hall" infoItem={selectedRowInfo} /> : <></>
+                    operation === "add" ?
+                        <AddAndEditHalls toggleModal={handleToggleModal} action="add" infoItem={selectedRowInfo} />
+                        : operation === "edit"
+                            ? <AddAndEditHalls toggleModal={handleToggleModal} action="edit" infoItem={selectedRowInfo} />
+                            : operation === "delete"
+                                ? <DeleteError toggleModal={handleToggleModal} type="hall" infoItem={selectedRowInfo} />
+                                : <></>
                 ) : tab === 1 ? (
                     operation === "add" ? <AddAndEditRepairman /> : operation === "edit" ? <AddAndEditRepairman /> : operation === "delete" ? <DeleteError toggleModal={handleToggleModal} type="repairman" infoItem={selectedRowInfo} /> : <></>
                 ) : tab === 2 ? (

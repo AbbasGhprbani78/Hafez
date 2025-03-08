@@ -1,12 +1,13 @@
-import * as React from 'react';
 import styles from "./ModalStyles.module.css"
 const apiUrl = import.meta.env.VITE_API_URL;
 import axios from 'axios';
-import { errorMessage, successMessage, warningMessage } from '../../../Components/Modules/Toast/ToastCustom';
+import { errorMessage, successMessage } from '../../../Components/Modules/Toast/ToastCustom';
 
 //MUI Components
 import Grid from '@mui/material/Grid2';
 import { Button, Typography } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
 
 //Icons
 import {
@@ -59,12 +60,28 @@ function DeleteError({ toggleModal, type = "hall", infoItem }) {
                     alignItems: "center",
                 }}
             >
-                <Typography>test</Typography>
-                <FontAwesomeIcon
-                    icon={faXmark}
-                    className="delete-icon-modal"
-                    onClick={() => toggleModal()}
-                />
+                <Typography className={styles.title_modal} variant='body1'>{`حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"}`}</Typography>
+                <Box className={styles.delete_icon_modal}>
+                    <FontAwesomeIcon
+                        icon={faXmark}
+                        onClick={() => toggleModal()}
+                    />
+                </Box>
+
+            </Grid>
+            <Divider orientation="horizontal" color='#9f9f9f' variant="fullWidth" flexItem />
+            <Grid
+                item
+                size={12}
+                sx={{
+                    display: "flex",
+                    justifyContent: 'space-between',
+                    alignItems: "center",
+                }}
+            >
+                <Typography className={styles.description_modal} variant='body1'>{`آیا از حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"} با کد ${infoItem ? infoItem.code : "123"} اطمینان دارید؟`}</Typography>
+
+
             </Grid>
             <Grid
                 item
@@ -73,44 +90,14 @@ function DeleteError({ toggleModal, type = "hall", infoItem }) {
                     display: "flex",
                     justifyContent: 'center',
                     alignItems: "center",
+                    gap: { xs: "1rem", sm: "1.2rem", md: "1.4rem", lg: "1.6rem" }
                 }}
             >
                 <Button onClick={() => deleteItem()} className={styles.confirm_btn} variant='contained'>حذف</Button>
                 <Button onClick={() => toggleModal()} className={styles.cancell_btn} variant='contained'>انصراف</Button>
             </Grid>
-
-
-
         </Grid>
     )
 }
 
 export default DeleteError
-//  <div className="div-delete">
-//                 <div className="close-delete-modal">
-//                   <FontAwesomeIcon
-//                     icon={faXmark}
-//                     className="delete-icon-modal"
-//                     onClick={() => {
-//                       setShowModal(false);
-//                     }}
-//                   />
-//                 </div>
-//                 <p className="delete-text">آیا از حذف اطمینان دارید؟</p>
-//                 <div className="delete-actions">
-//                   <button
-//                     className="btn-delete btn-yes-delete"
-//                     onClick={() => deleteMainStatement(idDelete)}
-//                   >
-//                     بله
-//                   </button>
-//                   <button
-//                     className="btn-delete btn-no-delete"
-//                     onClick={() => {
-//                       setShowModal(false);
-//                     }}
-//                   >
-//                     خیر
-//                   </button>
-//                 </div>
-//               </div>
