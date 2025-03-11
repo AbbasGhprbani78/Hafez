@@ -61,10 +61,10 @@ function DeleteError({ toggleModal, type = "hall", infoItem }) {
                 }}
             >
                 <Typography className={styles.title_modal} variant='body1'>{`حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"}`}</Typography>
-                <Box className={styles.delete_icon_modal}>
+                <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
                         icon={faXmark}
-                        onClick={() => toggleModal()}
+
                     />
                 </Box>
 

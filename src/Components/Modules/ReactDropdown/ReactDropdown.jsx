@@ -32,6 +32,7 @@ function ReactDropdown({
             arrowClassName={reactDropArrowClassName}
             arrowClosed={<FontAwesomeIcon icon={faAngleDown} />}
             arrowOpen={<FontAwesomeIcon icon={faAngleUp} />}
+
         />
     );
 }

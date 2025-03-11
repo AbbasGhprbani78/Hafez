@@ -15,14 +15,20 @@ import AddAndEditEquipment from './ManagementsModals/AddAndEditEquipment';
 import AddAndEditHalls from './ManagementsModals/AddAndEditHalls';
 import AddAndEditRepairman from './ManagementsModals/AddAndEditRepairman';
 import DeleteError from './ManagementsModals/DeleteError';
+import Input from '../../Components/Modules/Input/Input';
+import Button2 from '../../Components/Modules/Button2/Button2';
+import TableCustom from '../../Components/Modules/TableCustom/TableCustom';
+import LoadingForm from '../../Components/Modules/Loading/LoadingForm';
 
 //MUI Components
 import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import { Button, TableCell, TableRow } from "@mui/material";
 
+
+//Icons
+import { faPlus, faMagnifyingGlass, faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -53,6 +59,7 @@ function ManagementPage() {
     const [tab, setTab] = React.useState(0);
     const [modal, setModal] = React.useState(false)
     const [operation, setOperation] = useState("add")
+    const [searchInput, setSearchInput] = useState("")
 
     const handleChange = (newValue) => {
         setTab(newValue);
@@ -69,7 +76,7 @@ function ManagementPage() {
         try {
             let response = null;
             if (tab === 0) {
-                response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
+                response = await axios.get(`${apiUrl}/app/get-all-salon/`, {
                     headers,
                 });
             } else if (tab === 1) {
@@ -101,10 +108,14 @@ function ManagementPage() {
         setOperation(operation)
         handleToggleModal()
     }
+    const handleChangeSearch = (e) => {
+        const value = e.target.value
+        setSearchInput(value)
+    }
 
-    // useEffect(() => {
-    //     fetchTabData(tab);
-    // }, [tab])
+    useEffect(() => {
+        fetchTabData(tab);
+    }, [tab])
 
     console.log(`tab: ${tab}`)
     console.log(`operation: ${operation}`)
@@ -122,9 +133,21 @@ function ManagementPage() {
                                 ? <DeleteError toggleModal={handleToggleModal} type="hall" infoItem={selectedRowInfo} />
                                 : <></>
                 ) : tab === 1 ? (
-                    operation === "add" ? <AddAndEditRepairman /> : operation === "edit" ? <AddAndEditRepairman /> : operation === "delete" ? <DeleteError toggleModal={handleToggleModal} type="repairman" infoItem={selectedRowInfo} /> : <></>
+                    operation === "add" ?
+                        <AddAndEditRepairman toggleModal={handleToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                        : operation === "edit" ?
+                            <AddAndEditRepairman toggleModal={handleToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                            : operation === "delete"
+                                ? <DeleteError toggleModal={handleToggleModal} type="repairman" infoItem={selectedRowInfo} />
+                                : <></>
                 ) : tab === 2 ? (
-                    operation === "add" ? <AddAndEditEquipment /> : operation === "edit" ? <AddAndEditEquipment /> : operation === "delete" ? <DeleteError toggleModal={handleToggleModal} type="equipment" infoItem={selectedRowInfo} /> : <></>
+                    operation === "add" ?
+                        <AddAndEditEquipment toggleModal={handleToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                        : operation === "edit"
+                            ? <AddAndEditEquipment toggleModal={handleToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                            : operation === "delete"
+                                ? <DeleteError toggleModal={handleToggleModal} type="equipment" infoItem={selectedRowInfo} />
+                                : <></>
                 ) : <></>}
             </Modal>
             <SideBar />
@@ -189,8 +212,63 @@ function ManagementPage() {
                         justifyContent: "center",
                         alignItems: "center",
                         width: "100%"
-                    }}>
-                    <CustomTabPanel value={tab} index={0}>
+                    }}
+                    gap={{ xs: "1.5rem", md: "0" }}
+                >
+                    <Grid
+                        item
+                        size={{ xs: 12, sm: 6, md: 5, lg: 4, xl: 3, xxl: 2 }}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            width: "100%",
+                            paddingTop: { xs: "0.5rem", sm: "0.8rem", md: 0 }
+
+                        }}
+                    >
+                        <Input
+                            name={"admission_number_input"}
+                            styled={"admission_number_input"}
+                            placeholder="جستجو"
+                            icon={faMagnifyingGlass}
+                            value={searchInput}
+                            onChange={handleChangeSearch}
+                        />
+                    </Grid>
+                    <Grid
+                        item
+                        container
+                        size={{ xs: 12, md: 7, lg: 8, xl: 9, xxl: 10 }}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: { xs: "flex-start", sm: "center", md: "flex-end" },
+                            width: "100%",
+                        }}
+                    >
+                        <Button2
+                            text={tab === 0 ? "تعریف سالن جدید" : tab === 1 ? "تعریف تعمیرکار جدید" : tab === 2 ? "تعریف تجهیزات جدید" : ""}
+                            icon={faPlus}
+                            style={"search_btn"}
+                            onClick={() => handleOpenModal(item1, "add")} />
+                    </Grid>
+                    <Box sx={{ width: "100%" }}>
+                        <CustomTabPanel value={tab} index={0}>
+
+                        </CustomTabPanel>
+                        <CustomTabPanel value={tab} index={1}>
+                            {/* <ButtonGroup variant="contained" aria-label="Basic button group">
+                                <Button onClick={() => handleOpenModal(item2, "add")}>افزودن تعمیرکار</Button>
+                                <Button onClick={() => handleOpenModal(item2, "delete")}>حذف تعمیرکار</Button>
+                                <Button onClick={() => handleOpenModal(tempRepairman, "edit")}>ویرایش تعمیرکار</Button>
+                            </ButtonGroup> */}
+                        </CustomTabPanel>
+                        <CustomTabPanel value={tab} index={2}>
+
+                        </CustomTabPanel>
+                    </Box>
+                    {/* <CustomTabPanel value={tab} index={0}>
                         <ButtonGroup variant="contained" aria-label="Basic button group">
                             <Button onClick={() => handleOpenModal(item1, "add")}>افزودن سالن</Button>
                             <Button onClick={() => handleOpenModal(item1, "delete")}>حذف سالن</Button>
@@ -201,16 +279,17 @@ function ManagementPage() {
                         <ButtonGroup variant="contained" aria-label="Basic button group">
                             <Button onClick={() => handleOpenModal(item2, "add")}>افزودن تعمیرکار</Button>
                             <Button onClick={() => handleOpenModal(item2, "delete")}>حذف تعمیرکار</Button>
-                            <Button onClick={() => handleOpenModal(item2, "edit")}>ویرایش تعمیرکار</Button>
+                            <Button onClick={() => handleOpenModal(tempRepairman, "edit")}>ویرایش تعمیرکار</Button>
                         </ButtonGroup>
                     </CustomTabPanel>
                     <CustomTabPanel value={tab} index={2}>
                         <ButtonGroup variant="contained" aria-label="Basic button group">
                             <Button onClick={() => handleOpenModal(item3, "add")}>افزودن تجهیزات</Button>
                             <Button onClick={() => handleOpenModal(item3, "delete")}>حذف تجهیزات</Button>
-                            <Button onClick={() => handleOpenModal(item3, "edit")}>ویرایش تجهیزات</Button>
+                            <Button onClick={() => handleOpenModal(tempEquipment, "edit")}>ویرایش تجهیزات</Button>
                         </ButtonGroup>
-                    </CustomTabPanel>
+                    </CustomTabPanel> */}
+
                 </Grid>
 
             </Grid>
@@ -219,9 +298,111 @@ function ManagementPage() {
 }
 
 export default ManagementPage
-const tabHeaders = [{ value: 0, label: "سالن‌ها", tabNameEn: "Halls" },
-{ value: 1, label: "برنامه‌ریزی تعمیرکار", tabNameEn: "Repairman Scheduling" },
-{ value: 2, label: "تجهیزات", tabNameEn: "Equipment" },]
+
+function HallsTable({
+    tableInformation = [],
+    handleChange,
+    page = 0,
+    pageLength = 10,
+    totalRows,
+    handleEditAndRemove,
+}) {
+    const halls_columns = [
+        "کد",
+        "نام سالن",
+        "وضعیت",
+        "مانده ظرفیت",
+        "توضیحات",
+        "عملیات",
+    ]
+
+
+    return (
+        <Grid
+            container
+            item
+            size={12}
+            sx={{
+                display: 'flex',
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            {
+                tableInformation === undefined ?
+                    <LoadingForm /> :
+                    <TableCustom
+                        rows={tableInformation}
+                        columns={halls_columns}
+                        onChange={handleChange}
+                        page={page}
+                        rowsPerPage={pageLength}
+                        total={totalRows}
+                    >
+                        {
+                            tableInformation.map((row, index) => (
+                                <TableRow
+                                    key={index}
+                                    sx={{
+                                        backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                                        fontFamily: "iranYekan",
+                                    }}
+                                >
+                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                        {row.admission_number}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                        {row.invoice_number}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                        {row.invoice_date}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                        {row.admission_date}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                        {row.chassis_number}
+                                    </TableCell>
+
+                                    <TableCell sx={{
+
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        flexDirection: "row",
+                                        gap: "1rem"
+                                    }}>
+                                        <Button2
+                                            icon={faPencil}
+                                            onClick={() => handleEditAndRemove(row, "edit")}
+
+                                        />
+                                        <Button2
+                                            icon={faTrashCan}
+                                            onClick={() => handleEditAndRemove(row, "delete")} />
+                                        {/* <Button className={`${styles.view_btn}`} variant="contained" onClick={() => handleClickOnView(row.action)}>مشاهده</Button> */}
+                                    </TableCell>
+                                </TableRow>))
+                        }
+
+                    </TableCustom>
+            }
+
+        </Grid >
+    )
+
+}
+
+
+
+
+const tabHeaders = [
+    { value: 0, label: "سالن‌ها", tabNameEn: "Halls" },
+    { value: 1, label: "برنامه‌ریزی تعمیرکار", tabNameEn: "Repairman Scheduling" },
+    { value: 2, label: "تجهیزات", tabNameEn: "Equipment" },]
+
+
 const item1 = {
     name: 'Halls'
 }
@@ -231,3 +412,49 @@ const item2 = {
 const item3 = {
     name: 'Equipment'
 }
+const tempEquipment = {
+    equip_status: true,
+    equip_name: "نام تجهیزات",
+    equip_code: "12EG45",
+    equip_hall: 2,
+    equip_description: "توضیحات تجهیزات "
+}
+
+const tempRepairman = {
+    repair_status: true,
+    repair_name: "احسان",
+    repair_national_code: "1086632452",
+    repair_phone_number: "09126676712",
+    repair_expertise: "صافکار",
+    repair_work_hours: 5,
+    halls: [3, 4],
+    repair_username: "ehsanJJ",
+    repair_password: "temp#password"
+}
+
+const halls_sample = [
+    { value: 0, label: "سالن شماره یک" },
+    { value: 1, label: "سالن شماره دو" },
+    { value: 2, label: "سالن شماره سه" },
+    { value: 3, label: "سالن شماره چهار" },
+    { value: 4, label: "سالن شماره پنج" },
+];
+
+
+const repairman_columns = [
+    "کد",
+    "نام تعمیرکار",
+    "تخصص تعمیرکار",
+    " قابلیت زمانی تعمیرکار",
+    "نام سالن",
+    "وضعیت",
+    "عملیات",
+]
+const equipment_columns = [
+    "کد",
+    "نام تجهیزات",
+    "نام سالن",
+    "وضعیت",
+    "توضیحات",
+    "عملیات",
+]

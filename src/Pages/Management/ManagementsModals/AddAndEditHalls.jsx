@@ -113,13 +113,13 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal }) {
                     {action === "add" ?
                         "تعریف سالن جدید" : action === "edit" ?
                             `ویرایش سالن ${infoItem ?
-                                infoItem.code : "123"}`
+                                infoItem.hall_code : "123"}`
                             : "افزودن آیتم"}
                 </Typography>
-                <Box className={styles.delete_icon_modal}>
+                <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
                         icon={faXmark}
-                        onClick={() => toggleModal()}
+
                     />
                 </Box>
 
@@ -132,7 +132,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal }) {
                     alignItems: "center",
                     justifyContent: "center",
                     flexDirection: "column",
-                    gap: { xs: "2rem", sm: "", md: "", lg: "", xl: "" },
+                    gap: { xs: "0.7rem", sm: "0.9rem", md: "1.2 rem" },
                     width: "100%"
 
                 }}
@@ -159,7 +159,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal }) {
                         justifyContent: 'center',
                         alignItems: "center",
                         flexDirection: "column",
-                        gap: { xs: "1rem" },
+                        gap: { xs: "0.5rem", sm: "0.7rem", md: "1 rem" },
                     }}>
                     <Input3
                         id='hall_name_modal'
@@ -195,7 +195,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal }) {
                         key={3}
                         styleInput={"textfield_modal"}
                         isTextAarea={true}
-                        textAareaRows={8}
+                        textAareaRows={5}
                     />
 
                 </Grid>

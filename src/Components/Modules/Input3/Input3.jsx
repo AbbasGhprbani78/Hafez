@@ -1,9 +1,10 @@
 import styles from "./Input3Styles.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReactDropdown from "../ReactDropdown/ReactDropdown";
 
 //MUI Components
 import Grid from '@mui/material/Grid2';
-import { TextField, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 function Input3({
     id = "input_id",
@@ -18,7 +19,7 @@ function Input3({
     styleInput,
     styled,
     isTextAarea = false,
-    textAareaRows = 8
+    textAareaRows = 5
 
 }) {
     return (
@@ -63,11 +64,38 @@ function Input3({
                 {icon && <FontAwesomeIcon icon={icon} className={styles.icon_input} />}
             </Grid>)
             }
-
-
             {helperText && (<Typography className={styles.helper_text_input}>{helperText}</Typography>)}
         </Grid >
     )
 }
 
 export default Input3
+
+export function FullReactDropDown({
+    options = [],
+    handleChange,
+    helperText = "helper text",
+    styleInput,
+    lable = "lable",
+    styled,
+    selected = null,
+}) {
+    return (
+        <Grid
+            item
+            size={12}
+            sx={{
+                display: 'flex',
+                justifyContent: "flex-start",
+                alignItems: 'flex-start',
+                flexDirection: "column",
+                gap: { xs: ".2rem" }
+            }}
+            className={`${styles.input_container} ${styles[styleInput]} ${styles[styled]}`} >
+            {lable && (<Typography className={styles.label_input}>{lable}</Typography>)}
+            <ReactDropdown optionsProp={options} handleChange={handleChange} mainValue={selected} />
+            {helperText && (<Typography className={styles.helper_text_input}>{helperText}</Typography>)}
+        </Grid >
+    )
+
+}
