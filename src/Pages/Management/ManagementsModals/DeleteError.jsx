@@ -16,26 +16,25 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
-function DeleteError({ toggleModal, type = "hall", infoItem }) {
+function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate }) {
     const deleteItem = async () => {
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
         };
         try {
-            const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "" : type === "repairman" ? "" : type === "equipment" ? "" : ""}${infoItem.uuid}/`, {
+            const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "salon-update/" : type === "repairman" ? "" : type === "equipment" ? "" : ""}${infoItem.id}`, {
                 headers,
             });
 
             if (response.status === 200) {
-                console.log(response.data);
-                toggleModal()
-                successMessage("حذف انجام شد")
+                handleToggleUpdate()
+                successMessage("حذف با موفقیت انجام شد")
             }
         } catch (error) {
             console.log(error);
             toggleModal()
-            errorMessage("خطا در عملیات")
+            errorMessage(" خطا در عملیات حذف سالن")
 
         }
     };
@@ -79,9 +78,7 @@ function DeleteError({ toggleModal, type = "hall", infoItem }) {
                     alignItems: "center",
                 }}
             >
-                <Typography className={styles.description_modal} variant='body1'>{`آیا از حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"} با کد ${infoItem ? infoItem.code : "123"} اطمینان دارید؟`}</Typography>
-
-
+                <Typography className={styles.description_modal} variant='body1'>{`آیا از حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"} با نام ${infoItem ? infoItem.name : "123"} اطمینان دارید؟`}</Typography>
             </Grid>
             <Grid
                 item

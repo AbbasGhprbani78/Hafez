@@ -10,7 +10,6 @@ import RepairPlan from "./src/Pages/RepairPlan/RepairPlan";
 import Fund from "./src/Pages/Fund/Fund";
 import FundItem from "./src/Pages/Fund/FundItem";
 import RepairCardMain from "./src/Pages/RepairCard/RepairCardMain";
-import HallsPage from "./src/Pages/Halls/HallsPage";
 import ManagementPage from "./src/Pages/Management/ManagementPage";
 
 const routes = [
@@ -27,8 +26,6 @@ const routes = [
   { path: "/fund", element: <Fund /> },
   { path: "/fund/:id", element: <FundItem /> },
   { path: "/settings", element: <ManagementPage /> },
-  { path: "/settings/halls", element: <HallsPage /> },
-
 
 ];
 

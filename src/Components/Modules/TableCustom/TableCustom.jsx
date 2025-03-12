@@ -16,7 +16,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import styles from "./TableCustomStyle.module.css"
+import styles from "./TableCustomStyle.css"
 
 function TableCustom({
     children,
@@ -42,12 +42,15 @@ function TableCustom({
                 flexDirection: "column"
             }}
         >
-            <TableContainer style={{
-                maxHeight: maxHeight,
-                direction: "rtl",
-                borderTopLeftRadius: "10px",
-                borderTopRightRadius: "10px"
-            }}>
+            <TableContainer
+                id="table_custome_info"
+                style={{
+                    maxHeight: maxHeight,
+                    direction: "rtl",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px"
+                }}
+            >
                 <Table
                     stickyHeader
                     sx={{
@@ -106,7 +109,7 @@ function TableCustom({
                     onClick={() => onChange(page + 1)} aria-label="next">
                     <ChevronRightIcon />
                 </IconButton>
-                <Typography className={styles.text_navigation} style={{ direction: "ltr" }}>
+                <Typography className="text_navigation" style={{ direction: "ltr" }}>
                     {`${(page * rowsPerPage) + 1} - ${Math.min((page + 1) * rowsPerPage, total)} of ${total}`}                    </Typography>
                 <IconButton disabled={page <= 0} onClick={() => onChange(page - 1)} aria-label="previous">
                     <ChevronLeftIcon />

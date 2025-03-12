@@ -251,7 +251,7 @@ export default function TypeActivity() {
                 const response = await axios.post(`${IP}/user/continuation-signup/`, updatedDataFormCompany, {
                     headers
                 })
-                
+
                 if (response.status === 201) {
                     setLoading(false)
                     localStorage.setItem("level", "two")

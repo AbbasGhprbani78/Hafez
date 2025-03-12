@@ -24,3 +24,27 @@
    outline: none !important;
    padding: 9px 20px !important;
 }
+
+/* Halls Info table */
+.status_btn_halls {
+   padding: 5px;
+   border-radius: 100px;
+   min-width: 100px;
+}
+
+.status_halls_one {
+   background-color: #ccf3ea;
+   color: #3e846b;
+}
+
+.status_halls_two {
+   background-color: #F1444433;
+   color: #D90429;
+}
+
+.status_halls_defualt {
+   background-color: #a5b6ff;
+   color: #4c6fff;
+}
+
+

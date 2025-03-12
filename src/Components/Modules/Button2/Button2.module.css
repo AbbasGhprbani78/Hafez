@@ -46,3 +46,17 @@
 .search_btn_modal{
     width: 100% !important;
 }
+.edit_delete_btn{
+    background-color: var(--color-3) !important;
+    color: #fff !important;
+    border-radius: 50px !important;
+    padding:10px !important;
+    border-radius: 100px !important;
+    border: none !important;
+    outline: none !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content:center !important;
+ }

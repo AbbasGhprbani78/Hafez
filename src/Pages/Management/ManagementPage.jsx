@@ -40,7 +40,7 @@ function CustomTabPanel(props) {
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+            {value === index && <Box>{children}</Box>}
         </div>
     );
 }
@@ -53,7 +53,9 @@ CustomTabPanel.propTypes = {
 
 
 function ManagementPage() {
-    const [tableRows, setTableRows] = useState([])
+    const [tabInformation, setTabInformation] = useState([])
+    const [filterRows, setFilterRows] = useState([])
+
     const [hallsList, setHallsList] = useState([])
     const [selectedRowInfo, setSelectedRowInfo] = useState(item1)
     const [tab, setTab] = React.useState(0);
@@ -61,14 +63,54 @@ function ManagementPage() {
     const [operation, setOperation] = useState("add")
     const [searchInput, setSearchInput] = useState("")
 
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
     const handleChange = (newValue) => {
         setTab(newValue);
     };
     const handleToggleModal = () => {
         setModal((modal) => !modal)
     }
+    const handleRebuildAndToggleModal = () => {
+        setModal(false)
+        fetchTabData(tab);
+    }
+    const handleChangePage = (newPage) => {
+        setPage(newPage);
+    };
 
-    const fetchTabData = async (tab = 0) => {
+    const handleChangeSearchField = (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        setSearchInput(searchTerm);
+        let filterProducts;
+        if (tab === 0) { //code, name, description
+            filterProducts = tabInformation.filter(
+                (item) =>
+                    item.code.includes(searchTerm) ||
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.descriptions.includes(searchTerm)
+            );
+        } else if (tab === 1) { //code, name, expertice, halls name
+            filterProducts = tabInformation.filter(
+                (item) =>
+                    item.code.includes(searchTerm) ||
+                    item.hallsName.toLowerCase().includes(searchTerm) ||
+                    item.status.includes(searchTerm)
+            );
+        } else if (tab === 2) { //code, name, halls name, description
+            filterProducts = tabInformation.filter(
+                (item) =>
+                    item.code.includes(searchTerm) ||
+                    item.hallsName.toLowerCase().includes(searchTerm) ||
+                    item.status.includes(searchTerm)
+            );
+        }
+
+        setFilterRows(filterProducts);
+    };
+
+    const fetchTabData = async (tab) => {
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
@@ -79,28 +121,38 @@ function ManagementPage() {
                 response = await axios.get(`${apiUrl}/app/get-all-salon/`, {
                     headers,
                 });
+                if (response.status === 200) {
+                    setTabInformation(response.data)
+                    setFilterRows(response.data)
+                    setHallsList([])
+                }
             } else if (tab === 1) {
-                response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
+                response = await axios.get(`${apiUrl}/app/add-repairman/`, {
                     headers,
                 });
+                if (response.status === 200) {
+                    setTabInformation(response.data.users)
+                    setFilterRows(response.data.users)
+                    setHallsList([])
+                }
 
             } else if (tab === 2) {
                 response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
                     headers,
                 });
-            }
-
-            if (response.status === 200) {
-                console.log(response.data)
-                setTableRows(response.data)
-                setHallsList([])
+                if (response.status === 200) {
+                    setTabInformation(response.data)
+                    setFilterRows(response.data)
+                    setHallsList([])
+                }
             }
 
 
         } catch (error) {
             errorMessage("خطا در برقراری ارتباط با سرور")
-            setTableRows([])
-
+            setTabInformation([])
+            setFilterRows([])
+            setHallsList([])
         }
     }
     const handleOpenModal = (chosenItem = null, operation = "add") => {
@@ -108,45 +160,39 @@ function ManagementPage() {
         setOperation(operation)
         handleToggleModal()
     }
-    const handleChangeSearch = (e) => {
-        const value = e.target.value
-        setSearchInput(value)
-    }
 
     useEffect(() => {
         fetchTabData(tab);
     }, [tab])
+    console.log(filterRows)
 
-    console.log(`tab: ${tab}`)
-    console.log(`operation: ${operation}`)
-    console.log(`selected item: ${selectedRowInfo.name}`)
 
     return (
         <Grid className="content-conatiner">
             <Modal showModal={modal} setShowModal={handleToggleModal}>
                 {tab === 0 ? (
                     operation === "add" ?
-                        <AddAndEditHalls toggleModal={handleToggleModal} action="add" infoItem={selectedRowInfo} />
+                        <AddAndEditHalls toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} />
                         : operation === "edit"
-                            ? <AddAndEditHalls toggleModal={handleToggleModal} action="edit" infoItem={selectedRowInfo} />
+                            ? <AddAndEditHalls toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} />
                             : operation === "delete"
-                                ? <DeleteError toggleModal={handleToggleModal} type="hall" infoItem={selectedRowInfo} />
+                                ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="hall" infoItem={selectedRowInfo} />
                                 : <></>
                 ) : tab === 1 ? (
                     operation === "add" ?
-                        <AddAndEditRepairman toggleModal={handleToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                        <AddAndEditRepairman toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
                         : operation === "edit" ?
-                            <AddAndEditRepairman toggleModal={handleToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                            <AddAndEditRepairman toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
                             : operation === "delete"
-                                ? <DeleteError toggleModal={handleToggleModal} type="repairman" infoItem={selectedRowInfo} />
+                                ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="repairman" infoItem={selectedRowInfo} />
                                 : <></>
                 ) : tab === 2 ? (
                     operation === "add" ?
-                        <AddAndEditEquipment toggleModal={handleToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                        <AddAndEditEquipment toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
                         : operation === "edit"
-                            ? <AddAndEditEquipment toggleModal={handleToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                            ? <AddAndEditEquipment toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
                             : operation === "delete"
-                                ? <DeleteError toggleModal={handleToggleModal} type="equipment" infoItem={selectedRowInfo} />
+                                ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="equipment" infoItem={selectedRowInfo} />
                                 : <></>
                 ) : <></>}
             </Modal>
@@ -233,7 +279,7 @@ function ManagementPage() {
                             placeholder="جستجو"
                             icon={faMagnifyingGlass}
                             value={searchInput}
-                            onChange={handleChangeSearch}
+                            onChange={handleChangeSearchField}
                         />
                     </Grid>
                     <Grid
@@ -255,40 +301,261 @@ function ManagementPage() {
                     </Grid>
                     <Box sx={{ width: "100%" }}>
                         <CustomTabPanel value={tab} index={0}>
+                            <InfoTabel
+                                tableInformation={filterRows}
+                                page={page}
+                                handleChange={handleChangePage}
+                                totalRows={filterRows.length}
+                                pageLength={rowsPerPage}
+                                columnsTitle={halls_columns}
+                                key={1}
+                            >
+                                {filterRows.length > 0 ? filterRows
+                                    .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                                    .map((row, index) => (
+                                        <TableRow
+                                            key={index}
+                                            sx={{
+                                                backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                                                fontFamily: "iranYekan",
+                                            }}
+                                        >
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.code}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.name}
+                                            </TableCell>
 
+                                            <TableCell
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    fontFamily: "iranYekan",
+                                                    padding: "19px"
+                                                }}
+                                            >
+                                                <div
+                                                    className={`${styles.status_btn_halls} ${row.status === true
+                                                        ? styles.status_halls_one
+                                                        : row.status === false
+                                                            ? styles.status_halls_two
+                                                            : styles.status_halls_defualt
+                                                        }`}
+                                                >
+                                                    {row.status === true
+                                                        ? "فعال"
+                                                        : row.status === false
+                                                            ? "غیرفعال"
+                                                            : "نامشخص"}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {`${row.remaining_capacity} ساعت`}
+                                            </TableCell>
+
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.descriptions}
+                                            </TableCell>
+
+                                            <TableCell sx={{
+
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                flexDirection: "row",
+                                                gap: "1rem",
+                                                padding: "18px 10px"
+                                            }}>
+                                                <Button2
+                                                    icon={faPencil}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "edit")}
+
+                                                />
+                                                <Button2
+                                                    icon={faTrashCan}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "delete")} />
+                                            </TableCell>
+                                        </TableRow>)) : <></>
+
+                                }
+                            </InfoTabel>
                         </CustomTabPanel>
                         <CustomTabPanel value={tab} index={1}>
-                            {/* <ButtonGroup variant="contained" aria-label="Basic button group">
-                                <Button onClick={() => handleOpenModal(item2, "add")}>افزودن تعمیرکار</Button>
-                                <Button onClick={() => handleOpenModal(item2, "delete")}>حذف تعمیرکار</Button>
-                                <Button onClick={() => handleOpenModal(tempRepairman, "edit")}>ویرایش تعمیرکار</Button>
-                            </ButtonGroup> */}
+                            <InfoTabel
+                                tableInformation={filterRows}
+                                page={page}
+                                handleChange={handleChangePage}
+                                totalRows={filterRows.length}
+                                pageLength={rowsPerPage}
+                                columnsTitle={repairman_columns}
+                                key={1}
+                            >
+                                {filterRows.length > 0 ? filterRows
+                                    .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                                    .map((row, index) => (
+                                        <TableRow
+                                            key={index}
+                                            sx={{
+                                                backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                                                fontFamily: "iranYekan",
+                                            }}
+                                        >
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.id}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {`${row.first_name} ${row.last_name}`}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.type}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {`${row.work_time} ساعت کار در روز`}
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    fontFamily: "iranYekan",
+                                                    padding: "19px"
+                                                }}
+                                            >
+                                                <div
+                                                    className={`${styles.status_btn_halls} ${row.status === true
+                                                        ? styles.status_halls_one
+                                                        : row.status === false
+                                                            ? styles.status_halls_two
+                                                            : styles.status_halls_defualt
+                                                        }`}
+                                                >
+                                                    {row.status === true
+                                                        ? "فعال"
+                                                        : row.status === false
+                                                            ? "غیرفعال"
+                                                            : "نامشخص"}
+                                                </div>
+                                            </TableCell>
+
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.type}
+                                            </TableCell>
+
+
+                                            <TableCell sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                flexDirection: "row",
+                                                gap: "1rem",
+                                                padding: "18px 10px"
+                                            }}>
+                                                <Button2
+                                                    icon={faPencil}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "edit")}
+
+                                                />
+                                                <Button2
+                                                    icon={faTrashCan}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "delete")} />
+                                            </TableCell>
+                                        </TableRow>)) : <></>
+
+                                }
+                            </InfoTabel>
                         </CustomTabPanel>
                         <CustomTabPanel value={tab} index={2}>
+                            <InfoTabel
+                                tableInformation={filterRows}
+                                page={page}
+                                handleChange={handleChangePage}
+                                totalRows={filterRows.length}
+                                pageLength={rowsPerPage}
+                                columnsTitle={equipment_columns}
+                                key={1}
+                            >
+                                {filterRows.length > 0 ? filterRows
+                                    .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                                    .map((row, index) => (
+                                        <TableRow
+                                            key={index}
+                                            sx={{
+                                                backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                                                fontFamily: "iranYekan",
+                                            }}
+                                        >
+                                            {/* <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.code}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    fontFamily: "iranYekan",
+                                                    padding: "19px"
+                                                }}
+                                            >
+                                                <div
+                                                    className={`${styles.status_btn_halls} ${row.status === true
+                                                        ? styles.status_halls_one
+                                                        : row.status === false
+                                                            ? styles.status_halls_two
+                                                            : styles.status_halls_defualt
+                                                        }`}
+                                                >
+                                                    {row.status === true
+                                                        ? "فعال"
+                                                        : row.status === false
+                                                            ? "غیرفعال"
+                                                            : "نامشخص"}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {`${row.remaining_capacity} ساعت`}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.descriptions}
+                                            </TableCell>
+                                            <TableCell sx={{
 
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                flexDirection: "row",
+                                                gap: "1rem",
+                                                padding: "18px 10px"
+
+                                            }}>
+                                                <Button2
+                                                    icon={faPencil}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "edit")}
+
+                                                />
+                                                <Button2
+                                                    icon={faTrashCan}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "delete")} />
+                                            </TableCell> */}
+                                        </TableRow>)) : <></>
+
+                                }
+                            </InfoTabel>
                         </CustomTabPanel>
                     </Box>
-                    {/* <CustomTabPanel value={tab} index={0}>
-                        <ButtonGroup variant="contained" aria-label="Basic button group">
-                            <Button onClick={() => handleOpenModal(item1, "add")}>افزودن سالن</Button>
-                            <Button onClick={() => handleOpenModal(item1, "delete")}>حذف سالن</Button>
-                            <Button onClick={() => handleOpenModal(item1, "edit")}>ویرایش سالن</Button>
-                        </ButtonGroup>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={tab} index={1}>
-                        <ButtonGroup variant="contained" aria-label="Basic button group">
-                            <Button onClick={() => handleOpenModal(item2, "add")}>افزودن تعمیرکار</Button>
-                            <Button onClick={() => handleOpenModal(item2, "delete")}>حذف تعمیرکار</Button>
-                            <Button onClick={() => handleOpenModal(tempRepairman, "edit")}>ویرایش تعمیرکار</Button>
-                        </ButtonGroup>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={tab} index={2}>
-                        <ButtonGroup variant="contained" aria-label="Basic button group">
-                            <Button onClick={() => handleOpenModal(item3, "add")}>افزودن تجهیزات</Button>
-                            <Button onClick={() => handleOpenModal(item3, "delete")}>حذف تجهیزات</Button>
-                            <Button onClick={() => handleOpenModal(tempEquipment, "edit")}>ویرایش تجهیزات</Button>
-                        </ButtonGroup>
-                    </CustomTabPanel> */}
 
                 </Grid>
 
@@ -297,26 +564,19 @@ function ManagementPage() {
     )
 }
 
+
 export default ManagementPage
 
-function HallsTable({
+function InfoTabel({
     tableInformation = [],
     handleChange,
     page = 0,
     pageLength = 10,
     totalRows,
-    handleEditAndRemove,
+    columnsTitle,
+    children
 }) {
-    const halls_columns = [
-        "کد",
-        "نام سالن",
-        "وضعیت",
-        "مانده ظرفیت",
-        "توضیحات",
-        "عملیات",
-    ]
-
-
+    console.log(tableInformation)
     return (
         <Grid
             container
@@ -324,9 +584,9 @@ function HallsTable({
             size={12}
             sx={{
                 display: 'flex',
-                flexDirection: "row",
+                flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "flex-start",
             }}
         >
             {
@@ -334,58 +594,14 @@ function HallsTable({
                     <LoadingForm /> :
                     <TableCustom
                         rows={tableInformation}
-                        columns={halls_columns}
+                        columns={columnsTitle}
                         onChange={handleChange}
                         page={page}
                         rowsPerPage={pageLength}
                         total={totalRows}
+                        maxHeight={"500px"}
                     >
-                        {
-                            tableInformation.map((row, index) => (
-                                <TableRow
-                                    key={index}
-                                    sx={{
-                                        backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
-                                        fontFamily: "iranYekan",
-                                    }}
-                                >
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.admission_number}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.invoice_number}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.invoice_date}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.admission_date}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.chassis_number}
-                                    </TableCell>
-
-                                    <TableCell sx={{
-
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        flexDirection: "row",
-                                        gap: "1rem"
-                                    }}>
-                                        <Button2
-                                            icon={faPencil}
-                                            onClick={() => handleEditAndRemove(row, "edit")}
-
-                                        />
-                                        <Button2
-                                            icon={faTrashCan}
-                                            onClick={() => handleEditAndRemove(row, "delete")} />
-                                        {/* <Button className={`${styles.view_btn}`} variant="contained" onClick={() => handleClickOnView(row.action)}>مشاهده</Button> */}
-                                    </TableCell>
-                                </TableRow>))
-                        }
-
+                        {children}
                     </TableCustom>
             }
 
@@ -393,8 +609,6 @@ function HallsTable({
     )
 
 }
-
-
 
 
 const tabHeaders = [
@@ -406,19 +620,7 @@ const tabHeaders = [
 const item1 = {
     name: 'Halls'
 }
-const item2 = {
-    name: 'Repairman'
-}
-const item3 = {
-    name: 'Equipment'
-}
-const tempEquipment = {
-    equip_status: true,
-    equip_name: "نام تجهیزات",
-    equip_code: "12EG45",
-    equip_hall: 2,
-    equip_description: "توضیحات تجهیزات "
-}
+
 
 const tempRepairman = {
     repair_status: true,
@@ -440,7 +642,14 @@ const halls_sample = [
     { value: 4, label: "سالن شماره پنج" },
 ];
 
-
+const halls_columns = [
+    "کد",
+    "نام سالن",
+    "وضعیت",
+    "مانده ظرفیت",
+    "توضیحات",
+    "عملیات",
+]
 const repairman_columns = [
     "کد",
     "نام تعمیرکار",

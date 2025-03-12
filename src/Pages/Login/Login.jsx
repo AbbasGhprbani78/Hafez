@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './Login.css'
 import { Col } from 'react-bootstrap'
 import { Formik } from 'formik'
@@ -62,6 +62,7 @@ export default function Login() {
                                             localStorage.setItem("access", response.data.access)
                                             localStorage.setItem("refresh", response.data.refresh)
                                             localStorage.setItem("level", response?.data?.level)
+                                            console.log(response.data)
                                             if (response?.data?.level !== "one") {
                                                 navigate("/")
                                             } else {
