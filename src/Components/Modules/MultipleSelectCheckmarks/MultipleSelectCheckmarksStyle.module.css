@@ -14,13 +14,13 @@
 
 }
 .multiple_checkbox_styles div:first-child{
-    padding: 11px 14px !important;
-    max-width: 240px;
+    padding: 11px 10px 11px 0 !important;
+    max-width: 160px;
 }
 @media (min-width:1024px) {
     .multiple_checkbox_styles div:first-child{
-        padding: 11px 14px !important;
-        max-width: 380px;
+        padding: 11px 10px 11px 0 !important;
+        max-width: 180px;
     }
 }
 

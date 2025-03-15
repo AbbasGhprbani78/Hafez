@@ -1,11 +1,10 @@
-import * as React from 'react';
 import { useState, useEffect } from 'react';
 import styles from "./ModalStyles.module.css"
 const apiUrl = import.meta.env.VITE_API_URL;
 import axios from 'axios';
 
 //Components
-import { errorMessage, successMessage, warningMessage } from '../../../Components/Modules/Toast/ToastCustom';
+import { errorMessage, successMessage } from '../../../Components/Modules/Toast/ToastCustom';
 import ToggleSwitch from '../../../Components/Modules/ToggleSwitch/ToggleSwitch';
 import Button2 from '../../../Components/Modules/Button2/Button2';
 import Input3 from '../../../Components/Modules/Input3/Input3';
@@ -25,82 +24,192 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function AddAndEditEquipment({ action = "add", infoItem, toggleModal, hallsInfo = [] }) {
+function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab, handleToggleUpdate }) {
+    const [hallsInfo, setHallsInfo] = useState([])
     const [equipmentInfo, setEquipmentInfo] = useState({
-        equip_status: false,
+        equip_status: true,
         equip_name: "",
         equip_code: "",
-        equip_hall: 0,
+        equip_hall: null,
         equip_description: ""
     })
     const [helperText, setHelperText] = useState({
         help_name: "",
         help_code: "",
-        help_halls: " ",
+        help_halls: "",
         help_description: ""
     })
-
-    const handleSubmitForm = async (event) => {
-        event.preventDefault();
-        warningMessage("handle submit equipment")
-    }
-
     // Handle change and validation
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        // Validate input
-        // const isValid = validateField(name, value);
-        // if (name === "hall_code" && !/^\d*$/.test(value)) {
-        //     setHelperText((prev) => ({
-        //         ...prev,
-        //         help_code: "فقط عدد وارد کنید! "
-        //     }));
-        //     return
-        // }
+        if (name === "equip_code" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_code: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        } else if (helperText.help_code !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_code: ""
+            }));
+        }
 
-        // if (isValid) {
+        if (name === "equip_name" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_name: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        } else if (helperText.help_name !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_name: ""
+            }));
+        }
+
         setEquipmentInfo((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value
         }));
-        // }
     };
 
-    useEffect(() => {
-        if (action === "edit") {
-            setEquipmentInfo({
-                equip_status: infoItem.equip_status,
-                equip_name: infoItem.equip_name,
-                equip_code: infoItem.equip_code,
-                equip_hall: infoItem.equip_hall,
-                equip_description: infoItem.equip_description
-            })
-        } else if (action === "add") {
-            setEquipmentInfo({
-                equip_status: false,
-                equip_name: "",
-                equip_code: "",
-                equip_hall: null,
-                equip_description: ""
-            })
+    const handleSubmitForm = async () => {
+
+        if (equipmentInfo.equip_name === undefined || equipmentInfo.equip_name === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_name: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+            return
+        } else if (equipmentInfo.equip_code === undefined || equipmentInfo.equip_code === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_code: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+            return
+        } else if (equipmentInfo.equip_hall === null || equipmentInfo.equip_hall === "" || equipmentInfo.equip_hall === undefined) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_halls: "لطفا یک سالن  برای ابزار مورد نظر را، انتخاب کنید!"
+            }));
+            return
         }
-    }, [action])
+
+        let access = window.localStorage.getItem("access")
+        const headers = {
+            Authorization: `Bearer ${access}`
+        };
+        const requestData = {
+            name: equipmentInfo.equip_name,
+            code: equipmentInfo.equip_code,
+            descriptions: equipmentInfo.equip_description,
+            status: equipmentInfo.equip_status,
+            salon: equipmentInfo.equip_hall
+        }
+        console.log()
+        if (action === "edit") {
+            try {
+                const response = await axios.put(`${apiUrl}/app/equipment/${infoItem.id}`,
+                    requestData,
+                    { headers });
+
+                if (response.status === 200) {
+                    handleToggleUpdate()
+                    successMessage("تجهیزات با موفقیت ویرایش شد");
+                }
+            } catch (error) {
+                toggleModal()
+                errorMessage("خطا در عملیات ویرایش تجهیزات");
+            }
+        } else if (action === "add") {
+            try {
+                const response = await axios.post(`${apiUrl}/app/equipment/`,
+                    requestData,
+                    { headers });
+                if (response.status === 201) {
+                    handleToggleUpdate()
+                    successMessage("تجهیزات با موفقیت اضافه گردید");
+                }
+            } catch (error) {
+                toggleModal()
+                errorMessage("خطا در عملیات افزودن تجهیزات");
+            }
+        }
+
+    }
+    useEffect(() => {
+        if (tab === 2) {
+            if (modal === true) {
+                fetchGetHalls();
+                if (action === "edit") {
+                    setEquipmentInfo({
+                        equip_status: infoItem.status,
+                        equip_name: infoItem.name,
+                        equip_code: infoItem.code,
+                        equip_hall: infoItem.salon?.id,
+                        equip_description: infoItem.descriptions
+                    })
+                } else if (action === "add") {
+                    setEquipmentInfo({
+                        equip_status: true,
+                        equip_name: "",
+                        equip_code: "",
+                        equip_hall: null,
+                        equip_description: ""
+                    })
+                }
+            } else {
+                setEquipmentInfo({
+                    equip_status: true,
+                    equip_name: "",
+                    equip_code: "",
+                    equip_hall: null,
+                    equip_description: ""
+                })
+                setHelperText({
+                    help_name: "",
+                    help_code: "",
+                    help_halls: "",
+                    help_description: ""
+                })
+                setHallsInfo([])
+            }
+
+        }
+
+    }, [action, infoItem, tab, modal])
 
     const handleChangeHalls = (hallsCode) => {
+        if (helperText !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_halls: ""
+            }));
+        }
         setEquipmentInfo(prevstate => ({ ...prevstate, equip_hall: hallsCode }))
     }
-    const handleFormatCloseModal = () => {
-        toggleModal();
-        setEquipmentInfo({
-            equip_status: false,
-            equip_name: "",
-            equip_code: "",
-            equip_hall: null,
-            equip_description: ""
-        })
-    }
 
+    const fetchGetHalls = async () => {
+        let access = window.localStorage.getItem("access")
+        const headers = {
+            Authorization: `Bearer ${access}`
+        };
+        try {
+
+            const response = await axios.get(`${apiUrl}/app/get-user-type/`, {
+                headers,
+            });
+            if (response.status === 200) {
+                setHallsInfo(response.data.salons)
+            }
+
+        } catch (error) {
+            errorMessage("خطا در برقراری ارتباط با سرور")
+            setHallsInfo([])
+        }
+
+    }
+    console.log(equipmentInfo)
     return (
         <Grid container
             sx={{
@@ -124,10 +233,10 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, hallsInfo 
                     {action === "add" ?
                         "تعریف تجهیزات جدید" : action === "edit" ?
                             `ویرایش تجهیزات ${infoItem ?
-                                infoItem.equip_code : "Equipment Code"}`
+                                infoItem.code : "Equipment Code"}`
                             : "افزودن تجهیزات"}
                 </Typography>
-                <Box className={styles.delete_icon_modal} onClick={() => handleFormatCloseModal()}>
+                <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
                         icon={faXmark}
 
@@ -194,13 +303,14 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, hallsInfo 
                         key={5}
                     />
                     <FullReactDropDown
-                        options={hallsInfo}
+                        options={hallsInfo.map(hall => ({ value: hall.id, label: hall.name }))}
                         handleChange={handleChangeHalls}
                         helperText={helperText.help_halls}
                         lable="انتخاب سالن:"
                         selected={action === "edit" ? equipmentInfo.equip_hall : null}
                         key={6}
                     />
+
                     <Input3
                         id='equip_description_modal'
                         name='equip_description'
@@ -210,7 +320,7 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, hallsInfo 
                         lable='توضیحات:'
                         placeholder='توضیحات اضافی خود را وارد نمایید'
                         type='text'
-                        key={6}
+                        key={7}
                         styleInput={"textfield_modal"}
                         isTextAarea={true}
                         textAareaRows={5}
@@ -222,7 +332,6 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, hallsInfo 
                     icon={action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
                     onClick={handleSubmitForm}
-                    type='submit'
                 />
             </Box>
         </Grid>
@@ -230,4 +339,3 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, hallsInfo 
 }
 
 export default AddAndEditEquipment
-

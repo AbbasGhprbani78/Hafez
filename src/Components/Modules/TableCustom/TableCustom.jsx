@@ -16,7 +16,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import styles from "./TableCustomStyle.css"
+import "./TableCustomStyle.css"
 
 function TableCustom({
     children,

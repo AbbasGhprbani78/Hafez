@@ -1,21 +1,16 @@
 import * as React from "react";
-
 import styles from "./MultipleSelectCheckmarksStyle.module.css"
 
 // MUI Components
 import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
-import { Box } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { Typography } from '@mui/material';
-//Icons 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -53,8 +48,10 @@ export default function MultipleSelectCheckmarks({
     React.useEffect(() => {
         if (selectedValues.length > 0) {
             setSelected(selectedValues);
-        } else if (options.length >= 0) {
+        } else if (options.length > 0) {
             setSelected([options[0].value])
+        } else {
+            setSelected([])
         }
     }, [selectedValues, options])
     return (
@@ -85,19 +82,24 @@ export default function MultipleSelectCheckmarks({
                             .map((val) => options.find((opt) => opt.value === val)?.label)
                             .join(", ")
                     }
-
                     MenuProps={MenuProps}
                     dir="rtl"
-
                 >
-                    <MenuItem className={styles.menu_item_all} value="all">
-                        <Checkbox checked={selected.length === options.length} />
-                        <ListItemText primary="انتخاب همه" />
-                    </MenuItem>
+                    {
+                        options.length > 0 ?
+                            <MenuItem className={styles.menu_item_all} value="all">
+                                <Checkbox color="success" checked={selected.length === options.length} />
+                                <ListItemText primary="انتخاب همه" />
+                            </MenuItem> :
+                            <MenuItem className={styles.menu_item_all} value="null">
+                                <ListItemText primary="گزینه‌ای برای انتخاب وجود ندارد!" />
+                            </MenuItem>
+                    }
+
 
                     {options.map((option) => (
                         <MenuItem className={styles.menu_item_custom} key={option.value} value={option.value}>
-                            <Checkbox checked={selected.includes(option.value)} />
+                            <Checkbox color="success" checked={selected.includes(option.value)} />
                             <ListItemText primary={option.label} />
                         </MenuItem>
                     ))}

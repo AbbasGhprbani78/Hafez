@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useEffect } from 'react';
 import styles from "./ModalStyles.module.css"
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -26,18 +25,21 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo = [] }) {
+function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal, handleToggleUpdate }) {
+    const [hallsInfo, setHallsInfo] = useState([])
+    const [expertiseInfo, setExpertiseInfo] = useState([])
     const [repairmanInfo, setRepairmanInfo] = useState({
-        repair_status: false,
+        id: null,
+        repair_status: true,
         repair_name: "",
         repair_national_code: "",
         repair_phone_number: "",
-        repair_expertise: "",
         repair_work_hours: 8,
         repair_username: "",
         repair_password: ""
     })
-    const [repairHalls, setRepairHalls] = useState([])
+    const [itemRepairHalls, setItemRepairHalls] = useState(undefined)
+    const [itemRepairExpertise, setItemRepairExpertise] = useState(undefined)
     const [helperText, setHelperText] = useState({
         help_name: "",
         help_national_code: "",
@@ -49,76 +51,191 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo 
         help_password: "",
     })
 
-    const handleSubmitForm = async (event) => {
-        event.preventDefault();
-        warningMessage("handle submit repairman")
-    }
-
     // Handle change and validation
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        // Validate input
-        // const isValid = validateField(name, value);
-        // if (name === "hall_code" && !/^\d*$/.test(value)) {
-        //     setHelperText((prev) => ({
-        //         ...prev,
-        //         help_code: "فقط عدد وارد کنید! "
-        //     }));
-        //     return
-        // }
+        if (name === "repair_name" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_name: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        } else if (helperText.help_name !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_name: ""
+            }));
+        }
 
-        // if (isValid) {
+        if (name === "repair_national_code" && !/^\d*$/.test(value)) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_national_code: "فقط عدد وارد کنید! "
+            }));
+            return
+        } else if (name === "repair_national_code" && value.length > 10) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_national_code: "کدملی نمی‌تواند بیشتر از ده رقم باشد! "
+            }));
+            return
+        } else if (name === "repair_national_code" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_national_code: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        }
+        else if (helperText.help_national_code !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_national_code: ""
+            }));
+        }
+
         setRepairmanInfo((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value
         }));
-        // }
     };
 
-    useEffect(() => {
-        if (action === "edit") {
-            setRepairmanInfo({
-                repair_status: infoItem.repair_status,
-                repair_name: infoItem.repair_name,
-                repair_national_code: infoItem.repair_national_code,
-                repair_phone_number: infoItem.repair_phone_number,
-                repair_expertise: infoItem.repair_expertise,
-                repair_work_hours: infoItem.repair_work_hours,
-                repair_username: infoItem.repair_username,
-                repair_password: infoItem.repair_password
-            })
-            setRepairHalls(infoItem.halls)
+    const handleSubmitForm = async () => {
 
-        } else if (action === "add") {
-            setRepairmanInfo({
-                repair_status: false,
-                repair_name: "",
-                repair_national_code: "",
-                repair_phone_number: "",
-                repair_expertise: "",
-                repair_work_hours: 8,
-                repair_username: "",
-                repair_password: ""
-            })
-            setRepairHalls([])
+
+        let access = window.localStorage.getItem("access")
+        const headers = {
+            Authorization: `Bearer ${access}`
+        };
+        const full_name = repairmanInfo.repair_name.trim().split(/\s+/); // Trim and split by spaces
+
+        const requestData = {
+            first_name: full_name.length > 0 ? full_name[0] : null,
+            last_name: full_name.length > 1 ? full_name.slice(1).join(" ") : null,
+            national_code: repairmanInfo.repair_national_code,
+            phone_number: repairmanInfo.repair_phone_number,
+            salon: itemRepairHalls,
+            status: repairmanInfo.repair_status,
+            type: itemRepairExpertise,
+            username: repairmanInfo.repair_username,
+            password: repairmanInfo.repair_password,
+            work_time: repairmanInfo.repair_work_hours
         }
-    }, [action])
 
-    const handleFormatCloseModal = () => {
-        toggleModal();
-        setRepairmanInfo({
-            repair_status: false,
-            repair_name: "",
-            repair_national_code: "",
-            repair_phone_number: "",
-            repair_expertise: "",
-            repair_work_hours: 8,
-            repair_username: "",
-            repair_password: ""
-        })
-        setRepairHalls([])
+        if (action === "add") {
+            try {
+                const response = await axios.post(`${apiUrl}/app/add-repairman/`,
+                    requestData,
+                    { headers });
+
+                if (response.status === 201) {
+                    successMessage("تعمیرکار جدید با موفقیت اضافه شد");
+                    handleToggleUpdate();
+                }
+            } catch (error) {
+                toggleModal()
+                errorMessage("خطا در عملیات افزودن تعمیرکار");
+            }
+        } else if (action === "edit") {
+            try {
+                const response = await axios.put(`${apiUrl}/app/add-repairman/${repairmanInfo.id}`,
+                    requestData,
+                    { headers });
+
+                if (response.status === 200) {
+                    handleToggleUpdate()
+                    successMessage("تعمیرکار با موفقیت ویرایش شد");
+                }
+            } catch (error) {
+                toggleModal()
+                errorMessage("خطا در عملیات ویرایش تعمیرکار");
+            }
+        }
     }
+
+
+    useEffect(() => {
+        if (tab === 1) {
+            if (modal === true) {
+                if (action === "edit") {
+                    setRepairmanInfo({
+                        id: infoItem.id,
+                        repair_status: infoItem.status,
+                        repair_name: `${infoItem.first_name} ${infoItem.last_name}`,
+                        repair_national_code: infoItem.national_code,
+                        repair_phone_number: infoItem.phone_number,
+                        repair_work_hours: infoItem.work_time,
+                        repair_username: infoItem.username,
+                    })
+                    setItemRepairHalls(infoItem.salon?.length > 0 ? infoItem.salon.map(hall => (hall.id)) : [])
+                    setItemRepairExpertise(infoItem.type?.length > 0 ? infoItem.type.map(exp => (exp.id)) : [])
+
+                } else if (action === "add") {
+                    setRepairmanInfo({
+                        repair_status: true,
+                        repair_name: "",
+                        repair_national_code: "",
+                        repair_phone_number: "",
+                        repair_work_hours: 8,
+                        repair_username: "",
+                        repair_password: ""
+                    })
+                    setItemRepairHalls([])
+                    setItemRepairExpertise([])
+                }
+            } else {
+                setRepairmanInfo({
+                    id: null,
+                    repair_status: true,
+                    repair_name: "",
+                    repair_national_code: "",
+                    repair_phone_number: "",
+                    repair_work_hours: 8,
+                    repair_username: "",
+                    repair_password: ""
+                })
+                setHelperText({
+                    help_name: "",
+                    help_national_code: "",
+                    help_phone_number: "",
+                    help_expertise: "",
+                    help_work_hours: "",
+                    help_halls: "",
+                    help_username: "",
+                    help_password: "",
+                })
+                setItemRepairHalls([])
+                setItemRepairExpertise([])
+            }
+        }
+
+    }, [action, infoItem, tab, modal])
+
+    const fetchGetHalls = async () => {
+        let access = window.localStorage.getItem("access")
+        const headers = {
+            Authorization: `Bearer ${access}`
+        };
+        try {
+
+            const response = await axios.get(`${apiUrl}/app/get-user-type/`, {
+                headers,
+            });
+            if (response.status === 200) {
+                setHallsInfo(response.data.salons)
+                setExpertiseInfo(response.data.user_type)
+            }
+
+        } catch (error) {
+            errorMessage("خطا در برقراری ارتباط با سرور")
+            setHallsInfo([])
+            setExpertiseInfo([])
+        }
+
+    }
+    useEffect(() => {
+        fetchGetHalls();
+    }, [])
+
+    console.log(infoItem)
     return (
         <Grid container
             sx={{
@@ -142,10 +259,10 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo 
                     {action === "add" ?
                         "تعریف تعمیرکار جدید" : action === "edit" ?
                             `ویرایش اطلاعات ${infoItem ?
-                                infoItem.repair_name : "نام تعمیرکار"} `
+                                `${infoItem.first_name} ${infoItem.last_name}` : "نام تعمیرکار"} `
                             : "افزودن تعمیرکار جدید"}
                 </Typography>
-                <Box className={styles.delete_icon_modal} onClick={() => handleFormatCloseModal()}>
+                <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
                         icon={faXmark}
 
@@ -280,16 +397,12 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo 
                                 paddingLeft: { xs: "0.5rem", md: "1rem" }
                             }}
                         >
-                            <Input3
-                                id='repair_expertise_modal'
-                                name='repair_expertise'
-                                value={repairmanInfo.repair_expertise}
-                                handleChange={handleChange}
+                            <MultipleSelectCheckmarks
+                                options={expertiseInfo?.map(exp => ({ value: exp.id, label: exp.type }))}
+                                selectedValues={itemRepairExpertise}
+                                onChange={setItemRepairExpertise}
+                                lable="تخصص تعمیرکار:"
                                 helperText={helperText.help_expertise}
-                                lable='تخصص تعمیرکار:'
-                                placeholder='حرفه تعمیرکار را وارد نمایید'
-                                type='text'
-                                key={13}
                             />
                         </Grid>
                         <Grid
@@ -319,14 +432,12 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo 
                     </Grid>
 
                     <MultipleSelectCheckmarks
-                        options={hallsInfo}
-                        selectedValues={repairHalls}
-                        onChange={setRepairHalls}
+                        options={hallsInfo?.map(hall => ({ value: hall.id, label: hall.name }))}
+                        selectedValues={itemRepairHalls}
+                        onChange={setItemRepairHalls}
                         lable="انتخاب سالن:"
                         helperText={helperText.help_halls}
-
                     />
-
                     <Grid
                         container
                         item
@@ -379,7 +490,7 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo 
                                 handleChange={handleChange}
                                 helperText={helperText.help_password}
                                 lable='رمز عبور:'
-                                placeholder='حداقل ۶ کاراکتر'
+                                placeholder={action === "edit" ? "رمز جدید وارد نمایید" : 'حداقل ۶ کاراکتر'}
                                 type='text'
                                 key={16}
                             />
@@ -391,8 +502,7 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, hallsInfo 
                     text={action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
                     icon={action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
-                    onClick={handleSubmitForm}
-                    type='submit'
+                    onClick={() => handleSubmitForm()}
                 />
             </Box>
         </Grid>

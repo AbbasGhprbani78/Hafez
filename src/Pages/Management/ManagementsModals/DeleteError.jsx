@@ -23,7 +23,7 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
             Authorization: `Bearer ${access}`
         };
         try {
-            const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "salon-update/" : type === "repairman" ? "" : type === "equipment" ? "" : ""}${infoItem.id}`, {
+            const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "salon-update/" : type === "repairman" ? "add-repairman/" : type === "equipment" ? "equipment/" : ""}${infoItem.id}`, {
                 headers,
             });
 
@@ -38,6 +38,7 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
 
         }
     };
+    console.log(infoItem)
     return (
         <Grid
             container
@@ -78,7 +79,24 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
                     alignItems: "center",
                 }}
             >
-                <Typography className={styles.description_modal} variant='body1'>{`آیا از حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"} با نام ${infoItem ? infoItem.name : "123"} اطمینان دارید؟`}</Typography>
+                <Typography className={styles.description_modal} variant='body1'>
+                    {
+                        `آیا از حذف 
+                        ${type === "hall"
+                            ? "سالن"
+                            : type === "repairman"
+                                ? "برنامه‌ریزی تعمیرکار"
+                                : type === "equipment"
+                                    ? "تجهیزات"
+                                    : "آیتم"}
+                                    با نام 
+                                    ${infoItem
+                            ? `"${type === "repairman"
+                                ? `${infoItem.first_name} ${infoItem.last_name}`
+                                : infoItem.name}" `
+                            : "123"} 
+                            اطمینان دارید؟`}
+                </Typography>
             </Grid>
             <Grid
                 item

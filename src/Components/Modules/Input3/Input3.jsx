@@ -78,7 +78,7 @@ export function FullReactDropDown({
     styleInput,
     lable = "lable",
     styled,
-    selected = null,
+    selected = undefined,
 }) {
     return (
         <Grid

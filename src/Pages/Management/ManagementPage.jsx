@@ -56,7 +56,6 @@ function ManagementPage() {
     const [tabInformation, setTabInformation] = useState([])
     const [filterRows, setFilterRows] = useState([])
 
-    const [hallsList, setHallsList] = useState([])
     const [selectedRowInfo, setSelectedRowInfo] = useState(item1)
     const [tab, setTab] = React.useState(0);
     const [modal, setModal] = React.useState(false)
@@ -64,7 +63,7 @@ function ManagementPage() {
     const [searchInput, setSearchInput] = useState("")
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const rowsPerPage = 5;
 
     const handleChange = (newValue) => {
         setTab(newValue);
@@ -94,21 +93,23 @@ function ManagementPage() {
         } else if (tab === 1) { //code, name, expertice, halls name
             filterProducts = tabInformation.filter(
                 (item) =>
-                    item.code.includes(searchTerm) ||
-                    item.hallsName.toLowerCase().includes(searchTerm) ||
-                    item.status.includes(searchTerm)
+                    item.id.toString().includes(searchTerm) ||
+                    (`${item.first_name} ${item.last_name}`).toLowerCase().includes(searchTerm) ||
+                    item.type.map(exp => exp.type).join(" ").toLowerCase().includes(searchTerm) ||
+                    item.salon.map(hall => hall.name).join(",").includes(searchTerm)
             );
         } else if (tab === 2) { //code, name, halls name, description
             filterProducts = tabInformation.filter(
                 (item) =>
                     item.code.includes(searchTerm) ||
-                    item.hallsName.toLowerCase().includes(searchTerm) ||
-                    item.status.includes(searchTerm)
+                    item.name.includes(searchTerm) ||
+                    item.salon?.name.toLowerCase().includes(searchTerm) ||
+                    item.descriptions.includes(searchTerm)
             );
         }
-
         setFilterRows(filterProducts);
     };
+
 
     const fetchTabData = async (tab) => {
         let access = window.localStorage.getItem("access")
@@ -124,7 +125,6 @@ function ManagementPage() {
                 if (response.status === 200) {
                     setTabInformation(response.data)
                     setFilterRows(response.data)
-                    setHallsList([])
                 }
             } else if (tab === 1) {
                 response = await axios.get(`${apiUrl}/app/add-repairman/`, {
@@ -133,17 +133,15 @@ function ManagementPage() {
                 if (response.status === 200) {
                     setTabInformation(response.data.users)
                     setFilterRows(response.data.users)
-                    setHallsList([])
                 }
 
             } else if (tab === 2) {
-                response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
+                response = await axios.get(`${apiUrl}/app/equipment/`, {
                     headers,
                 });
                 if (response.status === 200) {
                     setTabInformation(response.data)
                     setFilterRows(response.data)
-                    setHallsList([])
                 }
             }
 
@@ -152,7 +150,6 @@ function ManagementPage() {
             errorMessage("خطا در برقراری ارتباط با سرور")
             setTabInformation([])
             setFilterRows([])
-            setHallsList([])
         }
     }
     const handleOpenModal = (chosenItem = null, operation = "add") => {
@@ -164,33 +161,30 @@ function ManagementPage() {
     useEffect(() => {
         fetchTabData(tab);
     }, [tab])
-    console.log(filterRows)
-
-
     return (
         <Grid className="content-conatiner">
             <Modal showModal={modal} setShowModal={handleToggleModal}>
                 {tab === 0 ? (
                     operation === "add" ?
-                        <AddAndEditHalls toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} />
+                        <AddAndEditHalls modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} />
                         : operation === "edit"
-                            ? <AddAndEditHalls toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} />
+                            ? <AddAndEditHalls modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} />
                             : operation === "delete"
                                 ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="hall" infoItem={selectedRowInfo} />
                                 : <></>
                 ) : tab === 1 ? (
                     operation === "add" ?
-                        <AddAndEditRepairman toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                        <AddAndEditRepairman modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} />
                         : operation === "edit" ?
-                            <AddAndEditRepairman toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                            <AddAndEditRepairman modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} />
                             : operation === "delete"
                                 ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="repairman" infoItem={selectedRowInfo} />
                                 : <></>
                 ) : tab === 2 ? (
                     operation === "add" ?
-                        <AddAndEditEquipment toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                        <AddAndEditEquipment modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} />
                         : operation === "edit"
-                            ? <AddAndEditEquipment toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} hallsInfo={halls_sample} />
+                            ? <AddAndEditEquipment modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} />
                             : operation === "delete"
                                 ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="equipment" infoItem={selectedRowInfo} />
                                 : <></>
@@ -327,6 +321,10 @@ function ManagementPage() {
                                                 {row.name}
                                             </TableCell>
 
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {`${row.remaining_capacity} ساعت`}
+                                            </TableCell>
+
                                             <TableCell
                                                 sx={{
                                                     display: "flex",
@@ -349,9 +347,6 @@ function ManagementPage() {
                                                             ? "غیرفعال"
                                                             : "نامشخص"}
                                                 </div>
-                                            </TableCell>
-                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                                {`${row.remaining_capacity} ساعت`}
                                             </TableCell>
 
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
@@ -412,7 +407,7 @@ function ManagementPage() {
                                                 {`${row.first_name} ${row.last_name}`}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                                {row.type}
+                                                {Array.isArray(row.type) && row.type.length > 0 ? row.type.map(t => t.type).join(" / ") : "Invalid data"}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
                                                 {`${row.work_time} ساعت کار در روز`}
@@ -442,9 +437,8 @@ function ManagementPage() {
                                             </TableCell>
 
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                                {row.type}
+                                                {Array.isArray(row.salon) && row.salon.length > 0 ? row.salon.map(s => s.name).join(" / ") : "No data"}
                                             </TableCell>
-
 
                                             <TableCell sx={{
                                                 display: "flex",
@@ -492,11 +486,14 @@ function ManagementPage() {
                                                 fontFamily: "iranYekan",
                                             }}
                                         >
-                                            {/* <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
                                                 {row.code}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
                                                 {row.name}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.salon?.name}
                                             </TableCell>
                                             <TableCell
                                                 sx={{
@@ -521,9 +518,7 @@ function ManagementPage() {
                                                             : "نامشخص"}
                                                 </div>
                                             </TableCell>
-                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                                {`${row.remaining_capacity} ساعت`}
-                                            </TableCell>
+
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
                                                 {row.descriptions}
                                             </TableCell>
@@ -549,7 +544,7 @@ function ManagementPage() {
                                                     variant='contained'
                                                     style={"edit_delete_btn"}
                                                     onClick={() => handleOpenModal(row, "delete")} />
-                                            </TableCell> */}
+                                            </TableCell>
                                         </TableRow>)) : <></>
 
                                 }
@@ -576,7 +571,6 @@ function InfoTabel({
     columnsTitle,
     children
 }) {
-    console.log(tableInformation)
     return (
         <Grid
             container
@@ -622,31 +616,11 @@ const item1 = {
 }
 
 
-const tempRepairman = {
-    repair_status: true,
-    repair_name: "احسان",
-    repair_national_code: "1086632452",
-    repair_phone_number: "09126676712",
-    repair_expertise: "صافکار",
-    repair_work_hours: 5,
-    halls: [3, 4],
-    repair_username: "ehsanJJ",
-    repair_password: "temp#password"
-}
-
-const halls_sample = [
-    { value: 0, label: "سالن شماره یک" },
-    { value: 1, label: "سالن شماره دو" },
-    { value: 2, label: "سالن شماره سه" },
-    { value: 3, label: "سالن شماره چهار" },
-    { value: 4, label: "سالن شماره پنج" },
-];
-
 const halls_columns = [
     "کد",
     "نام سالن",
-    "وضعیت",
     "مانده ظرفیت",
+    "وضعیت",
     "توضیحات",
     "عملیات",
 ]
@@ -655,8 +629,8 @@ const repairman_columns = [
     "نام تعمیرکار",
     "تخصص تعمیرکار",
     " قابلیت زمانی تعمیرکار",
-    "نام سالن",
     "وضعیت",
+    "نام سالن",
     "عملیات",
 ]
 const equipment_columns = [

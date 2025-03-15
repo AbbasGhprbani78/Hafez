@@ -23,7 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUpdate }) {
+function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUpdate, tab, modal }) {
     const [hallsInfo, setHallsInfo] = useState({
         hall_id: 0,
         hall_status: true,
@@ -40,21 +40,15 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
     // Handle change and validation
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        if (name === "hall_code" && !/^\d*$/.test(value)) {
+        if (name === "hall_code" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
-                help_code: "فقط عدد وارد کنید! "
+                help_code: "این فیلد نمی‌تواند خالی باشد!"
             }));
-            return
         } else if (helperText.help_code !== "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_code: ""
-            }));
-        } else if (name === "hall_code" && value === "") {
-            setHelperText((prev) => ({
-                ...prev,
-                help_code: "این فیلد نمی‌تواند خالی باشد!"
             }));
         }
 
@@ -76,7 +70,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
         }));
     };
 
-    const handleSubmitAddHalls = async () => {
+    const handleSubmitAddAndEditHalls = async () => {
         if (hallsInfo.hall_name === undefined || hallsInfo.hall_name === "") {
             setHelperText((prev) => ({
                 ...prev,
@@ -101,90 +95,78 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
             descriptions: hallsInfo.hall_description,
             status: hallsInfo.hall_status
         }
-        try {
-            const response = await axios.post(`${apiUrl}/app/get-all-salon/`,
-                requestData,
-                { headers });
+        if (action === "add") {
+            try {
+                const response = await axios.post(`${apiUrl}/app/get-all-salon/`,
+                    requestData,
+                    { headers });
 
-            if (response.status === 201) {
-                successMessage("سالن جدید با موفقیت اضافه شد");
-                handleToggleUpdate();
-                handleClearModal();
+                if (response.status === 201) {
+                    successMessage("سالن جدید با موفقیت اضافه شد");
+                    handleToggleUpdate();
+                }
+            } catch (error) {
+                toggleModal()
+                errorMessage("خطا در عملیات افزودن سالن");
             }
-        } catch (error) {
-            handleClearModal();
-            toggleModal()
-            errorMessage("خطا در عملیات افزودن سالن");
-        }
-    }
+        } else if (action === "edit") {
+            try {
+                const response = await axios.put(`${apiUrl}/app/salon-update/${hallsInfo.hall_id}`,
+                    requestData,
+                    { headers });
 
-    const handleSubmitEditHalls = async () => {
-        let access = window.localStorage.getItem("access")
-        const headers = {
-            Authorization: `Bearer ${access}`
-        };
-        const requestData = {
-            name: hallsInfo.hall_name,
-            code: hallsInfo.hall_code,
-            descriptions: hallsInfo.hall_description,
-            status: hallsInfo.hall_status
-        }
-        try {
-            const response = await axios.put(`${apiUrl}/app/salon-update/${hallsInfo.hall_id}`,
-                requestData,
-                { headers });
-            console.log(response)
-            if (response.status === 200) {
-                handleToggleUpdate()
-                handleClearModal()
-                successMessage("سالن با موفقیت ویرایش شد");
+                if (response.status === 200) {
+                    handleToggleUpdate()
+                    successMessage("سالن با موفقیت ویرایش شد");
+                }
+            } catch (error) {
+                toggleModal()
+                errorMessage("خطا در عملیات ویرایش سالن");
             }
-        } catch (error) {
-            handleClearModal();
-            toggleModal()
-            errorMessage("خطا در عملیات ویرایش سالن");
         }
+
     }
 
     useEffect(() => {
-        if (action === "edit") {
-            setHallsInfo({
-                hall_id: infoItem.id,
-                hall_status: infoItem.status,
-                hall_name: infoItem.name,
-                hall_code: infoItem.code,
-                hall_description: infoItem.descriptions
-            })
-        } else if (action === "add") {
-            setHallsInfo({
-                hall_id: 0,
-                hall_status: true,
-                hall_name: "",
-                hall_code: "",
-                hall_description: ""
-            })
+        if (tab === 0) {
+            if (modal === true) {
+                if (action === "edit") {
+                    setHallsInfo({
+                        hall_id: infoItem.id,
+                        hall_status: infoItem.status,
+                        hall_name: infoItem.name,
+                        hall_code: infoItem.code,
+                        hall_description: infoItem.descriptions
+                    })
+                } else if (action === "add") {
+                    setHallsInfo({
+                        hall_id: 0,
+                        hall_status: true,
+                        hall_name: "",
+                        hall_code: "",
+                        hall_description: ""
+                    })
+                }
+            } else {
+                setHallsInfo({
+                    hall_id: 0,
+                    hall_status: true,
+                    hall_name: "",
+                    hall_code: "",
+                    hall_description: ""
+                })
+                setHelperText({
+                    help_name: "",
+                    help_code: "",
+                    help_description: ""
+                })
+            }
         }
-    }, [action, infoItem])
 
-    const clearAndToggle = () => {
-        handleClearModal()
-        toggleModal()
-    }
+    }, [action, infoItem, tab, modal])
 
-    const handleClearModal = () => {
-        setHallsInfo({
-            hall_id: 0,
-            hall_status: true,
-            hall_name: "",
-            hall_code: "",
-            hall_description: ""
-        })
-        setHelperText({
-            help_name: "",
-            help_code: "",
-            help_description: ""
-        })
-    }
+
+
     return (
         <Grid container
             sx={{
@@ -211,7 +193,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
                                 infoItem.code : "123"}`
                             : "افزودن آیتم"}
                 </Typography>
-                <Box className={styles.delete_icon_modal} onClick={() => clearAndToggle()}>
+                <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
                         icon={faXmark}
 
@@ -298,7 +280,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
                     text={action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
                     icon={action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
-                    onClick={action === "add" ? () => handleSubmitAddHalls() : () => handleSubmitEditHalls()}
+                    onClick={() => handleSubmitAddAndEditHalls()}
                 />
             </Box>
         </Grid>
