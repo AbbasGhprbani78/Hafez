@@ -15,6 +15,8 @@ import Grid from '@mui/material/Grid2';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 //Icons
 import {
@@ -39,6 +41,8 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab
         help_halls: "",
         help_description: ""
     })
+    const [loading, setLoading] = useState(false)
+
     // Handle change and validation
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -106,7 +110,7 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab
             status: equipmentInfo.equip_status,
             salon: equipmentInfo.equip_hall
         }
-        console.log()
+        setLoading(true)
         if (action === "edit") {
             try {
                 const response = await axios.put(`${apiUrl}/app/equipment/${infoItem.id}`,
@@ -120,6 +124,8 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab
             } catch (error) {
                 toggleModal()
                 errorMessage("خطا در عملیات ویرایش تجهیزات");
+            } finally {
+                setLoading(false)
             }
         } else if (action === "add") {
             try {
@@ -127,12 +133,15 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab
                     requestData,
                     { headers });
                 if (response.status === 201) {
+                    setLoading(false)
                     handleToggleUpdate()
                     successMessage("تجهیزات با موفقیت اضافه گردید");
                 }
             } catch (error) {
                 toggleModal()
                 errorMessage("خطا در عملیات افزودن تجهیزات");
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -328,11 +337,13 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab
 
                 </Grid>
                 <Button2
-                    text={action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
-                    icon={action === "add" ? faCheck : faPenToSquare}
+                    icon={loading ? "" : action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
                     onClick={handleSubmitForm}
-                />
+                    disable={loading}                >
+                    {loading ? <CircularProgress size={"25.2px"} color="success" /> : action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
+
+                </Button2>
             </Box>
         </Grid>
     )

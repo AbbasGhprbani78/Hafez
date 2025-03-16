@@ -48,8 +48,6 @@ export default function MultipleSelectCheckmarks({
     React.useEffect(() => {
         if (selectedValues.length > 0) {
             setSelected(selectedValues);
-        } else if (options.length > 0) {
-            setSelected([options[0].value])
         } else {
             setSelected([])
         }

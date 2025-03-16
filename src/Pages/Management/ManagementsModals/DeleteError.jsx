@@ -1,4 +1,5 @@
 import styles from "./ModalStyles.module.css"
+import { useState } from "react";
 const apiUrl = import.meta.env.VITE_API_URL;
 import axios from 'axios';
 import { errorMessage, successMessage } from '../../../Components/Modules/Toast/ToastCustom';
@@ -8,6 +9,8 @@ import Grid from '@mui/material/Grid2';
 import { Button, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 //Icons
 import {
@@ -17,11 +20,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate }) {
+    const [loading, setLoading] = useState(false)
     const deleteItem = async () => {
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
         };
+        setLoading(true)
         try {
             const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "salon-update/" : type === "repairman" ? "add-repairman/" : type === "equipment" ? "equipment/" : ""}${infoItem.id}`, {
                 headers,
@@ -35,7 +40,8 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
             console.log(error);
             toggleModal()
             errorMessage(" خطا در عملیات حذف سالن")
-
+        } finally {
+            setLoading(false)
         }
     };
     console.log(infoItem)
@@ -108,7 +114,9 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
                     gap: { xs: "1rem", sm: "1.2rem", md: "1.4rem", lg: "1.6rem" }
                 }}
             >
-                <Button onClick={() => deleteItem()} className={styles.confirm_btn} variant='contained'>حذف</Button>
+                <Button disable={loading} onClick={() => deleteItem()} className={styles.confirm_btn} variant='contained'>
+                    {loading ? <CircularProgress size={"25.2px"} color="inherit" /> : "حذف"}
+                </Button>
                 <Button onClick={() => toggleModal()} className={styles.cancell_btn} variant='contained'>انصراف</Button>
             </Grid>
         </Grid>

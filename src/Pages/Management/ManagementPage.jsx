@@ -94,7 +94,7 @@ function ManagementPage() {
             filterProducts = tabInformation.filter(
                 (item) =>
                     item.id.toString().includes(searchTerm) ||
-                    (`${item.first_name} ${item.last_name}`).toLowerCase().includes(searchTerm) ||
+                    item.first_name.toLowerCase().includes(searchTerm) ||
                     item.type.map(exp => exp.type).join(" ").toLowerCase().includes(searchTerm) ||
                     item.salon.map(hall => hall.name).join(",").includes(searchTerm)
             );
@@ -160,6 +160,7 @@ function ManagementPage() {
 
     useEffect(() => {
         fetchTabData(tab);
+        setFilterRows(undefined)
     }, [tab])
     return (
         <Grid className="content-conatiner">
@@ -288,14 +289,15 @@ function ManagementPage() {
                         }}
                     >
                         <Button2
-                            text={tab === 0 ? "تعریف سالن جدید" : tab === 1 ? "تعریف تعمیرکار جدید" : tab === 2 ? "تعریف تجهیزات جدید" : ""}
                             icon={faPlus}
                             style={"search_btn"}
-                            onClick={() => handleOpenModal(item1, "add")} />
+                            onClick={() => handleOpenModal(item1, "add")} >
+                            {tab === 0 ? "تعریف سالن جدید" : tab === 1 ? "تعریف تعمیرکار جدید" : tab === 2 ? "تعریف تجهیزات جدید" : ""}
+                        </Button2>
                     </Grid>
                     <Box sx={{ width: "100%" }}>
                         <CustomTabPanel value={tab} index={0}>
-                            <InfoTabel
+                            {filterRows === undefined ? <LoadingForm /> : <InfoTabel
                                 tableInformation={filterRows}
                                 page={page}
                                 handleChange={handleChangePage}
@@ -378,10 +380,10 @@ function ManagementPage() {
                                         </TableRow>)) : <></>
 
                                 }
-                            </InfoTabel>
+                            </InfoTabel>}
                         </CustomTabPanel>
                         <CustomTabPanel value={tab} index={1}>
-                            <InfoTabel
+                            {filterRows === undefined ? <LoadingForm /> : <InfoTabel
                                 tableInformation={filterRows}
                                 page={page}
                                 handleChange={handleChangePage}
@@ -404,7 +406,7 @@ function ManagementPage() {
                                                 {row.id}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                                {`${row.first_name} ${row.last_name}`}
+                                                {row.first_name}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
                                                 {Array.isArray(row.type) && row.type.length > 0 ? row.type.map(t => t.type).join(" / ") : "Invalid data"}
@@ -462,12 +464,11 @@ function ManagementPage() {
                                                     onClick={() => handleOpenModal(row, "delete")} />
                                             </TableCell>
                                         </TableRow>)) : <></>
-
                                 }
-                            </InfoTabel>
+                            </InfoTabel>}
                         </CustomTabPanel>
                         <CustomTabPanel value={tab} index={2}>
-                            <InfoTabel
+                            {filterRows === undefined ? <LoadingForm /> : <InfoTabel
                                 tableInformation={filterRows}
                                 page={page}
                                 handleChange={handleChangePage}
@@ -548,7 +549,7 @@ function ManagementPage() {
                                         </TableRow>)) : <></>
 
                                 }
-                            </InfoTabel>
+                            </InfoTabel>}
                         </CustomTabPanel>
                     </Box>
 

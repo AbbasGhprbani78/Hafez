@@ -14,6 +14,8 @@ import Grid from '@mui/material/Grid2';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 //Icons
 import {
@@ -36,6 +38,7 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
         help_code: "",
         help_description: ""
     })
+    const [loading, setLoading] = useState(false)
 
     // Handle change and validation
     const handleChange = (e) => {
@@ -95,8 +98,10 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
             descriptions: hallsInfo.hall_description,
             status: hallsInfo.hall_status
         }
+        setLoading(true)
         if (action === "add") {
             try {
+
                 const response = await axios.post(`${apiUrl}/app/get-all-salon/`,
                     requestData,
                     { headers });
@@ -108,6 +113,8 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
             } catch (error) {
                 toggleModal()
                 errorMessage("خطا در عملیات افزودن سالن");
+            } finally {
+                setLoading(false)
             }
         } else if (action === "edit") {
             try {
@@ -122,6 +129,8 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
             } catch (error) {
                 toggleModal()
                 errorMessage("خطا در عملیات ویرایش سالن");
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -277,11 +286,13 @@ function AddAndEditHalls({ action = "add", infoItem, toggleModal, handleToggleUp
 
                 </Grid>
                 <Button2
-                    text={action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
-                    icon={action === "add" ? faCheck : faPenToSquare}
+                    icon={loading ? "" : action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
                     onClick={() => handleSubmitAddAndEditHalls()}
-                />
+                    disable={loading}                >
+                    {loading ? <CircularProgress size={"25.2px"} color="success" /> : action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
+
+                </Button2>
             </Box>
         </Grid>
     )

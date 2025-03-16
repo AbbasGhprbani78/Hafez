@@ -15,6 +15,8 @@ import Grid from '@mui/material/Grid2';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 //Icons
 import {
@@ -50,23 +52,34 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
         help_username: "",
         help_password: "",
     })
+    const [loading, setLoading] = useState(false)
 
     // Handle change and validation
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
+        //Validity test for name
+        if (name === "repair_name" && value.length <= 3 && value.length > 0) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_name: "حداقل سه کاراکتر"
+            }));
+
+        }
         if (name === "repair_name" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_name: "این فیلد نمی‌تواند خالی باشد!"
             }));
-        } else if (helperText.help_name !== "") {
+        }
+        else if (name === "repair_name" && (value.length >= 5 || value.length === 0) && helperText.help_name !== "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_name: ""
             }));
         }
 
+        //Validity test for national code
         if (name === "repair_national_code" && !/^\d*$/.test(value)) {
             setHelperText((prev) => ({
                 ...prev,
@@ -74,12 +87,10 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
             }));
             return
         } else if (name === "repair_national_code" && value.length > 10) {
-            setHelperText((prev) => ({
-                ...prev,
-                help_national_code: "کدملی نمی‌تواند بیشتر از ده رقم باشد! "
-            }));
+            warningMessage("کدملی نمی‌تواند بیشتر از ده رقم باشد!")
             return
-        } else if (name === "repair_national_code" && value === "") {
+        }
+        if (name === "repair_national_code" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_national_code: "این فیلد نمی‌تواند خالی باشد!"
@@ -92,6 +103,97 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
             }));
         }
 
+        //Validity test for phone number
+        if (name === "repair_phone_number" && !/^[0-9\b]*$/.test(value)) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_phone_number: "فقط عدد وارد کنید! "
+            }));
+            return
+        } else if (name === "repair_phone_number" && value.length > 11) {
+            warningMessage("شماره تماس نمی‌تواند بیشتر از یازده رقم باشد!")
+            return
+
+        }
+        else if (name === "repair_phone_number" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_phone_number: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        }
+        else if (helperText.help_phone_number !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_phone_number: ""
+            }));
+        }
+        if (name === "repair_work_hours" && value <= 0) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_work_hours: "ساعت کاری نمی‌تواند کم‌تر از یک ساعت باشد!"
+            }));
+            return
+        } else if (helperText.help_work_hours !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_work_hours: ""
+            }));
+        }
+
+        //Validity test for username
+        if (name === "repair_username" && !/^[a-zA-Z0-9]*$/.test(value)) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_username: "فقط مجاز به واردکردن اعداد و حروف انگلیسی هستید! "
+            }));
+            return
+        } else if (name === "repair_username" && value.length < 5) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_username: "حداقل پنج کاراکتر"
+            }));
+
+        }
+        else if (name === "repair_username" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_username: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        }
+        else if (helperText.help_username !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_username: ""
+            }));
+        }
+
+        //Validity test for password
+        if (name === "repair_password" && !/^[A-Za-z\d!@#$%&*^]*$/.test(value)) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_password: "فقط مجاز به واردکردن اعداد و حروف انگلیسی و حروف خاص هستید! "
+            }));
+            return
+        } else if (name === "repair_password" && value.length < 6) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_password: "حداقل شش کاراکتر"
+            }));
+
+        }
+        else if (name === "repair_password" && value === "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_password: "این فیلد نمی‌تواند خالی باشد!"
+            }));
+        }
+        else if (helperText.help_password !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_password: ""
+            }));
+        }
+
         setRepairmanInfo((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value
@@ -100,16 +202,67 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
 
     const handleSubmitForm = async () => {
 
+        if (repairmanInfo.repair_name === null || repairmanInfo.repair_name === "") {
+            warningMessage("لطفا نام تعمیرکار را وارد کنید!")
+            return
+        }
+        if (helperText.help_name !== "") {
+            warningMessage("لطفا نام تعمیرکار را به درستی وارد نمایید!")
+            return
+        }
+
+        if (repairmanInfo.repair_national_code === null || repairmanInfo.repair_national_code === "") {
+            warningMessage("لطفا کدملی تعمیرکار را وارد کنید!")
+            return
+        }
+        if (helperText.help_national_code !== "" || repairmanInfo.repair_national_code.length !== 10) {
+            warningMessage("لطفا کدملی تعمیرکار را به درستی وارد نمایید!")
+            return
+        }
+
+        if (repairmanInfo.repair_phone_number === null || repairmanInfo.repair_phone_number === "") {
+            warningMessage("لطفا شماره تماس تعمیر کار را وارد نمایید!")
+            return
+        }
+        if (helperText.help_phone_number !== "" || repairmanInfo.repair_phone_number.length !== 11) {
+            warningMessage("لطفا شماره تماس تعمیر کار را به درستی وارد نمایید!")
+            return
+        }
+        if (itemRepairExpertise === null || itemRepairExpertise.length === 0) {
+            warningMessage("تخصص تعمیرکار را انتخاب نمایید!")
+            return
+        }
+        if (itemRepairHalls === null || itemRepairHalls.length === 0) {
+            warningMessage(" سالن تعمیرکار را انتخاب نمایید!")
+            return
+        }
+
+        if (repairmanInfo.repair_username === null || repairmanInfo.repair_username === "") {
+            warningMessage("لطفا یک نام کاربری برای تعمیرکار وارد کنید!")
+            return
+        }
+        if (helperText.help_username !== "") {
+            warningMessage("لطفا نام کاربری را به درستی وارد نمایید!")
+            return
+        }
+        if (action !== "edit") {
+            if (repairmanInfo.repair_password === null || repairmanInfo.repair_password === "") {
+                warningMessage("لطفا یک رمز عبور برای تعمیرکار وارد کنید!")
+                return
+            }
+            if (helperText.help_password !== "") {
+                warningMessage("لطفا رمز عبور را به درستی وارد نمایید!")
+                return
+            }
+        }
 
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
         };
-        const full_name = repairmanInfo.repair_name.trim().split(/\s+/); // Trim and split by spaces
 
         const requestData = {
-            first_name: full_name.length > 0 ? full_name[0] : null,
-            last_name: full_name.length > 1 ? full_name.slice(1).join(" ") : null,
+            first_name: repairmanInfo.repair_name,
             national_code: repairmanInfo.repair_national_code,
             phone_number: repairmanInfo.repair_phone_number,
             salon: itemRepairHalls,
@@ -119,7 +272,7 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
             password: repairmanInfo.repair_password,
             work_time: repairmanInfo.repair_work_hours
         }
-
+        setLoading(true)
         if (action === "add") {
             try {
                 const response = await axios.post(`${apiUrl}/app/add-repairman/`,
@@ -133,6 +286,8 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
             } catch (error) {
                 toggleModal()
                 errorMessage("خطا در عملیات افزودن تعمیرکار");
+            } finally {
+                setLoading(false)
             }
         } else if (action === "edit") {
             try {
@@ -147,6 +302,8 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
             } catch (error) {
                 toggleModal()
                 errorMessage("خطا در عملیات ویرایش تعمیرکار");
+            } finally {
+                setLoading(false)
             }
         }
     }
@@ -159,7 +316,7 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
                     setRepairmanInfo({
                         id: infoItem.id,
                         repair_status: infoItem.status,
-                        repair_name: `${infoItem.first_name} ${infoItem.last_name}`,
+                        repair_name: infoItem.first_name,
                         repair_national_code: infoItem.national_code,
                         repair_phone_number: infoItem.phone_number,
                         repair_work_hours: infoItem.work_time,
@@ -235,7 +392,6 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
         fetchGetHalls();
     }, [])
 
-    console.log(infoItem)
     return (
         <Grid container
             sx={{
@@ -259,7 +415,7 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
                     {action === "add" ?
                         "تعریف تعمیرکار جدید" : action === "edit" ?
                             `ویرایش اطلاعات ${infoItem ?
-                                `${infoItem.first_name} ${infoItem.last_name}` : "نام تعمیرکار"} `
+                                `${infoItem.first_name}` : "نام تعمیرکار"} `
                             : "افزودن تعمیرکار جدید"}
                 </Typography>
                 <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
@@ -293,7 +449,7 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
                         alignItems: "center",
                     }}>
                     <Typography variant='body2' className={styles.input_label}>{"وضعیت تجهیزات"}</Typography>
-                    <ToggleSwitch value={repairmanInfo.equip_status} handleChange={handleChange} name='repair_status' />
+                    <ToggleSwitch value={repairmanInfo.repair_status} handleChange={handleChange} name='repair_status' />
 
                 </Grid>
                 <Grid
@@ -499,11 +655,14 @@ function AddAndEditRepairman({ action = "add", infoItem, toggleModal, tab, modal
 
                 </Grid>
                 <Button2
-                    text={action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
-                    icon={action === "add" ? faCheck : faPenToSquare}
+                    disable={loading}
+                    icon={loading ? "" : action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
                     onClick={() => handleSubmitForm()}
-                />
+                >
+                    {loading ? <CircularProgress size={"25.2px"} color="success" /> : action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
+
+                </Button2>
             </Box>
         </Grid>
     )

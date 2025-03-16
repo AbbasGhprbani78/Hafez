@@ -77,8 +77,7 @@ function RepairCardMain() {
                 params: { page, page_size: pageLength }
             });
             if (response.status === 200) {
-                console.log(response.data)
-                setInformation(undefined);
+                setInformation(response.data.results);
             }
 
 
@@ -254,10 +253,11 @@ function RepairCardMain() {
                             }}
                         >
                             <Button2
-                                text={"جستجو"}
                                 icon={faMagnifyingGlass}
                                 style={"search_btn"}
-                                onClick={handleClickOnSearch} />
+                                onClick={handleClickOnSearch} >
+                                {"جستجو"}
+                            </Button2>
 
                         </Grid>
                     </Grid>
@@ -321,10 +321,11 @@ function InfoTabel({
                     alignItems: { xs: "flex-start", sm: "flex-end" },
                 }}>
                 <Button2
-                    text={"دریافت اکسل"}
                     onClick={handleExcel}
                     disable={tableInformation === undefined}
-                />
+                >
+                    {"دریافت اکسل"}
+                </Button2>
             </Grid>
             {
                 tableInformation === undefined ?
