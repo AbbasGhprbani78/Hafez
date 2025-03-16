@@ -57,7 +57,7 @@ export default function Occultation() {
           عیب یابی :
         </span>
         <div className={`mt-4 ${styles.occultation_content}`}>
-          <Button2 text={"افزودن اظهار"} onClick={() => setShowModal(true)} />
+          <Button2 onClick={() => setShowModal(true)} >{"افزودن اظهار"}</Button2>
           <div className="mt-3">
             <TableForm columns={columns}>
               <TableRow className="statment-row-table">
@@ -67,14 +67,14 @@ export default function Occultation() {
                 <div className="wrap-trash-table">
                   <FontAwesomeIcon
                     icon={faTrash}
-                    onClick={() => {}}
+                    onClick={() => { }}
                     className="trash-row-table"
                   />
                 </div>
                 <div className="wrap-edit-table">
                   <FontAwesomeIcon
                     icon={faPenToSquare}
-                    onClick={() => {}}
+                    onClick={() => { }}
                     className="edit-row-table"
                   />
                 </div>

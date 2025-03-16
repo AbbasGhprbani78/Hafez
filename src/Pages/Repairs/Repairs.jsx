@@ -24,17 +24,17 @@ export default function Repairs() {
           <Attaches />
           <div className={styles.wrap_actions_repairs}>
             <Button2
-              text={"پرینت"}
+
               onClick={""}
               icon={faPrint}
               style={"width"}
-            />
+            >{"پرینت"}</Button2>
             <Button2
-              text={"بستن کارت تعمیر"}
+
               onClick={""}
               icon={faCheck}
               style={"width"}
-            />
+            >{"بستن کارت تعمیر"}</Button2>
           </div>
         </div>
       </div>

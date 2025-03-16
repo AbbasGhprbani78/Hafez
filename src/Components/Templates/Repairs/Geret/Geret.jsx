@@ -13,7 +13,7 @@ import ConfirmBtn from "../../../Modules/ConfirmBtn/ConfirmBtn";
 import Modal from "../../../Modules/Modal/Modal";
 import Input from "../../../Modules/Input/Input";
 import { toFarsiNumber } from "../../../../utils/helper";
-import { formatWithThousandSeparators } from "../../../../utils/helper"; 
+import { formatWithThousandSeparators } from "../../../../utils/helper";
 import { Col, Row } from "react-bootstrap";
 import Textarea from "../../../Modules/Texteara/Textarea";
 export default function Geret() {
@@ -86,28 +86,28 @@ export default function Geret() {
       <div className={styles.box}>
         <span className={`${styles.box_title} subtitle-project`}>اجرت :</span>
         <div className={`${styles.wrap_actions} mt-4`}>
-          <Button2 onClick={() => setShowModal(true)} text={"افزودن اجرت"} />
-          <Button2 onClick={""} text={"ارسال پیامک"} icon={faEnvelope} />
+          <Button2 onClick={() => setShowModal(true)} >{"افزودن اجرت"}</Button2>
+          <Button2 onClick={""} icon={faEnvelope} >{"ارسال پیامک"}</Button2>
         </div>
         <div className="mt-3">
           <TableForm columns={columns}>
             <TableRow className="statment-row-table">
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
               <div className="wrap-trash-table">
                 <FontAwesomeIcon
                   icon={faTrash}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="trash-row-table"
                 />
               </div>
               <div className="wrap-edit-table">
                 <FontAwesomeIcon
                   icon={faPenToSquare}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="edit-row-table"
                 />
               </div>

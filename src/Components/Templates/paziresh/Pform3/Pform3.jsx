@@ -851,7 +851,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                   material={""}
                 />
               </Col>
-              <Button2 text={"ارجا به کارشناس"} onClick={""} />
+              <Button2 onClick={""} >{"ارجا به کارشناس"}</Button2>
             </div>
 
             <div className="estimate-wrapper mt-4">
@@ -905,14 +905,14 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
                     )}
                   </div>
                   <div className="wrap-btn">
-                    <Button2 text={"برنامه ریزی تعمیرگاه"} onClick={""} />
+                    <Button2 onClick={""} >{"برنامه ریزی تعمیرگاه"}</Button2>
                   </div>
                 </div>
               </Col>
             </div>
 
             <div className="pform3-container-table mt-5" dir="rtl">
-              <Button2 text={"افزودن شرح اظهار"} onClick={addStatement} />
+              <Button2 onClick={addStatement} >{"افزودن شرح اظهار"}</Button2>
               {formik.values.form.length ? (
                 <TableForm columns={columns}>
                   {formik.values.form?.map((item, rowIndex) => (

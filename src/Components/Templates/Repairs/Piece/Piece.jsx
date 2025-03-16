@@ -12,13 +12,13 @@ import { TableCell, TableRow } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../../Modules/Modal/Modal";
 import { Col, Row } from "react-bootstrap";
-import { formatWithThousandSeparators } from "../../../../utils/helper"; 
+import { formatWithThousandSeparators } from "../../../../utils/helper";
 import ConfirmBtn from "../../../Modules/ConfirmBtn/ConfirmBtn";
 import { toFarsiNumber } from "../../../../utils/helper";
 import Input from "../../../Modules/Input/Input";
 export default function Piece() {
   const columns = ["نام قطعه", "مارک قطعه", "قیمت", "تعمیرکار", "تعداد"];
-      const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   return (
     <>
       <Modal showModal={showModal} setShowModal={setShowModal}>
@@ -45,7 +45,7 @@ export default function Piece() {
             </div>
             <div className="mt-3">
               <label className={`label_input mb-2 `}>تعمیرکار</label>
-              <SelectDropDown2 text={"تعمیرکار"} styleList={"positionlisttop"}/>
+              <SelectDropDown2 text={"تعمیرکار"} styleList={"positionlisttop"} />
             </div>
             <Row className="mt-3 mb-3 d-flex gx-3">
               <Col xs={12} md={6}>
@@ -98,8 +98,8 @@ export default function Piece() {
           />
         </div>
         <div className={`${styles.wrap_actions} mt-4`}>
-          <Button2 onClick={() => setShowModal(true)} text={"افزودن قطعه"} />
-          <Button2 onClick={""} text={"ارسال پیامک"} icon={faEnvelope} />
+          <Button2 onClick={() => setShowModal(true)}>{"افزودن قطعه"}</Button2>
+          <Button2 onClick={""} icon={faEnvelope}>{"ارسال پیامک"}</Button2>
         </div>
         <div className="mt-3">
           <TableForm columns={columns}>
@@ -110,14 +110,14 @@ export default function Piece() {
               <div className="wrap-trash-table">
                 <FontAwesomeIcon
                   icon={faTrash}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="trash-row-table"
                 />
               </div>
               <div className="wrap-edit-table">
                 <FontAwesomeIcon
                   icon={faPenToSquare}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="edit-row-table"
                 />
               </div>

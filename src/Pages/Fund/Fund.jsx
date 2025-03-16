@@ -25,7 +25,7 @@ export default function Fund() {
   const [page, setPage] = useState(0);
   const [dateStart, setDateStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
-  const [inputSearch,setInputSearch]=useState("")
+  const [inputSearch, setInputSearch] = useState("")
   const [rows, setRows] = useState([
     {
       admission_number: "400025152",
@@ -240,8 +240,8 @@ export default function Fund() {
     const searchTerm = e.target.value.toLowerCase();
     setInputSearch(searchTerm);
     const filterProducts = rows.filter(
-      (item) =>item.admission_number.includes(searchTerm));
-      setFilterRows(filterProducts);
+      (item) => item.admission_number.includes(searchTerm));
+    setFilterRows(filterProducts);
   };
 
   return (
@@ -286,10 +286,10 @@ export default function Fund() {
                   className={`${styles.wrap_button} mt-4 mt-sm-0`}
                 >
                   <Button2
-                    text={"جستجو"}
+
                     icon={faMagnifyingGlass}
                     onClick={""}
-                  />
+                  >{"جستجو"}</Button2>
                 </Col>
               </Row>
             </Col>
@@ -312,14 +312,14 @@ export default function Fund() {
                       fontFamily: "iranYekan",
                     }}
                   >
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.admission_number}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.invoice_number}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.invoice_date}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.date_of_admission}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.chassis_number}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.national_code}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>{row.fullname}</TableCell>
-                    <TableCell sx={{fontFamily: "iranYekan"}}>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.admission_number}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.invoice_number}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.invoice_date}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.date_of_admission}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.chassis_number}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.national_code}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>{row.fullname}</TableCell>
+                    <TableCell sx={{ fontFamily: "iranYekan" }}>
                       <div className={styles.wrap_btn}>
                         <button className={styles.btn}>مشاهده</button>
                       </div>

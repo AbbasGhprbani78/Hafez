@@ -34,7 +34,7 @@ export default function Paziresh() {
             <div className="content-conatiner">
                 <SideBar />
                 <div className='space-content'>
-                 <Header title={content}/>
+                    <Header title={content} />
                     <div className='my-4'>
                         <ProgressBar currentStep={currentTab} />
                         {
@@ -67,7 +67,7 @@ export default function Paziresh() {
 
                         }
                         {
-                            currentTab===4&&
+                            currentTab === 4 &&
                             <Pform4 prevTab={handlePrevTab} />
                         }
 

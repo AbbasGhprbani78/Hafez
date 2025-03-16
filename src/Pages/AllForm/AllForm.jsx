@@ -183,10 +183,10 @@ export default function AllForm() {
           </div>
           <div className={styles.wrap_button}>
             <Button2
-              text={"جستجو"}
+
               icon={faMagnifyingGlass}
               onClick={() => setFilterText(inputSearch)}
-            />
+            >{"جستجو"}</Button2>
           </div>
 
           <button
@@ -245,7 +245,7 @@ export default function AllForm() {
             />
           </div>
           <div className={styles.wrap_dropdown}>
-            <SelectDropDown2 styleList={"positionlist"} text={"فیلتر براساس"}/>
+            <SelectDropDown2 styleList={"positionlist"} text={"فیلتر براساس"} />
           </div>
           <div className={"mt-3"}>
             <TableStatus
@@ -292,27 +292,26 @@ export default function AllForm() {
                       }}
                     >
                       <div
-                        className={`${styles.status_btn} ${
-                          row.status === "returned"
+                        className={`${styles.status_btn} ${row.status === "returned"
                             ? styles.status_one
                             : row.status === "unfinished"
-                            ? styles.status_two
-                            : row.status === "completed"
-                            ? styles.status_three
-                            : row.status === "pending approval"
-                            ? styles.status_four
-                            : null
-                        }`}
+                              ? styles.status_two
+                              : row.status === "completed"
+                                ? styles.status_three
+                                : row.status === "pending approval"
+                                  ? styles.status_four
+                                  : null
+                          }`}
                       >
                         {row.status === "returned"
                           ? "برگشتی"
                           : row.status === "unfinished"
-                          ? "ناتمام"
-                          : row.status === "completed"
-                          ? "اتمام پذیرش"
-                          : row.status === "pending approval"
-                          ? "درانتظار تایید"
-                          : null}
+                            ? "ناتمام"
+                            : row.status === "completed"
+                              ? "اتمام پذیرش"
+                              : row.status === "pending approval"
+                                ? "درانتظار تایید"
+                                : null}
                       </div>
                     </TableCell>
                   </TableRow>

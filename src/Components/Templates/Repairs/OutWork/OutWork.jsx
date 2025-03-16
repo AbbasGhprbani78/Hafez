@@ -119,30 +119,30 @@ export default function OutWork() {
           افزودن کار خارج :
         </span>
         <div className={`${styles.wrap_actions} mt-4`}>
-          <Button2 onClick={() => setShowModal(true)} text={"افزودن اجرت"} />
-          <Button2 onClick={""} text={"ارسال پیامک"} icon={faEnvelope} />
+          <Button2 onClick={() => setShowModal(true)} >{"افزودن اجرت"}</Button2>
+          <Button2 onClick={""} icon={faEnvelope} >{"ارسال پیامک"}</Button2>
         </div>
         <div className="mt-3">
           <TableForm columns={columns}>
             <TableRow className="statment-row-table">
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
-              <TableCell sx={{fontFamily: "iranYekan"}}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
+              <TableCell sx={{ fontFamily: "iranYekan" }}></TableCell>
               <div className="wrap-trash-table">
                 <FontAwesomeIcon
                   icon={faTrash}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="trash-row-table"
                 />
               </div>
               <div className="wrap-edit-table">
                 <FontAwesomeIcon
                   icon={faPenToSquare}
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="edit-row-table"
                 />
               </div>

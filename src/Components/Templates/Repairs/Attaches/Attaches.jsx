@@ -7,7 +7,7 @@ export default function Attaches() {
     <div className={styles.box}>
       <span className={`${styles.box_title} subtitle-project`}>
         پیوست :
-        <Button2 onClick={""} text={"تاریخچه پیوست‌ها"} />
+        <Button2 onClick={""}>{"تاریخچه پیوست‌ها"}</Button2>
       </span>
       <div className="mt-4">
         <Texteara value={""} onChange={""} name={""} text={"توضیحات"} />

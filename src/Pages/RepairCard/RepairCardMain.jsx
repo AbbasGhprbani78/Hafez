@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import styles from "./RepairCardStyle.module.css"
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import moment from 'jalali-moment';
 
 
 //Components
@@ -17,6 +19,7 @@ import { errorMessage, warningMessage, successMessage } from '../../Components/M
 //MUI Components
 import Grid from '@mui/material/Grid2';
 import { Button, TableCell, TableRow } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 //Icons 
@@ -24,37 +27,51 @@ import { faHashtag, faMagnifyingGlass, faCalendarDays, faCalendarXmark } from '@
 
 function RepairCardMain() {
     const [page, setPage] = useState(0)
-    const [pageLength, setPageLength] = useState(10)
-    const [totalRows, setTotalRows] = useState(fakeInfo.length)
-    const [information, setInformation] = useState(fakeInfo)
+    const [totalRows, setTotalRows] = useState(undefined)
+    const pageLength = 4;
+
+    const [information, setInformation] = useState(undefined)
     const [admissionNumber, setAdmissionNumber] = useState(undefined)
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
 
-    const [ExelURL, setExelURL] = useState(undefined)
-    const [isOnDateFilter, setIsOnDateFilter] = useState(false)
     const apiUrl = import.meta.env.VITE_API_URL;
+    const [loading, setLoading] = useState(false)
 
     const handleChangeAdmissionNumber = (event) => {
         const input = event.target.value;
-        const regex = /^[0-9]/;
+        const regex = /^[0-9]*$/;
         if (input === "" || regex.test(input)) {
             setAdmissionNumber(input);
         } else {
             warningMessage("فقط عدد وارد نمایید!")
         }
     }
+    const handleChangeStartDate = (date) => {
+        const persianDate = `${date.year}/${date.month.number}/${date.day}`
+        setStartDate(persianDate)
+    }
+    const handleChangeEndtDate = (date) => {
+        const persianDate = `${date.year}/${date.month.number}/${date.day}`
+        setEndDate(persianDate)
+    }
+    const navigate = useNavigate()
+    const handleGoToPaziresh = () => {
+        navigate("/paziresh")
+    }
 
     const handleChangePage = (newPage) => {
-        // successMessage(`${newPage}`)
         setPage(newPage);
     };
 
     useEffect(() => {
-        if (!admissionNumber) return; // Don't fetch if input is empty
+        if (!admissionNumber || admissionNumber === "" || admissionNumber === null) {// Don't fetch if input is empty
+            fetchCommonData()
+            return;
+        }
 
         const delayFetch = setTimeout(() => {
-            filterDataByNumber(admissionNumber);
+            filterDataByNumberAndDate();
         }, 500)
 
         return () => clearTimeout(delayFetch);  // Cleanup on each keystroke
@@ -62,58 +79,95 @@ function RepairCardMain() {
     }, [admissionNumber])
 
     useEffect(() => {
-        fetchCommonData(page, pageLength);
+        if (!startDate || startDate === "" || startDate === null) {
+            fetchCommonData()
+            return
+        }
+        filterDataByNumberAndDate();
+
+    }, [startDate])
+
+    useEffect(() => {
+        if (!endDate || endDate === "" || endDate === null) {
+            fetchCommonData()
+            return
+        }
+        filterDataByNumberAndDate();
+
+    }, [endDate])
+
+    useEffect(() => {
+        fetchCommonData();
     }, [page]);
 
-    const fetchCommonData = async (page = 1, pageLength = 10) => {
+    const fetchCommonData = async () => {
+        const pageNumner = page + 1;
         let access = window.localStorage.getItem("access")
-        page++
         const headers = {
             Authorization: `Bearer ${access}`
         };
+        let en_start_date = "", en_end_date = ""
+        if (startDate !== "") {
+            en_start_date = convertPersianToGregorian(startDate)
+            console.log(en_start_date)
+        }
+        if (endDate !== "") {
+            en_end_date = convertPersianToGregorian(endDate)
+            console.log(en_end_date)
+        }
+        setInformation(undefined)
         try {
             const response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
                 headers,
-                params: { page, page_size: pageLength }
+                params: {
+                    page: pageNumner, page_size: pageLength, admission_number: admissionNumber
+                }
             });
             if (response.status === 200) {
-                setInformation(response.data.results);
+                setInformation(response.data.results)
+                setTotalRows(response.data.count)
             }
-
-
         } catch (error) {
             errorMessage("خطا در برقراری ارتباط با سرور")
+            setInformation([])
+            setTotalRows(0)
         }
     }
     // /app/get-full-forms/?page=1&page_size=5&admission_number=12345&from_date=2024-02-01&to_date=2024-02-28
-    const filterDataByNumber = async (admissionNumber) => {
-        console.log(admissionNumber)
+    const filterDataByNumberAndDate = async () => {
+        const pageNumner = 1;
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
         };
+        let en_start_date = "", en_end_date = ""
+        if (startDate !== "") {
+            en_start_date = convertPersianToGregorian(startDate)
+            console.log(en_start_date)
+        }
+        if (endDate !== "") {
+            en_end_date = convertPersianToGregorian(endDate)
+            console.log(en_end_date)
+        }
         try {
-            const response = await axios.get(`${apiUrl}/${admissionNumber}`, {
+            const response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
                 headers,
+                params: { page: pageNumner, page_size: pageLength, admission_number: admissionNumber, from_date: en_start_date, to_date: en_end_date }
+
             });
-            const data = await response.json();
-            // setInformation(data);
+            console.log(response)
+            if (response.status === 200) {
+                setInformation(response.data.results)
+                setTotalRows(response.data.count)
+            }
 
         } catch (error) {
             errorMessage("خطا در برقراری ارتباط با سرور")
+            setInformation([])
+            setTotalRows(0)
         }
     }
-    const handleClickOnSearch = () => {
-        if (startDate === "" || startDate === undefined) {
-            warningMessage("لطفا تاریخ شروع را انتخاب نمایید!")
-            return
-        }
-        if (endDate === "" || endDate === undefined) {
-            warningMessage("لطفا تاریخ پایان را انتخاب نمایید!")
-            return
-        }
 
-    }
     const resetDatePicker = (number) => {
         if (number === 1) {
             setStartDate("")
@@ -121,11 +175,35 @@ function RepairCardMain() {
             setEndDate("")
         }
     }
-    const handleClickOnDownloadExcel = () => {
-        successMessage("فایل مورد نظر دانلود شد!")
-        console.log("user clicked on download Excel")
+    const handleClickOnDownloadExcel = async () => {
+        const pageNumner = page + 1;
+        let access = window.localStorage.getItem("access")
+        const headers = {
+            Authorization: `Bearer ${access}`
+        };
+        setLoading(true);
+        try {
+            const response = await axios.get(`${apiUrl}/app/get-customer-all-form/?export=excel`, {
+                headers,
+                responseType: 'blob', // Important for file download
+                params: { page: pageNumner, page_size: pageLength, admission_number: admissionNumber, from_date: startDate, to_date: endDate }
+            });
+            if (response.status === 200) {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'customer_data.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                successMessage("فایل اکسل مورد نظر دانلود شد!");
+            }
+        } catch (error) {
+            errorMessage("خطا در برقراری ارتباط با سرور");
+        } finally {
+            setLoading(false);
+        }
     }
-
     return (
         <Grid className="content-conatiner">
             <SideBar />
@@ -144,7 +222,7 @@ function RepairCardMain() {
                 minWidth={100}
                 gap={{ xs: "1rem", sm: "1.5rem", md: "2rem", lg: "2.5rem", xl: "3rem" }}
                 className={`space-content ${styles.wrap_repairs}`} >
-                <Header title={"لیست پذیرش‌ها:"} />
+                <Header title={"لیست پذیرش‌ها:"} handleClick={handleGoToPaziresh} />
                 <Grid
                     item
                     container
@@ -155,7 +233,7 @@ function RepairCardMain() {
                         alignItems: { xs: "flex-start", md: "center" },
                         width: "100%"
                     }}
-                    gap={{ xs: "1.5rem", sm: "0", }}
+                    gap={{ xs: "0.75rem", sm: "0", }}
                     size={{ xs: 12 }}
 
                 >
@@ -187,90 +265,64 @@ function RepairCardMain() {
                         size={{ xs: 12, sm: 8, md: 8 }}
                         sx={{
                             display: "flex",
-                            flexDirection: { xs: "column", md: "row" },
+                            flexDirection: "row",
                             alignItems: "flex-end",
                             justifyContent: "center",
                             width: "100%",
                         }}
-                        gap={{ xs: "0.75rem", sm: "1rem", md: "0" }}
 
                     >
                         <Grid
                             item
-                            container
-                            spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
-                            size={{ xs: 12, md: 9 }}
+                            size={6}
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                flexDirection: "row",
-                                width: "100%",
-                            }}>
-                            <Grid
-                                item
-                                size={6}
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}>
-                                <DatePicker
-                                    value={startDate}
-                                    onChange={setStartDate}
-                                    label={"از تاریخ فاکتور"}
-                                    placeholder='۱۴۰۰/۰۱/۰۱'
-                                    icon={startDate !== "" ? faCalendarXmark : faCalendarDays}
-                                    onReset={() => resetDatePicker(1)}
-                                />
-                            </Grid>
-                            <Grid
-                                item
-                                size={6}
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}>
+                            }}
+                            paddingLeft={{ xs: "0.75rem", sm: "0.5rem", md: "1rem", lg: "2rem", xl: "2.5rem" }}
 
-                                <DatePicker
-                                    value={endDate}
-                                    onChange={setEndDate}
-                                    label={"تا تاریخ فاکتور"}
-                                    placeholder='۱۴۰۳/۰۱/۰۱'
-                                    icon={endDate !== "" ? faCalendarXmark : faCalendarDays}
-                                    onReset={() => resetDatePicker(2)}
-                                />
-                            </Grid>
+                        >
+                            <DatePicker
+                                value={startDate}
+                                onChange={handleChangeStartDate}
+                                label={"از تاریخ فاکتور"}
+                                placeholder='۱۴۰۰/۰۱/۰۱'
+                                icon={startDate !== "" ? faCalendarXmark : faCalendarDays}
+                                onReset={() => resetDatePicker(1)}
+                            />
                         </Grid>
                         <Grid
                             item
-                            size={{ xs: 12, md: 3 }}
+                            size={6}
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
-                                justifyContent: { xs: "flex-start", sm: "center", md: "flex-end" },
+                                justifyContent: "center",
                             }}
-                        >
-                            <Button2
-                                icon={faMagnifyingGlass}
-                                style={"search_btn"}
-                                onClick={handleClickOnSearch} >
-                                {"جستجو"}
-                            </Button2>
+                            paddingRight={{ xs: "0.75rem", sm: "0.5rem", md: "1rem", lg: "2rem", xl: "2.5rem" }}
 
+                        >
+                            <DatePicker
+                                value={endDate}
+                                onChange={handleChangeEndtDate}
+                                label={"تا تاریخ فاکتور"}
+                                placeholder='۱۴۰۳/۰۱/۰۱'
+                                icon={endDate !== "" ? faCalendarXmark : faCalendarDays}
+                                onReset={() => resetDatePicker(2)}
+                            />
                         </Grid>
                     </Grid>
                 </Grid>
-                <InfoTabel
+                {information === undefined ? <LoadingForm /> : <InfoTabel
                     tableInformation={information}
                     handleChange={handleChangePage}
                     handleExcel={handleClickOnDownloadExcel}
                     page={page}
                     pageLength={pageLength}
                     totalRows={totalRows}
-                />
-
+                    loading={loading}
+                />}
             </Grid>
         </Grid >
     )
@@ -280,9 +332,10 @@ function InfoTabel({
     tableInformation = [],
     handleChange,
     handleExcel,
-    page = 0,
+    page,
     pageLength = 10,
-    totalRows
+    totalRows,
+    loading
 }) {
     const columns = [
         " شماره پذیرش",
@@ -322,172 +375,95 @@ function InfoTabel({
                 }}>
                 <Button2
                     onClick={handleExcel}
-                    disable={tableInformation === undefined}
+                    disable={tableInformation === undefined || loading}
                 >
-                    {"دریافت اکسل"}
+                    {loading ? <CircularProgress size={"20px"} color="success" /> : "دریافت اکسل"}
                 </Button2>
             </Grid>
-            {
-                tableInformation === undefined ?
-                    <LoadingForm /> :
-                    <TableCustom
-                        rows={tableInformation}
-                        columns={columns}
-                        onChange={handleChange}
-                        page={page}
-                        rowsPerPage={pageLength}
-                        total={totalRows}
-                    >
-                        {
-                            tableInformation.map((row, index) => (
-                                <TableRow
-                                    key={index}
-                                    sx={{
-                                        backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
-                                        fontFamily: "iranYekan",
-                                    }}
-                                >
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.admission_number}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.invoice_number}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.invoice_date}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.admission_date}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.chassis_number}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.national_id}
-                                    </TableCell>
-                                    <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                        {row.customer_name}
-                                    </TableCell>
-                                    <TableCell sx={{
+            <TableCustom
+                rows={tableInformation}
+                columns={columns}
+                onChange={handleChange}
+                page={page}
+                rowsPerPage={pageLength}
+                total={totalRows}
+            >
+                {
+                    tableInformation.map((row, index) => (
+                        <TableRow
+                            key={index}
+                            sx={{
+                                backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                                fontFamily: "iranYekan",
+                            }}
+                        >
+                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                {row.admission_number}
+                            </TableCell>
+                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                {row.invoice_number}
+                            </TableCell>
+                            <ShowConvertedData date={row.invoice_date} />
+                            <ShowConvertedData date={row.admission_date} />
+                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                {row.chassis_number}
+                            </TableCell>
+                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                {row.national_code_owner}
+                            </TableCell>
+                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                {`${row.owner_first_name} ${row.owner_last_name}`}
+                            </TableCell>
+                            <TableCell sx={{
 
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center"
-                                    }}>
-                                        <Button className={`${styles.view_btn}`} variant="contained" onClick={() => handleClickOnView(row.action)}>مشاهده</Button>
-                                    </TableCell>
-                                </TableRow>))
-                        }
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <Button className={`${styles.view_btn}`} variant="contained" onClick={() => handleClickOnView(row.action)}>مشاهده</Button>
+                            </TableCell>
+                        </TableRow>))
+                }
 
-                    </TableCustom>
-            }
-
+            </TableCustom>
         </Grid >
     )
 
 }
+function ShowConvertedData({ date }) {
+    const [persianDate, setPersianDate] = useState("");
+    useEffect(() => {
+        const gregorianDate = date?.slice(0, 10)
+        const convert = convertGregorianToPersian(gregorianDate)
+        setPersianDate(convert)
+    }, [date])
+    return <TableCell sx={{ fontFamily: "iranYekan" }}>
+        {persianDate}
+    </TableCell>
+}
 
 export default RepairCardMain
 
-const fakeInfo = [
-    {
-        "admission_number": "123456",
-        "invoice_number": "F-987654",
-        "invoice_date": "1402/12/05",
-        "admission_date": "1402/11/29",
-        "chassis_number": "ABC123XYZ456",
-        "national_id": "1234567890",
-        "customer_name": "Ali Rezaei",
-        "action": "https://example.com/action/123456"
-    },
-    {
-        "admission_number": "789012",
-        "invoice_number": "F-456321",
-        "invoice_date": "1402/12/10",
-        "admission_date": "1402/12/05",
-        "chassis_number": "DEF789GHI123",
-        "national_id": "0987654321",
-        "customer_name": "Zahra Mohammadi",
-        "action": "https://example.com/action/789012"
-    },
-    {
-        "admission_number": "345678",
-        "invoice_number": "F-159753",
-        "invoice_date": "1402/12/15",
-        "admission_date": "1402/12/10",
-        "chassis_number": "JKL456MNO789",
-        "national_id": "1122334455",
-        "customer_name": "Hossein Karimi",
-        "action": "https://example.com/action/345678"
-    },
-    {
-        "admission_number": "567890",
-        "invoice_number": "F-753159",
-        "invoice_date": "1402/12/18",
-        "admission_date": "1402/12/12",
-        "chassis_number": "PQR678STU901",
-        "national_id": "6677889900",
-        "customer_name": "Maryam Sharifi",
-        "action": "https://example.com/action/567890"
-    },
-    {
-        "admission_number": "901234",
-        "invoice_number": "F-852963",
-        "invoice_date": "1402/12/22",
-        "admission_date": "1402/12/15",
-        "chassis_number": "VWX234YZA567",
-        "national_id": "5566778899",
-        "customer_name": "Mohammad Amini",
-        "action": "https://example.com/action/901234"
-    },
-    {
-        "admission_number": "112233",
-        "invoice_number": "F-123456",
-        "invoice_date": "1402/12/25",
-        "admission_date": "1402/12/20",
-        "chassis_number": "LMN987OPQ654",
-        "national_id": "3344556677",
-        "customer_name": "Sara Mousavi",
-        "action": "https://example.com/action/112233"
-    },
-    {
-        "admission_number": "445566",
-        "invoice_number": "F-789101",
-        "invoice_date": "1402/12/28",
-        "admission_date": "1402/12/22",
-        "chassis_number": "RST321UVW543",
-        "national_id": "2233445566",
-        "customer_name": "Ahmad Naderi",
-        "action": "https://example.com/action/445566"
-    },
-    {
-        "admission_number": "778899",
-        "invoice_number": "F-654987",
-        "invoice_date": "1403/01/02",
-        "admission_date": "1402/12/29",
-        "chassis_number": "XYZ987ABC654",
-        "national_id": "8899001122",
-        "customer_name": "Fatemeh Hosseini",
-        "action": "https://example.com/action/778899"
-    },
-    {
-        "admission_number": "334455",
-        "invoice_number": "F-321654",
-        "invoice_date": "1403/01/05",
-        "admission_date": "1403/01/02",
-        "chassis_number": "MNO654PQR321",
-        "national_id": "7788990011",
-        "customer_name": "Hassan Abbasi",
-        "action": "https://example.com/action/334455"
-    },
-    {
-        "admission_number": "556677",
-        "invoice_number": "F-147258",
-        "invoice_date": "1403/01/10",
-        "admission_date": "1403/01/05",
-        "chassis_number": "UVW543RST321",
-        "national_id": "9900112233",
-        "customer_name": "Reza Sharifi",
-        "action": "https://example.com/action/556677"
+export function convertPersianToGregorian(persianDate) {
+    const m = moment.from(persianDate, 'fa', 'YYYY/MM/DD');
+    if (m.isValid()) {
+        return m.locale('en').format('YYYY-MM-DD');
+    } else {
+        return 'Invalid Persian Date';
     }
-]
+}
+export function convertGregorianToPersian(gregorianDate) {
+    if (!gregorianDate || typeof gregorianDate !== 'string') {
+        return 'Invalid Date';
+    }
+    // Expecting format yyyy-dd-mm
+    const [year, day, month] = gregorianDate.split('-');
+    const formattedDate = `${year}-${month}-${day}`; // Moment expects yyyy-mm-dd format
+
+    const m = moment(formattedDate, 'YYYY-MM-DD');
+    if (m.isValid()) {
+        return m.locale('fa').format('YYYY/MM/DD');
+    } else {
+        return 'Invalid Gregorian Date';
+    }
+}
