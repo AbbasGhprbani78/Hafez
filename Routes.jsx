@@ -5,13 +5,11 @@ import Login from "./src/Pages/Login/Login";
 import Draft from "./src/Pages/Draft/Draft";
 import AllForm from "./src/Pages/AllForm/AllForm";
 // import Repairs from "./src/Pages/Repairs/Repairs";
-import User from "./src/Pages/Users/User";
 import RepairPlan from "./src/Pages/RepairPlan/RepairPlan";
 import Fund from "./src/Pages/Fund/Fund";
 import FundItem from "./src/Pages/Fund/FundItem";
 import RepairCardMain from "./src/Pages/RepairCard/RepairCardMain";
 import ManagementPage from "./src/Pages/Management/ManagementPage";
-
 const routes = [
   { path: "/", element: <Home /> },
   { path: "/draft", element: <Draft /> },
@@ -21,7 +19,6 @@ const routes = [
   { path: "/allform", element: <AllForm /> },
   // { path: "/repairs", element: <Repairs /> },
   { path: "/repairs", element: <RepairCardMain /> },
-  { path: "/users", element: <User /> },
   { path: "/repairplan", element: <RepairPlan /> },
   { path: "/fund", element: <Fund /> },
   { path: "/fund/:id", element: <FundItem /> },

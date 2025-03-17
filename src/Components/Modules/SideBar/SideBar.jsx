@@ -7,7 +7,6 @@ import {
   faNewspaper,
   faScrewdriverWrench,
   faLayerGroup,
-  faBoxArchive,
   faChartPie,
   faRightToBracket,
   faListCheck,
@@ -77,12 +76,6 @@ export default function SideBar() {
             <FontAwesomeIcon icon={faChartPie} />
           </div>
           <p className={styles.sidebar_item_text}>گزارشات</p>
-        </NavLink>
-        <NavLink to={"/users"} className={`${styles.sidebar_item} navlink`}>
-          <div className={styles.icon_sidebar_wrapper}>
-            <FontAwesomeIcon icon={faBoxArchive} />
-          </div>
-          <p className={styles.sidebar_item_text}>انبار</p>
         </NavLink>
         <NavLink
           to={"/allform"}

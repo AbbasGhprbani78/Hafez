@@ -69,15 +69,6 @@ function ResponsiveExample({ show, setIsShowSideBar }) {
               </div>
               <p className={styles.canvas_item_text}>گزارشات</p>
             </NavLink>
-            <NavLink to={"/users"} className={styles.canvasitem}>
-              <div className={styles.icon_offcanvas_wrapper}>
-                <FontAwesomeIcon
-                  icon={faBoxArchive}
-                  className={styles.icon_offcanvas}
-                />
-              </div>
-              <p className={styles.canvas_item_text}>انبار</p>
-            </NavLink>
             <NavLink to={"/allform"} className={styles.canvasitem}>
               <div className={styles.icon_offcanvas_wrapper}>
                 <FontAwesomeIcon

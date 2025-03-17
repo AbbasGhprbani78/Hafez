@@ -8,12 +8,13 @@ import axios from 'axios';
 import SideBar from "../../Components/Modules/SideBar/SideBar"
 import Header from "../../Components/Modules/Header/Header"
 import { ToastContainerCustom } from '../../Components/Modules/Toast/ToastCustom';
-import { infoMessage, errorMessage, warningMessage, successMessage } from '../../Components/Modules/Toast/ToastCustom';
+import { errorMessage } from '../../Components/Modules/Toast/ToastCustom';
 import ReactDropdown from '../../Components/Modules/ReactDropdown/ReactDropdown';
 import Modal from '../../Components/Modules/Modal/Modal';
 import AddAndEditEquipment from './ManagementsModals/AddAndEditEquipment';
 import AddAndEditHalls from './ManagementsModals/AddAndEditHalls';
 import AddAndEditRepairman from './ManagementsModals/AddAndEditRepairman';
+import AddAndEditUserModal from './ManagementsModals/AddAndEditUserModal';
 import DeleteError from './ManagementsModals/DeleteError';
 import Input from '../../Components/Modules/Input/Input';
 import Button2 from '../../Components/Modules/Button2/Button2';
@@ -26,9 +27,9 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import { Button, TableCell, TableRow } from "@mui/material";
 
-
 //Icons
 import { faPlus, faMagnifyingGlass, faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
+
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -86,25 +87,33 @@ function ManagementPage() {
         if (tab === 0) { //code, name, description
             filterProducts = tabInformation.filter(
                 (item) =>
-                    item.code.includes(searchTerm) ||
-                    item.name.toLowerCase().includes(searchTerm) ||
-                    item.descriptions.includes(searchTerm)
+                    item.code?.includes(searchTerm) ||
+                    item.name?.toLowerCase().includes(searchTerm) ||
+                    item.descriptions?.includes(searchTerm)
             );
-        } else if (tab === 1) { //code, name, expertice, halls name
+        } else if (tab === 1) { //code, full name, expertice, halls name
             filterProducts = tabInformation.filter(
                 (item) =>
-                    item.id.toString().includes(searchTerm) ||
-                    item.first_name.toLowerCase().includes(searchTerm) ||
-                    item.type.map(exp => exp.type).join(" ").toLowerCase().includes(searchTerm) ||
-                    item.salon.map(hall => hall.name).join(",").includes(searchTerm)
+                    item.id?.toString().includes(searchTerm) ||
+                    item.full_name?.toLowerCase().includes(searchTerm) ||
+                    item.type?.map(exp => exp.type).join(" ").toLowerCase().includes(searchTerm) ||
+                    item.salon?.map(hall => hall.name).join(",").includes(searchTerm)
             );
         } else if (tab === 2) { //code, name, halls name, description
             filterProducts = tabInformation.filter(
                 (item) =>
-                    item.code.includes(searchTerm) ||
-                    item.name.includes(searchTerm) ||
+                    item.code?.includes(searchTerm) ||
+                    item.name?.includes(searchTerm) ||
                     item.salon?.name.toLowerCase().includes(searchTerm) ||
-                    item.descriptions.includes(searchTerm)
+                    item.descriptions?.includes(searchTerm)
+            );
+        } else if (tab === 3) { //full name, expertice, national code, phone number 
+            filterProducts = tabInformation.filter(
+                (item) =>
+                    item.type?.map(exp => exp.type).join(" ").toLowerCase().includes(searchTerm) ||
+                    item.full_name?.includes(searchTerm) ||
+                    item.national_code?.includes(searchTerm) ||
+                    item.phone_number?.includes(searchTerm)
             );
         }
         setFilterRows(filterProducts);
@@ -143,6 +152,14 @@ function ManagementPage() {
                     setTabInformation(response.data)
                     setFilterRows(response.data)
                 }
+            } else if (tab === 3) {
+                response = await axios.get(`${apiUrl}/app/add-user/`, {
+                    headers,
+                });
+                if (response.status === 200) {
+                    setTabInformation(response.data.users)
+                    setFilterRows(response.data.users)
+                }
             }
 
 
@@ -160,6 +177,7 @@ function ManagementPage() {
 
     useEffect(() => {
         fetchTabData(tab);
+        handleChangePage(0)
         setFilterRows(undefined)
     }, [tab])
     return (
@@ -189,7 +207,16 @@ function ManagementPage() {
                             : operation === "delete"
                                 ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="equipment" infoItem={selectedRowInfo} />
                                 : <></>
-                ) : <></>}
+                ) : tab === 3 ? (
+                    operation === "add" ?
+                        <AddAndEditUserModal modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="add" infoItem={selectedRowInfo} />
+                        : operation === "edit"
+                            ? <AddAndEditUserModal modal={modal} tab={tab} toggleModal={handleToggleModal} handleToggleUpdate={handleRebuildAndToggleModal} action="edit" infoItem={selectedRowInfo} />
+                            : operation === "delete"
+                                ? <DeleteError handleToggleUpdate={handleRebuildAndToggleModal} toggleModal={handleToggleModal} type="user" infoItem={selectedRowInfo} />
+                                : <></>
+                ) : <></>
+                }
             </Modal>
             <SideBar />
             <ToastContainerCustom />
@@ -292,7 +319,17 @@ function ManagementPage() {
                             icon={faPlus}
                             style={"search_btn"}
                             onClick={() => handleOpenModal(item1, "add")} >
-                            {tab === 0 ? "تعریف سالن جدید" : tab === 1 ? "تعریف تعمیرکار جدید" : tab === 2 ? "تعریف تجهیزات جدید" : ""}
+                            {
+                                tab === 0 ?
+                                    "تعریف سالن جدید" :
+                                    tab === 1 ?
+                                        "تعریف تعمیرکار جدید" :
+                                        tab === 2 ?
+                                            "تعریف تجهیزات جدید" :
+                                            tab === 3 ?
+                                                "تعریف کاربر جدید" :
+                                                ""
+                            }
                         </Button2>
                     </Grid>
                     <Box sx={{ width: "100%" }}>
@@ -304,7 +341,7 @@ function ManagementPage() {
                                 totalRows={filterRows.length}
                                 pageLength={rowsPerPage}
                                 columnsTitle={halls_columns}
-                                key={1}
+                                key={21}
                             >
                                 {filterRows.length > 0 ? filterRows
                                     .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
@@ -390,7 +427,7 @@ function ManagementPage() {
                                 totalRows={filterRows.length}
                                 pageLength={rowsPerPage}
                                 columnsTitle={repairman_columns}
-                                key={1}
+                                key={22}
                             >
                                 {filterRows.length > 0 ? filterRows
                                     .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
@@ -406,7 +443,7 @@ function ManagementPage() {
                                                 {row.id}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
-                                                {row.first_name}
+                                                {row.full_name}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
                                                 {Array.isArray(row.type) && row.type.length > 0 ? row.type.map(t => t.type).join(" / ") : "Invalid data"}
@@ -475,7 +512,7 @@ function ManagementPage() {
                                 totalRows={filterRows.length}
                                 pageLength={rowsPerPage}
                                 columnsTitle={equipment_columns}
-                                key={1}
+                                key={23}
                             >
                                 {filterRows.length > 0 ? filterRows
                                     .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
@@ -551,6 +588,93 @@ function ManagementPage() {
                                 }
                             </InfoTabel>}
                         </CustomTabPanel>
+                        <CustomTabPanel value={tab} index={3}>
+                            {filterRows === undefined ? <LoadingForm /> : <InfoTabel
+                                tableInformation={filterRows}
+                                page={page}
+                                handleChange={handleChangePage}
+                                totalRows={filterRows.length}
+                                pageLength={rowsPerPage}
+                                columnsTitle={userColumns}
+                                key={24}
+                            >
+                                {filterRows.length > 0 ? filterRows
+                                    .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                                    .map((row, index) => (
+                                        <TableRow
+                                            key={index}
+                                            sx={{
+                                                backgroundColor: index % 2 === 0 ? "#fff" : "#f2f2f2",
+                                                fontFamily: "iranYekan",
+                                            }}
+                                        >
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {++index}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.full_name}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {Array.isArray(row.type) && row.type.length > 0 ? row.type.map(t => t.type).join(" / ") : "Invalid data"}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.national_code}
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    fontFamily: "iranYekan",
+                                                    padding: "19px"
+                                                }}
+                                            >
+                                                <div
+                                                    className={`${styles.status_btn_halls} ${row.status === true
+                                                        ? styles.status_halls_one
+                                                        : row.status === false
+                                                            ? styles.status_halls_two
+                                                            : styles.status_halls_defualt
+                                                        }`}
+                                                >
+                                                    {row.status === true
+                                                        ? "فعال"
+                                                        : row.status === false
+                                                            ? "غیرفعال"
+                                                            : "نامشخص"}
+                                                </div>
+                                            </TableCell>
+
+                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                                {row.phone_number}
+                                            </TableCell>
+                                            <TableCell sx={{
+
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                flexDirection: "row",
+                                                gap: "1rem",
+                                                padding: "18px 10px"
+
+                                            }}>
+                                                <Button2
+                                                    icon={faPencil}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "edit")}
+
+                                                />
+                                                <Button2
+                                                    icon={faTrashCan}
+                                                    variant='contained'
+                                                    style={"edit_delete_btn"}
+                                                    onClick={() => handleOpenModal(row, "delete")} />
+                                            </TableCell>
+                                        </TableRow>)) : <></>
+
+                                }
+                            </InfoTabel>}
+                        </CustomTabPanel>
                     </Box>
 
                 </Grid>
@@ -563,7 +687,7 @@ function ManagementPage() {
 
 export default ManagementPage
 
-function InfoTabel({
+export function InfoTabel({
     tableInformation = [],
     handleChange,
     page = 0,
@@ -609,13 +733,13 @@ function InfoTabel({
 const tabHeaders = [
     { value: 0, label: "سالن‌ها", tabNameEn: "Halls" },
     { value: 1, label: "برنامه‌ریزی تعمیرکار", tabNameEn: "Repairman Scheduling" },
-    { value: 2, label: "تجهیزات", tabNameEn: "Equipment" },]
-
+    { value: 2, label: "تجهیزات", tabNameEn: "Equipment" },
+    { value: 3, label: "کاربران", tabNameEn: "Users" },
+]
 
 const item1 = {
     name: 'Halls'
 }
-
 
 const halls_columns = [
     "کد",
@@ -642,3 +766,13 @@ const equipment_columns = [
     "توضیحات",
     "عملیات",
 ]
+
+const userColumns = [
+    "ردیف",
+    "نام کاربر",
+    "نقش کاربر",
+    "کد ملی",
+    "وضعیت",
+    "شماره تماس",
+    "عملیات",
+];

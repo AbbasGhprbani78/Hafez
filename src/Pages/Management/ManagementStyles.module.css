@@ -1,5 +1,5 @@
 .manual_btn{
-   font-size: 1rem !important;
+   font-size: 0.9rem !important;
    font-weight: 500 !important;
    color: #FFFFFF !important;
    background-color:  #C3C3C3 !important;
@@ -15,7 +15,7 @@
 .active_btn{
    font-family: 'iranYekan', sans-serif !important;
    font-size: 1rem !important;
-   font-weight: 700 !important;
+   font-weight: 600 !important;
    line-height: 20px !important;
    color: #FFFFFF !important;
    background-color:  var(--color-3) !important;

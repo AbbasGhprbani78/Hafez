@@ -28,7 +28,8 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
         };
         setLoading(true)
         try {
-            const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "salon-update/" : type === "repairman" ? "add-repairman/" : type === "equipment" ? "equipment/" : ""}${infoItem.id}`, {
+            const response = await axios.delete(`${apiUrl}/app/${type === "hall" ? "salon-update/" : type === "repairman" ? "add-repairman/" : type === "equipment" ? "equipment/" : type === "user" ? "add-user/" : ""}${infoItem.id}`, {
+
                 headers,
             });
 
@@ -37,14 +38,12 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
                 successMessage("حذف با موفقیت انجام شد")
             }
         } catch (error) {
-            console.log(error);
             toggleModal()
             errorMessage(" خطا در عملیات حذف سالن")
         } finally {
             setLoading(false)
         }
     };
-    console.log(infoItem)
     return (
         <Grid
             container
@@ -66,7 +65,20 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
                     alignItems: "center",
                 }}
             >
-                <Typography className={styles.title_modal} variant='body1'>{`حذف ${type === "hall" ? "سالن" : type === "repairman" ? "برنامه‌ریزی تعمیرکار" : type === "equipment" ? "تجهیزات" : "آیتم"}`}</Typography>
+                <Typography className={styles.title_modal} variant='body1'>
+                    {
+                        `حذف ${type === "hall"
+                            ? "سالن"
+                            : type === "repairman"
+                                ? "برنامه‌ریزی تعمیرکار"
+                                : type === "equipment"
+                                    ? "تجهیزات"
+                                    : type === "user"
+                                        ? "کاربر"
+                                        : "آیتم"
+                        }`
+                    }
+                </Typography>
                 <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
                         icon={faXmark}
@@ -94,12 +106,19 @@ function DeleteError({ toggleModal, type = "hall", infoItem, handleToggleUpdate 
                                 ? "برنامه‌ریزی تعمیرکار"
                                 : type === "equipment"
                                     ? "تجهیزات"
-                                    : "آیتم"}
-                                    با نام 
-                                    ${infoItem
+                                    : type === "user"
+                                        ? "کاربر"
+                                        : "آیتم"
+                        }
+
+                        با نام 
+                        ${infoItem
                             ? `"${type === "repairman"
-                                ? `${infoItem.first_name} ${infoItem.last_name}`
-                                : infoItem.name}" `
+                                ? infoItem.full_name
+                                : type === "user"
+                                    ? infoItem.full_name
+                                    : infoItem.name
+                            }"`
                             : "123"} 
                             اطمینان دارید؟`}
                 </Typography>

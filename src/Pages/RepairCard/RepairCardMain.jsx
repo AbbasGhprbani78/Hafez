@@ -23,7 +23,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 
 //Icons 
-import { faHashtag, faMagnifyingGlass, faCalendarDays, faCalendarXmark } from '@fortawesome/free-solid-svg-icons';
+import { faHashtag, faCalendarDays, faCalendarXmark } from '@fortawesome/free-solid-svg-icons';
 
 function RepairCardMain() {
     const [page, setPage] = useState(0)
@@ -31,7 +31,7 @@ function RepairCardMain() {
     const pageLength = 4;
 
     const [information, setInformation] = useState(undefined)
-    const [admissionNumber, setAdmissionNumber] = useState(undefined)
+    const [admissionNumber, setAdmissionNumber] = useState("")
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
 
@@ -65,40 +65,19 @@ function RepairCardMain() {
     };
 
     useEffect(() => {
-        if (!admissionNumber || admissionNumber === "" || admissionNumber === null) {// Don't fetch if input is empty
-            fetchCommonData()
-            return;
+
+        if (startDate === null && endDate === null && admissionNumber === null) {
+            fetchCommonData();
+        } else {
+            setInformation(undefined)
+            const delayFetch = setTimeout(() => {
+                filterDataByNumberAndDate();
+            }, 500)
+
+            return () => clearTimeout(delayFetch);  // Cleanup on each keystroke
         }
 
-        const delayFetch = setTimeout(() => {
-            filterDataByNumberAndDate();
-        }, 500)
-
-        return () => clearTimeout(delayFetch);  // Cleanup on each keystroke
-
-    }, [admissionNumber])
-
-    useEffect(() => {
-        if (!startDate || startDate === "" || startDate === null) {
-            fetchCommonData()
-            return
-        }
-        filterDataByNumberAndDate();
-
-    }, [startDate])
-
-    useEffect(() => {
-        if (!endDate || endDate === "" || endDate === null) {
-            fetchCommonData()
-            return
-        }
-        filterDataByNumberAndDate();
-
-    }, [endDate])
-
-    useEffect(() => {
-        fetchCommonData();
-    }, [page]);
+    }, [page, endDate, startDate, admissionNumber]);
 
     const fetchCommonData = async () => {
         const pageNumner = page + 1;
@@ -106,21 +85,12 @@ function RepairCardMain() {
         const headers = {
             Authorization: `Bearer ${access}`
         };
-        let en_start_date = "", en_end_date = ""
-        if (startDate !== "") {
-            en_start_date = convertPersianToGregorian(startDate)
-            console.log(en_start_date)
-        }
-        if (endDate !== "") {
-            en_end_date = convertPersianToGregorian(endDate)
-            console.log(en_end_date)
-        }
         setInformation(undefined)
         try {
             const response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
                 headers,
                 params: {
-                    page: pageNumner, page_size: pageLength, admission_number: admissionNumber
+                    page: pageNumner, page_size: pageLength
                 }
             });
             if (response.status === 200) {
@@ -181,12 +151,21 @@ function RepairCardMain() {
         const headers = {
             Authorization: `Bearer ${access}`
         };
+        let en_start_date = "", en_end_date = ""
+        if (startDate !== "") {
+            en_start_date = convertPersianToGregorian(startDate)
+            console.log(en_start_date)
+        }
+        if (endDate !== "") {
+            en_end_date = convertPersianToGregorian(endDate)
+            console.log(en_end_date)
+        }
         setLoading(true);
         try {
             const response = await axios.get(`${apiUrl}/app/get-customer-all-form/?export=excel`, {
                 headers,
                 responseType: 'blob', // Important for file download
-                params: { page: pageNumner, page_size: pageLength, admission_number: admissionNumber, from_date: startDate, to_date: endDate }
+                params: { page: pageNumner, page_size: pageLength, admission_number: admissionNumber, from_date: en_start_date, to_date: en_end_date }
             });
             if (response.status === 200) {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -456,8 +435,8 @@ export function convertGregorianToPersian(gregorianDate) {
     if (!gregorianDate || typeof gregorianDate !== 'string') {
         return 'Invalid Date';
     }
-    // Expecting format yyyy-dd-mm
-    const [year, day, month] = gregorianDate.split('-');
+    // Expecting format yyyy-mm-dd
+    const [year, month, day] = gregorianDate.split('-');
     const formattedDate = `${year}-${month}-${day}`; // Moment expects yyyy-mm-dd format
 
     const m = moment(formattedDate, 'YYYY-MM-DD');

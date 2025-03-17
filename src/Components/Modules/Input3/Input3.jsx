@@ -50,6 +50,7 @@ function Input3({
                 item
                 size={12}
                 className={styles.input_content_wrapper}
+                gap={"10px"}
             >
                 <input
                     id={id}

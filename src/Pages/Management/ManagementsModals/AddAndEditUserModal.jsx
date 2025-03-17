@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import styles from "./ModalStyles.module.css"
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -17,7 +18,6 @@ import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
 //Icons
 import {
     faXmark,
@@ -32,35 +32,33 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function AddAndEditRepairman({
+
+function AddAndEditUserModal({
     action = "add",
     infoItem,
     toggleModal,
     tab,
     modal,
-    handleToggleUpdate
-}) {
-    const [hallsInfo, setHallsInfo] = useState([])
+    handleToggleUpdate }) {
+
     const [expertiseInfo, setExpertiseInfo] = useState([])
-    const [repairmanInfo, setRepairmanInfo] = useState({
+    const [userInfo, setUserInfo] = useState({
         id: null,
-        repair_status: true,
-        repair_name: "",
-        repair_national_code: "",
-        repair_phone_number: "",
-        repair_work_hours: 8,
-        repair_username: "",
-        repair_password: ""
+        user_status: true,
+        user_full_name: "",
+        user_national_code: "",
+        user_phone_number: "",
+        user_work_hours: 8,
+        user_username: "",
+        user_password: ""
     })
-    const [itemRepairHalls, setItemRepairHalls] = useState(undefined)
-    const [itemRepairExpertise, setItemRepairExpertise] = useState(undefined)
+    const [itemUserExpertise, setItemUserExpertise] = useState(undefined)
     const [helperText, setHelperText] = useState({
-        help_name: "",
+        help_full_name: "",
         help_national_code: "",
         help_phone_number: "",
         help_expertise: "",
         help_work_hours: "",
-        help_halls: "",
         help_username: "",
         help_password: "",
     })
@@ -70,39 +68,53 @@ function AddAndEditRepairman({
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        //Validity test for name
-        if (name === "repair_name" && value.length <= 2 && value.length > 0) {
+        //Validity test for full name
+        if (name === "user_full_name" && value.length <= 2 && value.length > 0) {
             setHelperText((prev) => ({
                 ...prev,
-                help_name: "حداقل سه کاراکتر"
+                help_full_name: "حداقل سه کاراکتر"
             }));
 
         }
-        if (name === "repair_name" && value === "") {
+        if (name === "user_full_name" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
-                help_name: "این فیلد نمی‌تواند خالی باشد!"
+                help_full_name: "این فیلد نمی‌تواند خالی باشد!"
             }));
         }
-        else if (name === "repair_name" && (value.length >= 3 || value.length === 0) && helperText.help_name !== "") {
+        else if (name === "user_full_name" && (value.length >= 3 || value.length === 0) && helperText.help_full_name !== "") {
             setHelperText((prev) => ({
                 ...prev,
-                help_name: ""
+                help_full_name: ""
+            }));
+        }
+
+        //Validity test for work hours
+        if (name === "user_work_hours" && value <= 0) {
+            setHelperText((prev) => ({
+                ...prev,
+                help_work_hours: "حداقل یک ساعت!"
+            }));
+            return
+        } else if (helperText.help_work_hours !== "") {
+            setHelperText((prev) => ({
+                ...prev,
+                help_work_hours: ""
             }));
         }
 
         //Validity test for national code
-        if (name === "repair_national_code" && !/^\d*$/.test(value)) {
+        if (name === "user_national_code" && !/^\d*$/.test(value)) {
             setHelperText((prev) => ({
                 ...prev,
                 help_national_code: "فقط عدد وارد کنید! "
             }));
             return
-        } else if (name === "repair_national_code" && value.length > 10) {
+        } else if (name === "user_national_code" && value.length > 10) {
             warningMessage("کدملی نمی‌تواند بیشتر از ده رقم باشد!")
             return
         }
-        if (name === "repair_national_code" && value === "") {
+        if (name === "user_national_code" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_national_code: "این فیلد نمی‌تواند خالی باشد!"
@@ -116,18 +128,18 @@ function AddAndEditRepairman({
         }
 
         //Validity test for phone number
-        if (name === "repair_phone_number" && !/^[0-9\b]*$/.test(value)) {
+        if (name === "user_phone_number" && !/^[0-9\b]*$/.test(value)) {
             setHelperText((prev) => ({
                 ...prev,
                 help_phone_number: "فقط عدد وارد کنید! "
             }));
             return
-        } else if (name === "repair_phone_number" && value.length > 11) {
+        } else if (name === "user_phone_number" && value.length > 11) {
             warningMessage("شماره تماس نمی‌تواند بیشتر از یازده رقم باشد!")
             return
 
         }
-        else if (name === "repair_phone_number" && value === "") {
+        else if (name === "user_phone_number" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_phone_number: "این فیلد نمی‌تواند خالی باشد!"
@@ -140,34 +152,22 @@ function AddAndEditRepairman({
             }));
         }
 
-        if (name === "repair_work_hours" && value <= 0) {
-            setHelperText((prev) => ({
-                ...prev,
-                help_work_hours: "حداقل یک ساعت!"
-            }));
-            return
-        } else if (helperText.help_work_hours !== "") {
-            setHelperText((prev) => ({
-                ...prev,
-                help_work_hours: ""
-            }));
-        }
 
         //Validity test for username
-        if (name === "repair_username" && !/^[a-zA-Z0-9]*$/.test(value)) {
+        if (name === "user_username" && !/^[a-zA-Z0-9]*$/.test(value)) {
             setHelperText((prev) => ({
                 ...prev,
                 help_username: "ورودی غیر مجاز!"
             }));
             return
-        } else if (name === "repair_username" && value.length < 5) {
+        } else if (name === "user_username" && value.length < 5) {
             setHelperText((prev) => ({
                 ...prev,
                 help_username: "حداقل پنج کاراکتر"
             }));
 
         }
-        else if (name === "repair_username" && value === "") {
+        else if (name === "user_username" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_username: "این فیلد نمی‌تواند خالی باشد!"
@@ -181,20 +181,20 @@ function AddAndEditRepairman({
         }
 
         //Validity test for password
-        if (name === "repair_password" && !/^[A-Za-z\d!@#$%&*^]*$/.test(value)) {
+        if (name === "user_password" && !/^[A-Za-z\d!@#$%&*^]*$/.test(value)) {
             setHelperText((prev) => ({
                 ...prev,
                 help_password: "ورودی غیر مجاز!"
             }));
             return
-        } else if (name === "repair_password" && value.length < 6) {
+        } else if (name === "user_password" && value.length < 6) {
             setHelperText((prev) => ({
                 ...prev,
                 help_password: "حداقل شش کاراکتر"
             }));
 
         }
-        else if (name === "repair_password" && value === "") {
+        else if (name === "user_password" && value === "") {
             setHelperText((prev) => ({
                 ...prev,
                 help_password: "این فیلد نمی‌تواند خالی باشد!"
@@ -207,7 +207,8 @@ function AddAndEditRepairman({
             }));
         }
 
-        setRepairmanInfo((prev) => ({
+
+        setUserInfo((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value
         }));
@@ -215,43 +216,39 @@ function AddAndEditRepairman({
 
     const handleSubmitForm = async () => {
 
-        if (repairmanInfo.repair_name === null || repairmanInfo.repair_name === "") {
-            warningMessage("لطفا نام تعمیرکار را وارد کنید!")
+        if (userInfo.user_full_name === null || userInfo.user_full_name === "") {
+            warningMessage("لطفا نام و نام خانوادگی کاربر را وارد کنید!")
             return
         }
-        if (helperText.help_name !== "") {
-            warningMessage("لطفا نام تعمیرکار را به درستی وارد نمایید!")
-            return
-        }
-
-        if (repairmanInfo.repair_national_code === null || repairmanInfo.repair_national_code === "") {
-            warningMessage("لطفا کدملی تعمیرکار را وارد کنید!")
-            return
-        }
-        if (helperText.help_national_code !== "" || repairmanInfo.repair_national_code.length !== 10) {
-            warningMessage("لطفا کدملی تعمیرکار را به درستی وارد نمایید!")
+        if (helperText.help_full_name !== "") {
+            warningMessage("لطفا نام و نام خانوادگی کاربر را به درستی وارد نمایید!")
             return
         }
 
-        if (repairmanInfo.repair_phone_number === null || repairmanInfo.repair_phone_number === "") {
-            warningMessage("لطفا شماره تماس تعمیر کار را وارد نمایید!")
+        if (userInfo.user_national_code === null || userInfo.user_national_code === "") {
+            warningMessage("لطفا کدملی کاربر را وارد کنید!")
             return
         }
-        if (helperText.help_phone_number !== "" || repairmanInfo.repair_phone_number.length !== 11) {
-            warningMessage("لطفا شماره تماس تعمیر کار را به درستی وارد نمایید!")
-            return
-        }
-        if (itemRepairExpertise === null || itemRepairExpertise.length === 0) {
-            warningMessage("تخصص تعمیرکار را انتخاب نمایید!")
-            return
-        }
-        if (itemRepairHalls === null || itemRepairHalls.length === 0) {
-            warningMessage(" سالن تعمیرکار را انتخاب نمایید!")
+        if (helperText.help_national_code !== "" || userInfo.user_national_code.length !== 10) {
+            warningMessage("لطفا کدملی کاربر را به درستی وارد نمایید!")
             return
         }
 
-        if (repairmanInfo.repair_username === null || repairmanInfo.repair_username === "") {
-            warningMessage("لطفا یک نام کاربری برای تعمیرکار وارد کنید!")
+        if (userInfo.user_phone_number === null || userInfo.user_phone_number === "") {
+            warningMessage("لطفا شماره تماس کاربر را وارد نمایید!")
+            return
+        }
+        if (helperText.help_phone_number !== "" || userInfo.user_phone_number.length !== 11) {
+            warningMessage("لطفا شماره تماس کاربر را به درستی وارد نمایید!")
+            return
+        }
+        if (itemUserExpertise === null || itemUserExpertise?.length === 0) {
+            warningMessage("نقش کاربر را انتخاب نمایید!")
+            return
+        }
+
+        if (userInfo.user_username === null || userInfo.user_username === "") {
+            warningMessage("لطفا یک نام کاربری برای کاربر وارد کنید!")
             return
         }
         if (helperText.help_username !== "") {
@@ -259,8 +256,8 @@ function AddAndEditRepairman({
             return
         }
         if (action !== "edit") {
-            if (repairmanInfo.repair_password === null || repairmanInfo.repair_password === "") {
-                warningMessage("لطفا یک رمز عبور برای تعمیرکار وارد کنید!")
+            if (userInfo.user_password === null || userInfo.user_password === "") {
+                warningMessage("لطفا یک رمز عبور برای کاربر وارد کنید!")
                 return
             }
             if (helperText.help_password !== "") {
@@ -275,111 +272,106 @@ function AddAndEditRepairman({
         };
 
         const requestData = {
-            full_name: repairmanInfo.repair_name,
-            national_code: repairmanInfo.repair_national_code,
-            phone_number: repairmanInfo.repair_phone_number,
-            salon: itemRepairHalls,
-            status: repairmanInfo.repair_status,
-            type: itemRepairExpertise,
-            username: repairmanInfo.repair_username,
-            password: repairmanInfo.repair_password,
-            work_time: repairmanInfo.repair_work_hours
+            full_name: userInfo.user_full_name,
+            national_code: userInfo.user_national_code,
+            phone_number: userInfo.user_phone_number,
+            status: userInfo.user_status,
+            type: itemUserExpertise,
+            username: userInfo.user_username,
+            password: userInfo.user_password,
+            work_time: userInfo.user_work_hours
         }
         setLoading(true)
         if (action === "add") {
             try {
-                const response = await axios.post(`${apiUrl}/app/add-repairman/`,
+                const response = await axios.post(`${apiUrl}/app/add-user/`,
                     requestData,
                     { headers });
 
                 if (response.status === 201) {
-                    successMessage("تعمیرکار جدید با موفقیت اضافه شد");
+                    successMessage("کاربر جدید با موفقیت اضافه شد");
                     handleToggleUpdate();
                 }
             } catch (error) {
                 toggleModal()
-                errorMessage("خطا در عملیات افزودن تعمیرکار");
+                errorMessage("خطا در عملیات افزودن کاربر");
             } finally {
                 setLoading(false)
             }
         } else if (action === "edit") {
             try {
-                const response = await axios.put(`${apiUrl}/app/add-repairman/${repairmanInfo.id}`,
+                const response = await axios.put(`${apiUrl}/app/add-user/${userInfo.id}`,
                     requestData,
                     { headers });
 
                 if (response.status === 200) {
                     handleToggleUpdate()
-                    successMessage("تعمیرکار با موفقیت ویرایش شد");
+                    successMessage("کاربر موردنظر با موفقیت ویرایش شد");
                 }
             } catch (error) {
                 toggleModal()
-                errorMessage("خطا در عملیات ویرایش تعمیرکار");
+                errorMessage("خطا در عملیات ویرایش کاربر");
             } finally {
                 setLoading(false)
             }
         }
     }
 
-
     useEffect(() => {
-        if (tab === 1) {
+        if (tab === 3) {
             if (modal === true) {
                 if (action === "edit") {
-                    setRepairmanInfo({
+                    setUserInfo({
                         id: infoItem.id,
-                        repair_status: infoItem.status,
-                        repair_name: infoItem.full_name,
-                        repair_national_code: infoItem.national_code,
-                        repair_phone_number: infoItem.phone_number,
-                        repair_work_hours: infoItem.work_time,
-                        repair_username: infoItem.username,
+                        user_status: infoItem.status,
+                        user_full_name: infoItem.full_name,
+                        user_national_code: infoItem.national_code,
+                        user_phone_number: infoItem.phone_number,
+                        user_work_hours: infoItem.work_time,
+                        user_username: infoItem.username
                     })
-                    setItemRepairHalls(infoItem.salon?.length > 0 ? infoItem.salon.map(hall => (hall.id)) : [])
-                    setItemRepairExpertise(infoItem.type?.length > 0 ? infoItem.type.map(exp => (exp.id)) : [])
+                    setItemUserExpertise(infoItem.type?.length > 0 ? infoItem.type.map(exp => (exp.id)) : [])
 
                 } else if (action === "add") {
-                    setRepairmanInfo({
-                        repair_status: true,
-                        repair_name: "",
-                        repair_national_code: "",
-                        repair_phone_number: "",
-                        repair_work_hours: 8,
-                        repair_username: "",
-                        repair_password: ""
+                    setUserInfo({
+                        id: null,
+                        user_status: true,
+                        user_full_name: "",
+                        user_national_code: "",
+                        user_phone_number: "",
+                        user_work_hours: 8,
+                        user_username: "",
+                        user_password: ""
                     })
-                    setItemRepairHalls([])
-                    setItemRepairExpertise([])
+                    setItemUserExpertise([])
                 }
             } else {
-                setRepairmanInfo({
+                setUserInfo({
                     id: null,
-                    repair_status: true,
-                    repair_name: "",
-                    repair_national_code: "",
-                    repair_phone_number: "",
-                    repair_work_hours: 8,
-                    repair_username: "",
-                    repair_password: ""
+                    user_status: true,
+                    user_full_name: "",
+                    user_national_code: "",
+                    user_phone_number: "",
+                    user_work_hours: 8,
+                    user_username: "",
+                    user_password: ""
                 })
                 setHelperText({
-                    help_name: "",
+                    help_full_name: "",
                     help_national_code: "",
                     help_phone_number: "",
                     help_expertise: "",
                     help_work_hours: "",
-                    help_halls: "",
                     help_username: "",
                     help_password: "",
                 })
-                setItemRepairHalls([])
-                setItemRepairExpertise([])
+                setItemUserExpertise([])
             }
         }
 
     }, [action, infoItem, tab, modal])
 
-    const fetchGetHalls = async () => {
+    const fetchGetExpertice = async () => {
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
@@ -390,21 +382,18 @@ function AddAndEditRepairman({
                 headers,
             });
             if (response.status === 200) {
-                setHallsInfo(response.data.salons)
                 setExpertiseInfo(response.data.user_type)
             }
 
         } catch (error) {
             errorMessage("خطا در برقراری ارتباط با سرور")
-            setHallsInfo([])
             setExpertiseInfo([])
         }
 
     }
     useEffect(() => {
-        fetchGetHalls();
+        fetchGetExpertice();
     }, [])
-
     return (
         <Grid container
             sx={{
@@ -426,10 +415,12 @@ function AddAndEditRepairman({
             >
                 <Typography className={styles.title_modal} variant='body1'>
                     {action === "add" ?
-                        "تعریف تعمیرکار جدید" : action === "edit" ?
+                        "تعریف کاربر جدید" :
+                        action === "edit" ?
                             `ویرایش اطلاعات ${infoItem ?
-                                `${infoItem.full_name}` : "نام تعمیرکار"} `
-                            : "افزودن تعمیرکار جدید"}
+                                `${infoItem.full_name}` :
+                                "نام و نام خانوادگی کاربر"} `
+                            : "افزودن کاربر جدید"}
                 </Typography>
                 <Box className={styles.delete_icon_modal} onClick={() => toggleModal()}>
                     <FontAwesomeIcon
@@ -461,8 +452,8 @@ function AddAndEditRepairman({
                         justifyContent: 'space-between',
                         alignItems: "center",
                     }}>
-                    <Typography variant='body2' className={styles.input_label}>{"وضعیت تعمیرکار"}</Typography>
-                    <ToggleSwitch value={repairmanInfo.repair_status} handleChange={handleChange} name='repair_status' />
+                    <Typography variant='body2' className={styles.input_label}>{"وضعیت کاربر"}</Typography>
+                    <ToggleSwitch value={userInfo.user_status} handleChange={handleChange} name='user_status' />
 
                 </Grid>
                 <Grid
@@ -476,77 +467,17 @@ function AddAndEditRepairman({
                         gap: { xs: "0.5rem", sm: "0.7rem", md: "1 rem", },
                     }}>
                     <Input3
-                        id='repair_name_modal'
-                        name='repair_name'
-                        value={repairmanInfo.repair_name}
+                        id='user_full_name_modal'
+                        name='user_full_name'
+                        value={userInfo.user_full_name}
                         handleChange={handleChange}
-                        helperText={helperText.help_name}
-                        lable='نام تعمیرکار:'
-                        placeholder='نام تعمیرکار را وارد نمایید'
+                        helperText={helperText.help_full_name}
+                        lable='نام و نام‌خانوادگی کاربر:'
+                        placeholder='نام و نام‌خانوادگی کاربر را وارد نمایید'
                         type='text'
                         icon={faUser}
-                        key={10}
+                        key={31}
                     />
-                    <Grid
-                        container
-                        item
-                        size={12}
-                        sx={{
-                            display: "flex",
-                            justifyContent: 'center',
-                            alignItems: "center",
-                            flexDirection: "row",
-                            width: "100%"
-                        }}
-                    >
-                        <Grid
-                            item
-                            size={6}
-                            sx={{
-                                display: "flex",
-                                justifyContent: 'center',
-                                alignItems: "center",
-                                paddingLeft: { xs: "0.5rem", md: "1rem" }
-                            }}
-                        >
-                            <Input3
-                                id='repair_national_code_modal'
-                                name='repair_national_code'
-                                value={repairmanInfo.repair_national_code}
-                                handleChange={handleChange}
-                                helperText={helperText.help_national_code}
-                                lable='کدملی تعمیرکار:'
-                                placeholder='عدد ده رقمی'
-                                type='text'
-                                icon={faAddressCard}
-                                key={11}
-                            />
-                        </Grid>
-                        <Grid
-                            item
-                            size={6}
-                            sx={{
-                                display: "flex",
-                                justifyContent: 'center',
-                                alignItems: "center",
-                                paddingRight: { xs: "0.5rem", md: "1rem" }
-
-                            }}
-                        >
-                            <Input3
-                                id='repair_phone_number_modal'
-                                name='repair_phone_number'
-                                value={repairmanInfo.repair_phone_number}
-                                handleChange={handleChange}
-                                helperText={helperText.help_phone_number}
-                                lable='شماره تماس:'
-                                placeholder='**** *** **۰۹'
-                                type='text'
-                                icon={faPhone}
-                                key={12}
-                            />
-                        </Grid>
-                    </Grid>
                     <Grid
                         container
                         item
@@ -571,9 +502,9 @@ function AddAndEditRepairman({
                         >
                             <MultipleSelectCheckmarks
                                 options={expertiseInfo?.map(exp => ({ value: exp.id, label: exp.type }))}
-                                selectedValues={itemRepairExpertise}
-                                onChange={setItemRepairExpertise}
-                                lable="تخصص تعمیرکار:"
+                                selectedValues={itemUserExpertise}
+                                onChange={setItemUserExpertise}
+                                lable="انتخاب نقش کاربر:"
                                 helperText={helperText.help_expertise}
                             />
                         </Grid>
@@ -589,27 +520,19 @@ function AddAndEditRepairman({
                             }}
                         >
                             <Input3
-                                id='repair_work_hours_modal'
-                                name='repair_work_hours'
-                                value={repairmanInfo.repair_work_hours}
+                                id='user_work_hours_modal'
+                                name='user_work_hours'
+                                value={userInfo.user_work_hours}
                                 handleChange={handleChange}
                                 helperText={helperText.help_work_hours}
                                 lable='ساعت کاری:'
                                 placeholder='ساعت در روز'
                                 type='number'
                                 icon={faClock}
-                                key={14}
+                                key={36}
                             />
                         </Grid>
                     </Grid>
-
-                    <MultipleSelectCheckmarks
-                        options={hallsInfo?.map(hall => ({ value: hall.id, label: hall.name }))}
-                        selectedValues={itemRepairHalls}
-                        onChange={setItemRepairHalls}
-                        lable="انتخاب سالن:"
-                        helperText={helperText.help_halls}
-                    />
                     <Grid
                         container
                         item
@@ -633,16 +556,16 @@ function AddAndEditRepairman({
                             }}
                         >
                             <Input3
-                                id='repair_username_modal'
-                                name='repair_username'
-                                value={repairmanInfo.repair_username}
+                                id='user_national_code_modal'
+                                name='user_national_code'
+                                value={userInfo.user_national_code}
                                 handleChange={handleChange}
-                                helperText={helperText.help_username}
-                                lable='نام کاربری:'
-                                placeholder='حداقل ۵ کاراکتر'
+                                helperText={helperText.help_national_code}
+                                lable='کدملی کاربر:'
+                                placeholder='عدد ده رقمی'
                                 type='text'
-                                icon={faCircleUser}
-                                key={15}
+                                icon={faAddressCard}
+                                key={32}
                             />
                         </Grid>
                         <Grid
@@ -657,20 +580,79 @@ function AddAndEditRepairman({
                             }}
                         >
                             <Input3
-                                id='repair_password_modal'
-                                name='repair_password'
-                                value={repairmanInfo.repair_password}
+                                id='user_phone_number_modal'
+                                name='user_phone_number'
+                                value={userInfo.user_phone_number}
+                                handleChange={handleChange}
+                                helperText={helperText.help_phone_number}
+                                lable='شماره تماس کاربر:'
+                                placeholder='**** *** **۰۹'
+                                type='text'
+                                icon={faPhone}
+                                key={33}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        container
+                        item
+                        size={12}
+                        sx={{
+                            display: "flex",
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            flexDirection: "row",
+                            width: "100%"
+                        }}
+                    >
+                        <Grid
+                            item
+                            size={6}
+                            sx={{
+                                display: "flex",
+                                justifyContent: 'center',
+                                alignItems: "center",
+                                paddingLeft: { xs: "0.5rem", md: "1rem" }
+                            }}
+                        >
+                            <Input3
+                                id='user_username_modal'
+                                name='user_username'
+                                value={userInfo.user_username}
+                                handleChange={handleChange}
+                                helperText={helperText.help_username}
+                                lable='نام کاربری:'
+                                placeholder='حداقل ۵ کاراکتر'
+                                type='text'
+                                icon={faCircleUser}
+                                key={34}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            size={6}
+                            sx={{
+                                display: "flex",
+                                justifyContent: 'center',
+                                alignItems: "center",
+                                paddingRight: { xs: "0.5rem", md: "1rem" }
+
+                            }}
+                        >
+                            <Input3
+                                id='user_password_modal'
+                                name='user_password'
+                                value={userInfo.user_password}
                                 handleChange={handleChange}
                                 helperText={helperText.help_password}
                                 lable='رمز عبور:'
                                 placeholder={action === "edit" ? "رمز جدید وارد نمایید" : 'حداقل ۶ کاراکتر'}
                                 type='text'
                                 icon={faLock}
-                                key={16}
+                                key={35}
                             />
                         </Grid>
                     </Grid>
-
                 </Grid>
                 <Button2
                     disable={loading}
@@ -686,4 +668,4 @@ function AddAndEditRepairman({
     )
 }
 
-export default AddAndEditRepairman
+export default AddAndEditUserModal

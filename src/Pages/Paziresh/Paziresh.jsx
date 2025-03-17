@@ -34,7 +34,7 @@ export default function Paziresh() {
             <div className="content-conatiner">
                 <SideBar />
                 <div className='space-content'>
-                    <Header title={content} />
+                    <Header title={content} disabledButton={true} key={999} />
                     <div className='my-4'>
                         <ProgressBar currentStep={currentTab} />
                         {
