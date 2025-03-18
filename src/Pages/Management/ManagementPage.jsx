@@ -353,7 +353,7 @@ function ManagementPage() {
                                                 fontFamily: "iranYekan",
                                             }}
                                         >
-                                            <TableCell sx={{ fontFamily: "iranYekan" }}>
+                                            <TableCell sx={{ fontFamily: "poppins" }}>
                                                 {row.code}
                                             </TableCell>
                                             <TableCell sx={{ fontFamily: "iranYekan" }}>
@@ -678,7 +678,6 @@ function ManagementPage() {
                     </Box>
 
                 </Grid>
-
             </Grid>
         </Grid >
     )

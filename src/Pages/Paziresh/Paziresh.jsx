@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import SideBar from '../../Components/Modules/SideBar/SideBar'
-import ProgressBar from '../../Components/Modules/ProgressBar/ProgressBar'
+import MuiStepper from '../../Components/Modules/MuiStepper/MuiStepper'
 import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 import Pform2 from '../../Components/Templates/paziresh/Pform2/Pform2'
 import Pform3 from '../../Components/Templates/paziresh/Pform3/Pform3'
@@ -11,7 +11,6 @@ export default function Paziresh() {
     const [content, setContent] = useState("اطلاعات اولیه مشتری :")
     const [currentTab, setCurrentTab] = useState(3);
     const [coustomer, setCoustomer] = useState("")
-
 
     const handleNextTab = () => {
         if (currentTab === 4) {
@@ -36,7 +35,8 @@ export default function Paziresh() {
                 <div className='space-content'>
                     <Header title={content} disabledButton={true} key={999} />
                     <div className='my-4'>
-                        <ProgressBar currentStep={currentTab} />
+                        <MuiStepper activeStep={currentTab} />
+                        {/* <ProgressBar currentStep={currentTab} /> */}
                         {
                             currentTab === 1 &&
                             <Pform1

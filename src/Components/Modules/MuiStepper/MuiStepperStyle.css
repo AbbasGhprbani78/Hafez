@@ -1,0 +1,30 @@
+
+/* #step_1 svg,
+#step_2 svg,
+#step_3 svg,
+#step_4 svg {
+    fill: var(--color-3) !important;
+} */
+.css-3hpdci-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed{
+    color:  var(--color-3) !important;
+}
+
+.css-3hpdci-MuiSvgIcon-root-MuiStepIcon-root.Mui-active{
+    color: gray !important; 
+    border: 1px solid #0000;
+}
+.css-12eb3rq-MuiStepLabel-label.Mui-completed{
+    font-family: 'iranYekan', sans-serif !important;
+    font-weight: 600 !important;
+
+}
+.css-12eb3rq-MuiStepLabel-label.MuiStepLabel-alternativeLabel{
+    margin-top: 10px !important;
+}
+.css-12eb3rq-MuiStepLabel-label.Mui-active{
+    font-family: 'iranYekan', sans-serif !important;
+    font-weight: 500 ;
+}
+.css-1g86afo-MuiStepIcon-text{
+    font-family: 'iranYekan', sans-serif !important;
+}

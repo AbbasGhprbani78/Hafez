@@ -120,6 +120,12 @@ p {
         url('/public/fonts/bold/iranyekanwebbold.woff') format('woff'),
         url('/public/fonts/bold/iranyekanwebbold.eot') format('eot'),
         url('/public/fonts/bold/iranyekanwebbold.otf') format('otf'),
+    
+}
+@font-face {
+    font-family: 'poppins';
+    src: url('/public/fonts/Poppins/Poppins-Light.ttf') format('ttf'),
+         url('/public/fonts/Poppins/Poppins-Bold.ttf') format('ttf'),
 }
 
 html,
