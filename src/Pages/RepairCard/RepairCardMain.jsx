@@ -43,6 +43,7 @@ function RepairCardMain() {
         const regex = /^[0-9]*$/;
         if (input === "" || regex.test(input)) {
             setAdmissionNumber(input);
+            setPage(0)
         } else {
             warningMessage("فقط عدد وارد نمایید!")
         }
@@ -50,10 +51,12 @@ function RepairCardMain() {
     const handleChangeStartDate = (date) => {
         const persianDate = `${date.year}/${date.month.number}/${date.day}`
         setStartDate(persianDate)
+        setPage(0)
     }
     const handleChangeEndtDate = (date) => {
         const persianDate = `${date.year}/${date.month.number}/${date.day}`
         setEndDate(persianDate)
+        setPage(0)
     }
     const navigate = useNavigate()
     const handleGoToPaziresh = () => {
@@ -71,7 +74,7 @@ function RepairCardMain() {
         } else {
             setInformation(undefined)
             const delayFetch = setTimeout(() => {
-                filterDataByNumberAndDate();
+                fetchCommonData();
             }, 500)
 
             return () => clearTimeout(delayFetch);  // Cleanup on each keystroke
@@ -80,32 +83,7 @@ function RepairCardMain() {
     }, [page, endDate, startDate, admissionNumber]);
 
     const fetchCommonData = async () => {
-        const pageNumner = page + 1;
-        let access = window.localStorage.getItem("access")
-        const headers = {
-            Authorization: `Bearer ${access}`
-        };
-        setInformation(undefined)
-        try {
-            const response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
-                headers,
-                params: {
-                    page: pageNumner, page_size: pageLength
-                }
-            });
-            if (response.status === 200) {
-                setInformation(response.data.results)
-                setTotalRows(response.data.count)
-            }
-        } catch (error) {
-            errorMessage("خطا در برقراری ارتباط با سرور")
-            setInformation([])
-            setTotalRows(0)
-        }
-    }
-    // /app/get-full-forms/?page=1&page_size=5&admission_number=12345&from_date=2024-02-01&to_date=2024-02-28
-    const filterDataByNumberAndDate = async () => {
-        const pageNumner = 1;
+        const pageNumber = page + 1;
         let access = window.localStorage.getItem("access")
         const headers = {
             Authorization: `Bearer ${access}`
@@ -119,18 +97,15 @@ function RepairCardMain() {
             en_end_date = convertPersianToGregorian(endDate)
             console.log(en_end_date)
         }
+        setInformation(undefined)
         try {
-            const response = await axios.get(`${apiUrl}/app/get-customer-all-form/`, {
+            const response = await axios.get(`${apiUrl}/app/get-customer-all-form/?page=${pageNumber}&page_size=${pageLength}&admission_number=${admissionNumber}&from_date=${en_start_date}&to_date=${en_end_date}`, {
                 headers,
-                params: { page: pageNumner, page_size: pageLength, admission_number: admissionNumber, from_date: en_start_date, to_date: en_end_date }
-
             });
-            console.log(response)
             if (response.status === 200) {
                 setInformation(response.data.results)
                 setTotalRows(response.data.count)
             }
-
         } catch (error) {
             errorMessage("خطا در برقراری ارتباط با سرور")
             setInformation([])
@@ -409,7 +384,7 @@ function InfoTabel({
     )
 
 }
-function ShowConvertedData({ date }) {
+export function ShowConvertedData({ date }) {
     const [persianDate, setPersianDate] = useState("");
     useEffect(() => {
         const gregorianDate = date?.slice(0, 10)

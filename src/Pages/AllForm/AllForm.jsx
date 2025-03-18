@@ -9,10 +9,10 @@ import axios from 'axios';
 
 import SideBar from "../../Components/Modules/SideBar/SideBar";
 import Header from "../../Components/Modules/Header/Header";
-import { ToastContainerCustom } from '../../Components/Modules/Toast/ToastCustom';
+import { successMessage, ToastContainerCustom } from '../../Components/Modules/Toast/ToastCustom';
 import { errorMessage, warningMessage } from '../../Components/Modules/Toast/ToastCustom';
 import ReactDropdown from '../../Components/Modules/ReactDropdown/ReactDropdown';
-
+import { ShowConvertedData } from '../RepairCard/RepairCardMain';
 import Input from '../../Components/Modules/Input/Input';
 import LoadingForm from '../../Components/Modules/Loading/LoadingForm';
 import { InfoTabel } from '../Management/ManagementPage';
@@ -23,25 +23,24 @@ import Box from '@mui/material/Box';
 import { Button, TableCell, TableRow, Typography } from "@mui/material";
 
 //Icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHashtag,
-  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function AllForm() {
-  const [information, setInformation] = useState([])
+  const [information, setInformation] = useState(undefined)
   const [admissionNumber, setAdmissionNumber] = useState("")
   const [filter, setFilter] = React.useState(0);
 
   const [page, setPage] = useState(0)
-  const [totalRows, setTotalRows] = useState(undefined)
-  const pageLength = 4;
+  const [totalRows, setTotalRows] = useState(0)
+  const pageLength = 5;
 
 
   const handleChangeFilter = (newValue) => {
     setFilter(newValue);
+    setPage(0)
   };
 
   const navigate = useNavigate()
@@ -58,17 +57,59 @@ export default function AllForm() {
     const regex = /^[0-9]*$/;
     if (input === "" || regex.test(input)) {
       setAdmissionNumber(input);
+      setPage(0)
     } else {
       warningMessage("فقط عدد وارد نمایید!")
     }
   }
+  const fetchCommonData = async () => {
+    const pageNumber = page + 1;
+    let access = window.localStorage.getItem("access")
+    const headers = {
+      Authorization: `Bearer ${access}`
+    };
+    const carStep = filter === 1 ? "none" : filter === 2 ? "one" : filter === 3 ? "two" : filter === 4 ? "three" : null;
+    setInformation(undefined)
+    try {
+      const response = await axios.get(`${apiUrl}/app/get-admissions-office/`, {
+        headers,
+        params: {
+          page: pageNumber, page_size: pageLength, search: admissionNumber, step: carStep
+        }
+      });
+      if (response.status === 200) {
+        setInformation(response.data.results)
+        setTotalRows(response.data.count)
+      }
+    } catch (error) {
+      warningMessage("خطا در برقراری ارتباط با سرور")
+      setInformation([])
+      setTotalRows(0)
+    }
+  }
+
+
+  useEffect(() => {
+
+    if (admissionNumber === "" || admissionNumber === null) {
+      fetchCommonData()
+    } else {
+      const delayFetch = setTimeout(() => {
+        fetchCommonData();
+      }, 500)
+
+      return () => clearTimeout(delayFetch);  // Cleanup on each keystroke
+    }
+
+  }, [page, admissionNumber, filter])
+
+  console.log(information)
 
   return (
     <Grid className="content-conatiner">
       <SideBar />
       <ToastContainerCustom />
       <Grid
-        item
         size={{ xs: 12 }}
         container
         sx={{
@@ -82,7 +123,7 @@ export default function AllForm() {
         className="space-content" >
         <Header title={"کارتابل پذیرش:"} handleClick={handleGoToPaziresh} />
         <Grid
-          item
+
           container
           sx={{
             display: "flex",
@@ -97,7 +138,7 @@ export default function AllForm() {
           className={styles.border_bottom}
         >
           <Grid
-            item
+
             size={{ xs: 12, sm: 6, md: 5, lg: 4 }}
             sx={{
               display: "flex",
@@ -119,7 +160,7 @@ export default function AllForm() {
             />
           </Grid>
           <Grid
-            item
+
             container
             size={{ xs: 12, sm: 6 }}
             sx={{
@@ -136,7 +177,7 @@ export default function AllForm() {
           </Grid>
         </Grid>
         <Grid
-          item
+
           container
           size={12}
           sx={{
@@ -182,16 +223,22 @@ export default function AllForm() {
                   }}
                 >
                   <TableCell sx={{ fontFamily: "iranYekan" }}>
-                    {row.code}
+                    {row.admission_number}
                   </TableCell>
                   <TableCell sx={{ fontFamily: "iranYekan" }}>
-                    {row.name}
+                    {row.pyramid_number}
                   </TableCell>
 
                   <TableCell sx={{ fontFamily: "iranYekan" }}>
-                    {`${row.remaining_capacity} ساعت`}
+                    {row.car_model}
                   </TableCell>
-
+                  <TableCell sx={{ fontFamily: "iranYekan" }}>
+                    {row.chassis_number}
+                  </TableCell>
+                  <ShowConvertedData date={row.admission_date} />
+                  <TableCell sx={{ fontFamily: "iranYekan" }}>
+                    {row.license_plate_number}
+                  </TableCell>
                   <TableCell
                     sx={{
                       display: "flex",
@@ -201,24 +248,31 @@ export default function AllForm() {
                     }}
                   >
                     <div
-                      className={`${styles.status_btn_halls} ${row.status === true
-                        ? styles.status_halls_one
-                        : row.status === false
-                          ? styles.status_halls_two
-                          : styles.status_halls_defualt
+                      className={`${styles.status_btn} ${row.step === "none"
+                        ? styles.status_none
+                        : row.step === "one"
+                          ? styles.status_one
+                          : row.step === "two"
+                            ? styles.status_two
+                            : row.step === "three"
+                              ? styles.status_three
+                              : ""
                         }`}
                     >
-                      {row.status === true
-                        ? "فعال"
-                        : row.status === false
-                          ? "غیرفعال"
-                          : "نامشخص"}
+                      {row.step === "none"
+                        ? "اتمام پذیرش"
+                        : row.step === "one"
+                          ? "ناتمام"
+                          : row.step === "two"
+                            ? "برگشتی"
+                            : row.step === "three"
+                              ? "در انتظار تاییدیه کارشناس"
+                              : "نامشخص"
+                      }
                     </div>
                   </TableCell>
 
-                  <TableCell sx={{ fontFamily: "iranYekan" }}>
-                    {row.descriptions}
-                  </TableCell>
+
 
                 </TableRow>)) : <></>
 
@@ -229,6 +283,30 @@ export default function AllForm() {
     </Grid >
   );
 }
+// admission_date
+// : 
+// "2025-03-17T11:58:56Z"
+// admission_number
+// : 
+// "519846895165489"
+// car_model
+// : 
+// "سایر"
+// chassis_number
+// : 
+// "1HGCM82633A123456"
+// engine_number
+// : 
+// "12ش45345"
+// id
+// : 
+// 43
+// pyramid_number
+// : 
+// "123"
+// step
+// : 
+// "three"
 const columnsAcceptance = [
   "شماره پذیرش",
   "شماره هرم",

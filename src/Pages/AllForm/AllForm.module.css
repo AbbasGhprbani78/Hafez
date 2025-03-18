@@ -40,26 +40,32 @@
     border-radius: 100px;
     min-width: 100px;
 }
+.status_btn_halls {
+    padding: 5px;
+    border-radius: 100px;
+    min-width: 100px;
+ }
 
-.status_one {
+.status_two {
     background-color: #fcdada;
     color: var(--color-18);
 }
 
-.status_two {
+.status_one {
     background-color: #fdf1c2;
     color: #f7c300;
 }
 
-.status_three {
+.status_none {
     background-color: #ccf3ea;
     color: #3e846b;
 }
 
-.status_four {
+.status_three {
     background-color: #a5b6ff;
     color: #4c6fff;
 }
+
 
 .wrap_button {
     width: max-content;
