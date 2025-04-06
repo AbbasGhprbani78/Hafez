@@ -4,13 +4,19 @@ import MuiStepper from '../../Components/Modules/MuiStepper/MuiStepper'
 import Pform1 from '../../Components/Templates/paziresh/Pform1/Pform1'
 import Pform2 from '../../Components/Templates/paziresh/Pform2/Pform2'
 import Pform3 from '../../Components/Templates/paziresh/Pform3/Pform3'
+import AcceptenceForm3 from '../../Components/Templates/paziresh/AcceptenceForm3/AcceptenceForm3'
 import Pform4 from '../../Components/Templates/paziresh/Pform4/Pform4'
 import Header from '../../Components/Modules/Header/Header'
+import { ToastContainerCustom } from '../../Components/Modules/Toast/ToastCustom'
+
+//MUI Components
+import Grid from '@mui/material/Grid2';
+
 
 export default function Paziresh() {
-    const [content, setContent] = useState("اطلاعات اولیه مشتری :")
+    const [content, setContent] = useState("اطلاعات اولیه مشتری:")
     const [currentTab, setCurrentTab] = useState(3);
-    const [coustomer, setCoustomer] = useState("")
+    const [customer, setCustomer] = useState("")
 
     const handleNextTab = () => {
         if (currentTab === 4) {
@@ -29,52 +35,62 @@ export default function Paziresh() {
     }
 
     return (
-        <>
-            <div className="content-conatiner">
-                <SideBar />
-                <div className='space-content'>
-                    <Header title={content} disabledButton={true} key={999} />
-                    <div className='my-4'>
-                        <MuiStepper activeStep={currentTab} />
-                        {/* <ProgressBar currentStep={currentTab} /> */}
-                        {
-                            currentTab === 1 &&
-                            <Pform1
-                                nextTab={handleNextTab}
-                                setContent={setContent}
-                                setCoustomer={setCoustomer}
-                            />
 
-                        }
-                        {
-                            currentTab === 2 &&
-                            <Pform2
-                                nextTab={handleNextTab}
-                                prevTab={handlePrevTab}
-                                setContent={setContent}
-                                coustomer={coustomer}
-                            />
+        <Grid
+            size={12}
+            sx={{ display: "flex" }}
+        >
+            <SideBar />
+            <ToastContainerCustom />
+            <div className="space-content">
+                <Header title={content} disabledButton={true} key={999} disableBottomTitle={true} />
+                <Grid
+                    container
+                    size={12}>
+                    <MuiStepper activeStep={currentTab} />
+                    {
+                        currentTab === 1 &&
+                        <Pform1
+                            nextTab={handleNextTab}
+                            setContent={setContent}
+                            setCoustomer={setCustomer}
+                        />
 
-                        }
-                        {
-                            currentTab === 3 &&
-                            <Pform3
-                                nextTab={handleNextTab}
-                                prevTab={handlePrevTab}
-                                setContent={setContent}
-                                coustomer={coustomer}
-                            />
+                    }
+                    {
+                        currentTab === 2 &&
+                        <Pform2
+                            nextTab={handleNextTab}
+                            prevTab={handlePrevTab}
+                            setContent={setContent}
+                            coustomer={customer}
+                        />
 
-                        }
-                        {
-                            currentTab === 4 &&
-                            <Pform4 prevTab={handlePrevTab} />
-                        }
+                    }
+                    {
+                        currentTab === 3 &&
+                        <Pform3
+                            nextTab={handleNextTab}
+                            prevTab={handlePrevTab}
+                            setContent={setContent}
+                            coustomer={customer}
+                        />
+                        // <AcceptenceForm3
+                        //     nextTab={handleNextTab}
+                        //     prevTab={handlePrevTab}
+                        //     setContent={setContent}
+                        //     customer={customer} />
 
-                    </div>
-                </div>
+                    }
+                    {
+                        currentTab === 4 &&
+                        <Pform4 prevTab={handlePrevTab} />
+                    }
+
+                </Grid>
             </div>
-        </>
+        </Grid >
+
     )
 }
 

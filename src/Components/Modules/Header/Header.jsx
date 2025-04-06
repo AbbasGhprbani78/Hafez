@@ -4,7 +4,8 @@ import { faAlignRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import ResponsiveExample from '../Offcanvas/OffcanvasMenu'
 import Button2 from "../Button2/Button2";
-export default function Header({ title, disabledButton = false, handleClick }) {
+import { Typography } from '@mui/material';
+export default function Header({ title, disabledButton = false, handleClick, disableBottomTitle = false }) {
   const [isShowSideBar, setIsShowSideBar] = useState(false);
 
   return (
@@ -21,7 +22,12 @@ export default function Header({ title, disabledButton = false, handleClick }) {
           >
             <FontAwesomeIcon icon={faAlignRight} className={styles.icon_m} />
           </div>
-          <span className={styles.title_page}>{title}</span>
+          <Typography
+            variant="body1"
+            display={{ xs: "none", md: "block" }}
+            fontSize={{ lg: "1.3rem", xl: "1.4rem", xxl: "1.5rem" }}
+            className={styles.title_page}
+          >{title}</Typography>
           <div className={styles.logo_wrapper}>
             <img src="/image/1.svg" alt="logo" />
           </div>
@@ -29,7 +35,14 @@ export default function Header({ title, disabledButton = false, handleClick }) {
             <Button2 style="search_btn" onClick={handleClick} icon={faPlus} >{"پذیرش جدید"}</Button2>
           </div>}
         </div>
-        <span className={styles.title_bottom}>{title}</span>
+        {!disableBottomTitle &&
+          <Typography
+            display={{ xs: "block", md: "none" }}
+            marginTop={{ xs: ".4rem", sm: ".5rem", md: ".6rem" }}
+            fontSize={{ xs: ".9rem", sm: "1rem", md: "1.2rem" }}
+            variant="body2" className={styles.title_page}>{title}
+          </Typography>}
+
       </header>
     </>
   );

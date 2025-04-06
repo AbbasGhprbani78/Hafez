@@ -276,7 +276,6 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
     }));
   };
 
-
   const handleprice_estimateChange = (e) => {
     const englishNumber = toEnglishNumber(e.target.value.replace(/,/g, ''));
     setStatementData((prevState) => ({
@@ -534,7 +533,7 @@ export default function Pform3({ nextTab, prevTab, setContent, coustomer }) {
   };
 
   useEffect(() => {
-    setContent("اظهارات مشتری :")
+    setContent("اظهارات مشتری:")
   }, [])
 
 

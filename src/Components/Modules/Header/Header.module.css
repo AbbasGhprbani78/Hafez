@@ -55,19 +55,19 @@
 }
 
 .title_page {
-    color: var(--color-3);
-    font-size: 1rem;
-    font-weight: 600;
+    color: var(--color-3) !important;
+    font-weight: 600 !important;
+    font-family: 'iranYekan', sans-serif !important;
 }
 
 .wrap_icon,
-.logo_wrapper,
-.title_bottom {
+.logo_wrapper {
     display: none;
 }
 
 
-@media (max-width:1024px) {
+
+@media (max-width:900px) {
     .header_content {
         padding: 10px 0;
     }
@@ -76,8 +76,7 @@
         font-size: 1.3rem;
     }
 
-    .header_btn_wrapper,
-    .title_page {
+    .header_btn_wrapper {
         display: none;
     }
 
@@ -100,12 +99,4 @@
         object-fit: cover;
     }
 
-    .title_bottom {
-        display: block;
-        color: var(--color-3);
-        font-size: 1rem;
-        font-weight: 700;
-        margin-top: .5rem;
-        font-size: 22px
-    }
 }
