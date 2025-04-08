@@ -6,7 +6,7 @@
 
 :root {
     --color-1: #15616d;
-    --color-3: #3e846b;
+    --color-3: rgb(62, 132, 107);
     --color-5: #02a47b;
     --color-6: #00c494;
     --color-7: #9f9f9f;
@@ -94,6 +94,7 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 
 .input_content_wrapper input::placeholder {

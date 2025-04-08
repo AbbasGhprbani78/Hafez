@@ -2,13 +2,15 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
-import styles from './DataInput.module.css'
-export default function DataInput({ value, onChange, style }) {
+import { Typography } from '@mui/material';
+import './DataInput.css'
+export default function DataInput({ value, onChange, placeHolder = "زمان و تاریخ مدنظر را انتخاب کنید!" }) {
   return (
     <>
-      <div className={`${styles.estimate_input} ${styles[style]}`}>
+      <div className={"estimate_input"}>
         <div className="input_content_wrapper">
           <DatePicker
+            placeholder={placeHolder}
             calendar={persian}
             locale={persian_fa}
             calendarPosition="bottom-right"
@@ -20,7 +22,6 @@ export default function DataInput({ value, onChange, style }) {
               background: "transparent",
               outline: "none",
             }}
-            plugins={[<TimePicker position="bottom" />]}
           />
         </div>
       </div>

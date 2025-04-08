@@ -11,6 +11,9 @@ export default function SelectDropDown({
   value,
   onChange,
   material,
+  placeHolder,
+  disable = false,
+  isDesirableValue = false
 }) {
   const [options, setOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
@@ -34,12 +37,18 @@ export default function SelectDropDown({
   const handleInputChange = (e) => {
     const value = e.target.value;
     setDisplayedValue(value);
+
     setFilteredOptions(
       options.filter((option) =>
         option.value.toLowerCase().includes(value.toLowerCase())
       )
     );
-    setShowOptions(true);
+    if (options.length === 0 & isDesirableValue) {
+      onChange(name, value)
+      setShowOptions(false);
+
+    } else
+      setShowOptions(true);
   };
 
   const handleOptionClick = (value, id) => {
@@ -83,6 +92,8 @@ export default function SelectDropDown({
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           autoComplete="off"
+          disabled={disable}
+          placeholder={placeHolder}
         />
         <FontAwesomeIcon icon={icon} className={styles.select_car_icon} />
         {showOptions && (
@@ -98,7 +109,7 @@ export default function SelectDropDown({
                 </li>
               ))
             ) : (
-              <li className={styles.car_item}>موردی یافت نشد</li>
+              <li className={styles.car_item}>موردی یافت نشد!</li>
             )}
           </ul>
         )}

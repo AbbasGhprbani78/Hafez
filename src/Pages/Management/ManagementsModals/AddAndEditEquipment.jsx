@@ -340,7 +340,7 @@ function AddAndEditEquipment({ action = "add", infoItem, toggleModal, modal, tab
                     icon={loading ? "" : action === "add" ? faCheck : faPenToSquare}
                     style={"search_btn_modal"}
                     onClick={handleSubmitForm}
-                    disable={loading}                >
+                    disable={loading}>
                     {loading ? <CircularProgress size={"25.2px"} color="success" /> : action === "add" ? "تایید اطلاعات" : "ویرایش اطلاعات"}
 
                 </Button2>

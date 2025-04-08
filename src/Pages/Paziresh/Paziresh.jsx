@@ -69,17 +69,17 @@ export default function Paziresh() {
                     }
                     {
                         currentTab === 3 &&
-                        <Pform3
-                            nextTab={handleNextTab}
-                            prevTab={handlePrevTab}
-                            setContent={setContent}
-                            coustomer={customer}
-                        />
-                        // <AcceptenceForm3
+                        // <Pform3
                         //     nextTab={handleNextTab}
                         //     prevTab={handlePrevTab}
                         //     setContent={setContent}
-                        //     customer={customer} />
+                        //     coustomer={customer}
+                        // />
+                        <AcceptenceForm3
+                            nextTab={handleNextTab}
+                            prevTab={handlePrevTab}
+                            setContent={setContent}
+                            customer={customer} />
 
                     }
                     {
